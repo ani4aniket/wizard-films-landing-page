@@ -8,7 +8,8 @@ import { getProjects } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Video projects from Wizard Films, streamed directly inside the portfolio.",
+  description:
+    "Video projects from Wizard Films, streamed directly inside the portfolio.",
 }
 
 export default async function WorkPage() {
@@ -20,10 +21,10 @@ export default async function WorkPage() {
     <main>
       <PageHero
         eyebrow="Portfolio"
-        title="Work that lives in atmosphere."
-        description="Explore editing, color, audio, and shoot work through embedded playback, cinematic thumbnails, and CRM-driven metadata."
+        title="Work arranged like a clean editorial catalog."
+        description="Browse projects through flat cards, square imagery, and quiet metadata sourced directly from the CRM."
       />
-      <Section className="pt-4">
+      <Section className="pt-2">
         {projectsResult.error ? (
           <CmsErrorState
             title="Project feed unavailable."

@@ -53,11 +53,14 @@ export default async function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("dark scroll-smooth antialiased")}
+      className={cn("scroll-smooth antialiased")}
     >
       <body className="min-h-screen bg-background text-foreground">
-        <ThemeProvider defaultTheme="dark" forcedTheme="dark" enableSystem={false}>
-          <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,rgba(201,162,39,0.11),transparent_30%),radial-gradient(circle_at_bottom,rgba(255,255,255,0.06),transparent_28%)]" />
+        <ThemeProvider
+          defaultTheme="light"
+          forcedTheme="light"
+          enableSystem={false}
+        >
           <Navbar siteName={mergedSettings.siteName} />
           {children}
           <Footer settings={mergedSettings} />

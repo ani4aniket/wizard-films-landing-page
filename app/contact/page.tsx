@@ -10,7 +10,8 @@ import { getContactContent } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Start a film, edit, or post-production conversation with Wizard Films.",
+  description:
+    "Start a film, edit, or post-production conversation with Wizard Films.",
 }
 
 export default async function ContactPage() {
@@ -22,10 +23,10 @@ export default async function ContactPage() {
     <main>
       <PageHero
         eyebrow="Contact"
-        title="Bring the next frame into focus."
-        description="Send a brief through the built-in form, or route people toward social channels managed by the CRM."
+        title="Start the next project with a clean brief."
+        description="Use the built-in form, route people toward social channels, and manage the entire contact surface from the CRM."
       />
-      <Section className="pt-4">
+      <Section className="pt-2">
         {contactResult.error || !contactResult.contact ? (
           <CmsErrorState
             title="Contact information unavailable."
@@ -34,8 +35,8 @@ export default async function ContactPage() {
         ) : (
           <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
             <Reveal>
-              <div className="rounded-[2rem] border border-border/70 bg-card/70 p-6 backdrop-blur md:p-8">
-                <p className="text-xs tracking-[0.3em] text-primary uppercase">
+              <div className="surface-soft p-6 md:p-8">
+                <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
                   {contactResult.contact.title}
                 </p>
                 <p className="mt-5 text-base leading-8 text-muted-foreground">
@@ -44,7 +45,7 @@ export default async function ContactPage() {
                 {contactResult.contact.email ? (
                   <Link
                     href={`mailto:${contactResult.contact.email}`}
-                    className="mt-8 block text-lg text-foreground transition-colors hover:text-primary"
+                    className="mt-8 block text-lg text-foreground transition-colors hover:text-muted-foreground"
                   >
                     {contactResult.contact.email}
                   </Link>
@@ -57,7 +58,7 @@ export default async function ContactPage() {
                         href={link.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="block text-sm tracking-[0.28em] text-muted-foreground uppercase transition-colors hover:text-primary"
+                        className="block text-sm text-foreground transition-colors hover:text-muted-foreground"
                       >
                         {link.label}
                       </Link>

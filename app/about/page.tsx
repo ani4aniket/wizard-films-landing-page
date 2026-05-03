@@ -21,10 +21,10 @@ export default async function AboutPage() {
     <main>
       <PageHero
         eyebrow="About"
-        title="A studio built around restraint, rhythm, and story."
-        description="The about page is fully CRM-managed, letting Wizard Films update the story, craft notes, and imagery without touching the frontend."
+        title="A studio built around rhythm, clarity, and story."
+        description="The about page stays CRM-managed, but now reads with the same flat editorial structure as the rest of the site."
       />
-      <Section className="pt-4">
+      <Section className="pt-2">
         {aboutResult.error || !aboutResult.about ? (
           <CmsErrorState
             title="About content unavailable."
@@ -34,7 +34,7 @@ export default async function AboutPage() {
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             {aboutResult.about.portraitUrl ? (
               <Reveal>
-                <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] border border-border/70">
+                <div className="surface-soft relative aspect-[4/5] overflow-hidden border border-border">
                   <Image
                     src={aboutResult.about.portraitUrl}
                     alt={aboutResult.about.title}
@@ -46,8 +46,8 @@ export default async function AboutPage() {
               </Reveal>
             ) : null}
             <Reveal delay={0.12}>
-              <div className="space-y-6 rounded-[2rem] border border-border/70 bg-card/70 p-6 backdrop-blur md:p-8">
-                <h2 className="font-heading text-4xl text-foreground">
+              <div className="space-y-6 border border-border bg-background p-6 md:p-8">
+                <h2 className="text-4xl font-medium text-foreground">
                   {aboutResult.about.title}
                 </h2>
                 <p className="text-base leading-8 text-muted-foreground">
@@ -58,7 +58,7 @@ export default async function AboutPage() {
                     {aboutResult.about.craftNotes.map((note) => (
                       <span
                         key={note}
-                        className="rounded-full border border-primary/30 bg-primary/8 px-4 py-2 text-xs tracking-[0.22em] text-primary uppercase"
+                        className="rounded-full bg-secondary px-4 py-2 text-sm text-foreground"
                       >
                         {note}
                       </span>

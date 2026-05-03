@@ -1,3 +1,4 @@
+import type { MediaAsset } from "@prisma/client"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -20,38 +21,17 @@ import {
   toggleSubmissionReadAction,
   uploadMediaAction,
 } from "@/app/admin/actions"
-import { isAdminAuthenticated, isAdminPasswordConfigured } from "@/lib/admin-auth"
+import {
+  isAdminAuthenticated,
+  isAdminPasswordConfigured,
+} from "@/lib/admin-auth"
+import { AdminTabLayout } from "@/components/admin/admin-tab-layout"
 import { ensureCmsSeeded } from "@/lib/crm-defaults"
 import { prisma } from "@/lib/prisma"
 
 export const metadata: Metadata = {
   title: "Admin",
   description: "Manage Wizard Films content, media, and submissions.",
-}
-
-function Section({
-  id,
-  title,
-  description,
-  children,
-}: {
-  id: string
-  title: string
-  description: string
-  children: ReactNode
-}) {
-  return (
-    <section
-      id={id}
-      className="rounded-[2rem] border border-border/70 bg-card/65 p-6 backdrop-blur md:p-8"
-    >
-      <div className="max-w-3xl">
-        <p className="text-xs tracking-[0.3em] text-primary uppercase">{title}</p>
-        <p className="mt-3 text-sm leading-7 text-muted-foreground">{description}</p>
-      </div>
-      <div className="mt-8">{children}</div>
-    </section>
-  )
 }
 
 function Field({
@@ -71,14 +51,16 @@ function Field({
 }) {
   return (
     <label className="space-y-2">
-      <span className="text-xs tracking-[0.26em] text-primary uppercase">{label}</span>
+      <span className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+        {label}
+      </span>
       <input
         name={name}
         type={type}
         required={required}
         defaultValue={defaultValue ?? ""}
         placeholder={placeholder}
-        className="h-12 w-full rounded-2xl border border-border/70 bg-background/50 px-4 text-sm text-foreground outline-none transition focus:border-primary/50"
+        className="h-12 w-full rounded-full border border-transparent bg-secondary px-4 text-sm text-foreground transition outline-none focus:border-primary focus:bg-background"
       />
     </label>
   )
@@ -101,14 +83,16 @@ function Area({
 }) {
   return (
     <label className="space-y-2">
-      <span className="text-xs tracking-[0.26em] text-primary uppercase">{label}</span>
+      <span className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+        {label}
+      </span>
       <textarea
         name={name}
         required={required}
         rows={rows}
         defaultValue={defaultValue ?? ""}
         placeholder={placeholder}
-        className="w-full rounded-[1.5rem] border border-border/70 bg-background/50 px-4 py-3 text-sm text-foreground outline-none transition focus:border-primary/50"
+        className="w-full rounded-[24px] border border-transparent bg-secondary px-4 py-3 text-sm text-foreground transition outline-none focus:border-primary focus:bg-background"
       />
     </label>
   )
@@ -125,7 +109,7 @@ function SubmitRow({
     <div className="flex flex-wrap items-center gap-3">
       <button
         type="submit"
-        className="rounded-full border border-primary/60 bg-primary px-5 py-2 text-[11px] font-semibold tracking-[0.26em] text-primary-foreground uppercase transition hover:bg-primary/90"
+        className="pill-feedback rounded-full border border-primary bg-primary px-6 py-3 text-sm font-medium text-primary-foreground"
       >
         {saveLabel}
       </button>
@@ -144,12 +128,16 @@ function LoginScreen({ error }: { error?: string }) {
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-6 py-16">
-      <div className="w-full rounded-[2rem] border border-border/70 bg-card/70 p-8 backdrop-blur">
-        <p className="text-xs tracking-[0.32em] text-primary uppercase">Wizard Films CRM</p>
-        <h1 className="mt-4 font-heading text-4xl text-foreground">Admin sign in</h1>
-        <p className="mt-4 text-sm leading-7 text-muted-foreground">
-          This route uses a single password from `ADMIN_PASSWORD`. It is intentionally
-          lightweight and does not create user accounts.
+      <div className="w-full border border-border bg-background p-8">
+        <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+          Wizard Films CRM
+        </p>
+        <h1 className="mt-4 text-4xl font-medium text-foreground">
+          Admin sign in
+        </h1>
+        <p className="mt-4 text-base leading-7 text-muted-foreground">
+          This route uses a single password from `ADMIN_PASSWORD`. It is
+          intentionally lightweight and does not create user accounts.
         </p>
         <form action={loginAction} className="mt-8 space-y-5">
           <Field
@@ -161,12 +149,14 @@ function LoginScreen({ error }: { error?: string }) {
           />
           <button
             type="submit"
-            className="rounded-full border border-primary/60 bg-primary px-6 py-3 text-[11px] font-semibold tracking-[0.28em] text-primary-foreground uppercase transition hover:bg-primary/90"
+            className="pill-feedback rounded-full border border-primary bg-primary px-6 py-3 text-base font-medium text-primary-foreground"
           >
             Enter Admin
           </button>
         </form>
-        {errorMessage ? <p className="mt-4 text-sm text-destructive">{errorMessage}</p> : null}
+        {errorMessage ? (
+          <p className="mt-4 text-sm text-destructive">{errorMessage}</p>
+        ) : null}
       </div>
     </main>
   )
@@ -175,13 +165,17 @@ function LoginScreen({ error }: { error?: string }) {
 function MissingPasswordScreen() {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-3xl items-center px-6 py-16">
-      <div className="rounded-[2rem] border border-border/70 bg-card/70 p-8 backdrop-blur">
-        <p className="text-xs tracking-[0.32em] text-primary uppercase">Admin setup needed</p>
-        <h1 className="mt-4 font-heading text-4xl text-foreground">Set `ADMIN_PASSWORD` first</h1>
-        <p className="mt-4 max-w-2xl text-sm leading-7 text-muted-foreground">
-          The CRM route is installed, but it will stay locked until `ADMIN_PASSWORD` is
-          present in your environment. You can also add `ADMIN_SESSION_SECRET` if you want
-          a separate cookie signing secret.
+      <div className="border border-border bg-background p-8">
+        <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+          Admin setup needed
+        </p>
+        <h1 className="mt-4 text-4xl font-medium text-foreground">
+          Set `ADMIN_PASSWORD` first
+        </h1>
+        <p className="mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+          The CRM route is installed, but it will stay locked until
+          `ADMIN_PASSWORD` is present in your environment. You can also add
+          `ADMIN_SESSION_SECRET` if you want a separate cookie signing secret.
         </p>
       </div>
     </main>
@@ -205,59 +199,73 @@ export default async function AdminPage({
 
   await ensureCmsSeeded()
 
-  const [siteSettings, homepage, about, contact, siteLinks, contactLinks, projects, services, submissions] =
-    await Promise.all([
-      prisma.siteSettings.findUniqueOrThrow({ where: { id: "site-settings" } }),
-      prisma.homepageContent.findUniqueOrThrow({ where: { id: "homepage" } }),
-      prisma.aboutContent.findUniqueOrThrow({ where: { id: "about" } }),
-      prisma.contactContent.findUniqueOrThrow({ where: { id: "contact" } }),
-      prisma.socialLink.findMany({
-        where: { section: "SITE" },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-      }),
-      prisma.socialLink.findMany({
-        where: { section: "CONTACT" },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-      }),
-      prisma.project.findMany({
-        orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
-      }),
-      prisma.service.findMany({
-        orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
-      }),
-      prisma.contactSubmission.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 50,
-      }),
-    ])
+  const [
+    siteSettings,
+    homepage,
+    about,
+    contact,
+    siteLinks,
+    contactLinks,
+    projects,
+    services,
+    submissions,
+  ] = await Promise.all([
+    prisma.siteSettings.findUniqueOrThrow({ where: { id: "site-settings" } }),
+    prisma.homepageContent.findUniqueOrThrow({ where: { id: "homepage" } }),
+    prisma.aboutContent.findUniqueOrThrow({ where: { id: "about" } }),
+    prisma.contactContent.findUniqueOrThrow({ where: { id: "contact" } }),
+    prisma.socialLink.findMany({
+      where: { section: "SITE" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.socialLink.findMany({
+      where: { section: "CONTACT" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.project.findMany({
+      orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
+    }),
+    prisma.service.findMany({
+      orderBy: [{ sortOrder: "asc" }, { updatedAt: "desc" }],
+    }),
+    prisma.contactSubmission.findMany({
+      orderBy: { createdAt: "desc" },
+      take: 50,
+    }),
+  ])
 
-  const media = await prisma.mediaAsset.findMany({
+  const media: MediaAsset[] = await prisma.mediaAsset.findMany({
     orderBy: { createdAt: "desc" },
     take: 30,
   })
 
   return (
-    <main className="mx-auto max-w-7xl px-6 py-12 md:px-10">
+    <main className="mx-auto max-w-[1440px] px-6 py-12 md:px-10">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-xs tracking-[0.32em] text-primary uppercase">Wizard Films CRM</p>
-          <h1 className="mt-4 font-heading text-5xl text-foreground">Content admin</h1>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground">
-            Edit the public site, upload Blob media, and review new enquiries from one
-            place. The public-facing pages are already wired to this data.
+          <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+            Wizard Films CRM
+          </p>
+          <h1 className="mt-4 text-5xl font-medium text-foreground">
+            Content admin
+          </h1>
+          <p className="mt-4 max-w-3xl text-base leading-7 text-muted-foreground">
+            Edit the public site, upload Blob media, and review new enquiries
+            from one place. The public-facing pages are already wired to this
+            data.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/"
-            className="rounded-full border border-border/70 px-5 py-2 text-[11px] font-semibold tracking-[0.26em] text-muted-foreground uppercase transition hover:border-primary/40 hover:text-foreground"
+            className="pill-feedback rounded-full border border-border px-5 py-3 text-sm text-foreground transition hover:bg-secondary"
           >
             View Site
           </Link>
           <form action={logoutAction}>
             <button
               type="submit"
-              className="rounded-full border border-border/70 px-5 py-2 text-[11px] font-semibold tracking-[0.26em] text-muted-foreground uppercase transition hover:border-primary/40 hover:text-foreground"
+              className="pill-feedback rounded-full border border-border px-5 py-3 text-sm text-foreground transition hover:bg-secondary"
             >
               Sign Out
             </button>
@@ -266,7 +274,7 @@ export default async function AdminPage({
       </div>
 
       {error ? (
-        <p className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+        <p className="mt-6 border border-destructive/20 bg-[#fff5f5] px-4 py-3 text-sm text-destructive">
           {error === "missing-blob-token"
             ? "Add BLOB_READ_WRITE_TOKEN before using uploads."
             : error === "missing-file"
@@ -275,27 +283,40 @@ export default async function AdminPage({
         </p>
       ) : null}
 
-      <div className="mt-8 grid gap-6">
-        <Section
-          id="media"
-          title="Media Library"
-          description="Upload images or videos to Vercel Blob, then paste the returned URLs into hero, project, service, or portrait fields."
-        >
-          <form action={uploadMediaAction} className="grid gap-4 md:grid-cols-[1fr_1fr_auto]">
+      <AdminTabLayout
+        panels={[
+          {
+            id: "media",
+            label: "Media",
+            title: "Media Library",
+            description:
+              "Upload images or videos to Vercel Blob, then paste the returned URLs into hero, project, service, or portrait fields.",
+            content: (
+              <>
+                <form
+            action={uploadMediaAction}
+            className="grid gap-4 md:grid-cols-[1fr_1fr_auto]"
+          >
             <label className="space-y-2">
-              <span className="text-xs tracking-[0.26em] text-primary uppercase">File</span>
+              <span className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                File
+              </span>
               <input
                 name="file"
                 type="file"
                 required
-                className="block h-12 w-full rounded-2xl border border-border/70 bg-background/50 px-4 py-3 text-sm text-foreground"
+                className="block h-12 w-full rounded-full border border-transparent bg-secondary px-4 py-3 text-sm text-foreground"
               />
             </label>
-            <Field label="Alt Text" name="altText" placeholder="Optional description" />
+            <Field
+              label="Alt Text"
+              name="altText"
+              placeholder="Optional description"
+            />
             <div className="self-end">
               <button
                 type="submit"
-                className="h-12 rounded-full border border-primary/60 bg-primary px-6 text-[11px] font-semibold tracking-[0.26em] text-primary-foreground uppercase transition hover:bg-primary/90"
+                className="pill-feedback h-12 rounded-full border border-primary bg-primary px-6 text-sm font-medium text-primary-foreground"
               >
                 Upload
               </button>
@@ -306,7 +327,7 @@ export default async function AdminPage({
             {media.map((asset) => (
               <article
                 key={asset.id}
-                className="overflow-hidden rounded-[1.5rem] border border-border/70 bg-background/40"
+                className="overflow-hidden border border-border bg-background"
               >
                 {asset.contentType?.startsWith("video/") ? (
                   <video
@@ -326,24 +347,28 @@ export default async function AdminPage({
                   </div>
                 )}
                 <div className="space-y-3 p-4">
-                  <p className="truncate text-sm text-foreground">{asset.filename}</p>
+                  <p className="truncate text-sm text-foreground">
+                    {asset.filename}
+                  </p>
                   <a
                     href={asset.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="block truncate text-sm text-primary hover:underline"
+                    className="block truncate text-sm text-foreground hover:underline"
                   >
                     {asset.url}
                   </a>
                   <p className="text-xs text-muted-foreground">
                     {asset.contentType || "Unknown type"}
-                    {typeof asset.size === "number" ? ` • ${Math.round(asset.size / 1024)} KB` : ""}
+                    {typeof asset.size === "number"
+                      ? ` • ${Math.round(asset.size / 1024)} KB`
+                      : ""}
                   </p>
                   <form action={deleteMediaAssetAction}>
                     <input type="hidden" name="id" value={asset.id} />
                     <button
                       type="submit"
-                      className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-destructive/40 hover:text-destructive"
+                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
                     >
                       Delete Asset
                     </button>
@@ -352,16 +377,25 @@ export default async function AdminPage({
               </article>
             ))}
           </div>
-        </Section>
-
-        <Section
-          id="site-settings"
-          title="Site Settings"
-          description="Global metadata, footer copy, and the social links shown across the site."
-        >
-          <form action={saveSiteSettingsAction} className="grid gap-5">
+              </>
+            ),
+          },
+          {
+            id: "site-settings",
+            label: "Site",
+            title: "Site Settings",
+            description:
+              "Global metadata, footer copy, and the social links shown across the site.",
+            content: (
+              <>
+                <form action={saveSiteSettingsAction} className="grid gap-5">
             <div className="grid gap-5 md:grid-cols-2">
-              <Field label="Site Name" name="siteName" required defaultValue={siteSettings.siteName} />
+              <Field
+                label="Site Name"
+                name="siteName"
+                required
+                defaultValue={siteSettings.siteName}
+              />
               <Field
                 label="Contact Email"
                 name="contactEmail"
@@ -377,33 +411,71 @@ export default async function AdminPage({
               defaultValue={siteSettings.siteDescription}
             />
             <div className="grid gap-5 md:grid-cols-2">
-              <Field label="Site URL" name="siteUrl" type="url" defaultValue={siteSettings.siteUrl} />
-              <Field label="OG Image URL" name="ogImage" type="url" defaultValue={siteSettings.ogImage} />
+              <Field
+                label="Site URL"
+                name="siteUrl"
+                type="url"
+                defaultValue={siteSettings.siteUrl}
+              />
+              <Field
+                label="OG Image URL"
+                name="ogImage"
+                type="url"
+                defaultValue={siteSettings.ogImage}
+              />
             </div>
-            <Area label="Footer Blurb" name="footerBlurb" rows={3} defaultValue={siteSettings.footerBlurb} />
+            <Area
+              label="Footer Blurb"
+              name="footerBlurb"
+              rows={3}
+              defaultValue={siteSettings.footerBlurb}
+            />
             <SubmitRow saveLabel="Save Site Settings" />
           </form>
 
           <div id="site-links" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase">Site Social Links</p>
+            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+              Site Social Links
+            </p>
             {siteLinks.map((link) => (
               <form
                 key={link.id}
                 action={saveSocialLinkAction}
-                className="grid gap-4 rounded-[1.5rem] border border-border/70 bg-background/40 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+                className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
               >
                 <input type="hidden" name="id" value={link.id} />
                 <input type="hidden" name="section" value="SITE" />
-                <Field label="Platform" name="platform" required defaultValue={link.platform} />
-                <Field label="Label" name="label" required defaultValue={link.label} />
-                <Field label="URL" name="url" type="url" required defaultValue={link.url} />
-                <Field label="Order" name="sortOrder" type="number" defaultValue={link.sortOrder} />
+                <Field
+                  label="Platform"
+                  name="platform"
+                  required
+                  defaultValue={link.platform}
+                />
+                <Field
+                  label="Label"
+                  name="label"
+                  required
+                  defaultValue={link.label}
+                />
+                <Field
+                  label="URL"
+                  name="url"
+                  type="url"
+                  required
+                  defaultValue={link.url}
+                />
+                <Field
+                  label="Order"
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={link.sortOrder}
+                />
                 <div className="self-end">
                   <SubmitRow saveLabel="Save Link">
                     <button
                       type="submit"
                       formAction={deleteSocialLinkAction}
-                      className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-destructive/40 hover:text-destructive"
+                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
                     >
                       Delete
                     </button>
@@ -414,29 +486,63 @@ export default async function AdminPage({
 
             <form
               action={saveSocialLinkAction}
-              className="grid gap-4 rounded-[1.5rem] border border-dashed border-border/70 bg-background/25 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+              className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
             >
               <input type="hidden" name="section" value="SITE" />
-              <Field label="Platform" name="platform" required placeholder="Instagram" />
+              <Field
+                label="Platform"
+                name="platform"
+                required
+                placeholder="Instagram"
+              />
               <Field label="Label" name="label" required placeholder="Follow" />
-              <Field label="URL" name="url" type="url" required placeholder="https://..." />
-              <Field label="Order" name="sortOrder" type="number" defaultValue={0} />
+              <Field
+                label="URL"
+                name="url"
+                type="url"
+                required
+                placeholder="https://..."
+              />
+              <Field
+                label="Order"
+                name="sortOrder"
+                type="number"
+                defaultValue={0}
+              />
               <div className="self-end">
                 <SubmitRow saveLabel="Add Link" />
               </div>
             </form>
           </div>
-        </Section>
-
-        <Section
-          id="homepage"
-          title="Homepage"
-          description="Headline copy plus hero media URLs. Upload to Blob above, then paste the image or video URL here."
-        >
-          <form action={saveHomepageAction} className="grid gap-5">
-            <Field label="Headline" name="headline" required defaultValue={homepage.headline} />
-            <Field label="Tagline" name="tagline" required defaultValue={homepage.tagline} />
-            <Area label="Intro" name="intro" rows={4} defaultValue={homepage.intro} />
+              </>
+            ),
+          },
+          {
+            id: "homepage",
+            label: "Homepage",
+            description:
+              "Headline copy plus hero media URLs. Upload in the Media Library tab, then paste the image or video URL here.",
+            content: (
+              <>
+                <form action={saveHomepageAction} className="grid gap-5">
+            <Field
+              label="Headline"
+              name="headline"
+              required
+              defaultValue={homepage.headline}
+            />
+            <Field
+              label="Tagline"
+              name="tagline"
+              required
+              defaultValue={homepage.tagline}
+            />
+            <Area
+              label="Intro"
+              name="intro"
+              rows={4}
+              defaultValue={homepage.intro}
+            />
             <div className="grid gap-5 md:grid-cols-2">
               <Field
                 label="Hero Video URL"
@@ -481,27 +587,40 @@ export default async function AdminPage({
             </div>
             <SubmitRow saveLabel="Save Homepage" />
           </form>
-        </Section>
-
-        <Section
-          id="projects"
-          title="Projects"
-          description="Each project powers the work archive and individual project page. YouTube is still used for playback, while thumbnails can come from Blob."
-        >
-          <div className="space-y-6">
+              </>
+            ),
+          },
+          {
+            id: "projects",
+            label: "Projects",
+            description:
+              "Each project powers the work archive and individual project page. YouTube is still used for playback, while thumbnails can come from Blob.",
+            content: (
+              <>
+                <div className="space-y-6">
             {projects.map((project) => (
               <form
                 key={project.id}
                 action={saveProjectAction}
-                className="grid gap-5 rounded-[1.5rem] border border-border/70 bg-background/40 p-5"
+                className="grid gap-5 border border-border bg-background p-5"
               >
                 <input type="hidden" name="id" value={project.id} />
                 <div className="grid gap-5 md:grid-cols-2">
-                  <Field label="Title" name="title" required defaultValue={project.title} />
+                  <Field
+                    label="Title"
+                    name="title"
+                    required
+                    defaultValue={project.title}
+                  />
                   <Field label="Slug" name="slug" defaultValue={project.slug} />
                 </div>
                 <div className="grid gap-5 md:grid-cols-2">
-                  <Field label="Category" name="category" required defaultValue={project.category} />
+                  <Field
+                    label="Category"
+                    name="category"
+                    required
+                    defaultValue={project.category}
+                  />
                   <Field label="Role" name="role" defaultValue={project.role} />
                 </div>
                 <div className="grid gap-5 md:grid-cols-2">
@@ -526,7 +645,12 @@ export default async function AdminPage({
                   rows={4}
                   defaultValue={project.description}
                 />
-                <Area label="Credits" name="credits" rows={3} defaultValue={project.credits} />
+                <Area
+                  label="Credits"
+                  name="credits"
+                  rows={3}
+                  defaultValue={project.credits}
+                />
                 <div className="flex flex-wrap items-center gap-5">
                   <Field
                     label="Sort Order"
@@ -539,7 +663,7 @@ export default async function AdminPage({
                       type="checkbox"
                       name="featured"
                       defaultChecked={project.featured}
-                      className="size-4 rounded border-border/70"
+                      className="size-4 rounded border-border"
                     />
                     Featured on homepage
                   </label>
@@ -548,7 +672,7 @@ export default async function AdminPage({
                   <button
                     type="submit"
                     formAction={deleteProjectAction}
-                    className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-destructive/40 hover:text-destructive"
+                    className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
                   >
                     Delete
                   </button>
@@ -558,54 +682,91 @@ export default async function AdminPage({
 
             <form
               action={saveProjectAction}
-              className="grid gap-5 rounded-[1.5rem] border border-dashed border-border/70 bg-background/25 p-5"
+              className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
             >
-              <p className="text-xs tracking-[0.28em] text-primary uppercase">Add Project</p>
+              <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                Add Project
+              </p>
               <div className="grid gap-5 md:grid-cols-2">
                 <Field label="Title" name="title" required />
-                <Field label="Slug" name="slug" placeholder="auto-generated-from-title" />
+                <Field
+                  label="Slug"
+                  name="slug"
+                  placeholder="auto-generated-from-title"
+                />
               </div>
               <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Category" name="category" required placeholder="Editing" />
+                <Field
+                  label="Category"
+                  name="category"
+                  required
+                  placeholder="Editing"
+                />
                 <Field label="Role" name="role" placeholder="Editor" />
               </div>
               <div className="grid gap-5 md:grid-cols-2">
-                <Field label="YouTube URL" name="youtubeUrl" type="url" required />
+                <Field
+                  label="YouTube URL"
+                  name="youtubeUrl"
+                  type="url"
+                  required
+                />
                 <Field label="Thumbnail URL" name="thumbnailUrl" type="url" />
               </div>
               <Area label="Description" name="description" required rows={4} />
               <Area label="Credits" name="credits" rows={3} />
               <div className="flex flex-wrap items-center gap-5">
-                <Field label="Sort Order" name="sortOrder" type="number" defaultValue={0} />
+                <Field
+                  label="Sort Order"
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={0}
+                />
                 <label className="mt-6 inline-flex items-center gap-3 text-sm text-foreground">
-                  <input type="checkbox" name="featured" className="size-4 rounded border-border/70" />
+                  <input
+                    type="checkbox"
+                    name="featured"
+                    className="size-4 rounded border-border"
+                  />
                   Featured on homepage
                 </label>
               </div>
               <SubmitRow saveLabel="Create Project" />
             </form>
           </div>
-        </Section>
-
-        <Section
-          id="services"
-          title="Services"
-          description="Manage service cards and optional demo videos that appear on the homepage and services page."
-        >
-          <div className="space-y-6">
+              </>
+            ),
+          },
+          {
+            id: "services",
+            label: "Services",
+            description:
+              "Manage service cards and optional demo videos that appear on the homepage and services page.",
+            content: (
+              <>
+                <div className="space-y-6">
             {services.map((service) => (
               <form
                 key={service.id}
                 action={saveServiceAction}
-                className="grid gap-5 rounded-[1.5rem] border border-border/70 bg-background/40 p-5"
+                className="grid gap-5 border border-border bg-background p-5"
               >
                 <input type="hidden" name="id" value={service.id} />
                 <div className="grid gap-5 md:grid-cols-2">
-                  <Field label="Title" name="title" required defaultValue={service.title} />
+                  <Field
+                    label="Title"
+                    name="title"
+                    required
+                    defaultValue={service.title}
+                  />
                   <Field label="Slug" name="slug" defaultValue={service.slug} />
                 </div>
                 <div className="grid gap-5 md:grid-cols-2">
-                  <Field label="Icon Label" name="icon" defaultValue={service.icon} />
+                  <Field
+                    label="Icon Label"
+                    name="icon"
+                    defaultValue={service.icon}
+                  />
                   <Field
                     label="Demo Clip URL"
                     name="demoClipUrl"
@@ -630,7 +791,7 @@ export default async function AdminPage({
                   <button
                     type="submit"
                     formAction={deleteServiceAction}
-                    className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-destructive/40 hover:text-destructive"
+                    className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
                   >
                     Delete
                   </button>
@@ -640,32 +801,58 @@ export default async function AdminPage({
 
             <form
               action={saveServiceAction}
-              className="grid gap-5 rounded-[1.5rem] border border-dashed border-border/70 bg-background/25 p-5"
+              className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
             >
-              <p className="text-xs tracking-[0.28em] text-primary uppercase">Add Service</p>
+              <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                Add Service
+              </p>
               <div className="grid gap-5 md:grid-cols-2">
                 <Field label="Title" name="title" required />
-                <Field label="Slug" name="slug" placeholder="auto-generated-from-title" />
+                <Field
+                  label="Slug"
+                  name="slug"
+                  placeholder="auto-generated-from-title"
+                />
               </div>
               <div className="grid gap-5 md:grid-cols-2">
                 <Field label="Icon Label" name="icon" placeholder="Color" />
                 <Field label="Demo Clip URL" name="demoClipUrl" type="url" />
               </div>
               <Area label="Description" name="description" required rows={4} />
-              <Field label="Sort Order" name="sortOrder" type="number" defaultValue={0} />
+              <Field
+                label="Sort Order"
+                name="sortOrder"
+                type="number"
+                defaultValue={0}
+              />
               <SubmitRow saveLabel="Create Service" />
             </form>
           </div>
-        </Section>
-
-        <Section
-          id="about"
-          title="About Page"
-          description="Storytelling copy plus craft notes. Enter one craft note per line."
-        >
-          <form action={saveAboutAction} className="grid gap-5">
-            <Field label="Title" name="title" required defaultValue={about.title} />
-            <Area label="Story" name="story" required rows={6} defaultValue={about.story} />
+              </>
+            ),
+          },
+          {
+            id: "about",
+            label: "About",
+            title: "About Page",
+            description:
+              "Storytelling copy plus craft notes. Enter one craft note per line.",
+            content: (
+              <>
+                <form action={saveAboutAction} className="grid gap-5">
+            <Field
+              label="Title"
+              name="title"
+              required
+              defaultValue={about.title}
+            />
+            <Area
+              label="Story"
+              name="story"
+              required
+              rows={6}
+              defaultValue={about.story}
+            />
             <Area
               label="Craft Notes"
               name="craftNotes"
@@ -680,40 +867,83 @@ export default async function AdminPage({
             />
             <SubmitRow saveLabel="Save About Content" />
           </form>
-        </Section>
-
-        <Section
-          id="contact"
-          title="Contact Page"
-          description="Contact copy, direct email, social links, and the incoming message queue."
-        >
-          <form action={saveContactContentAction} className="grid gap-5">
-            <Field label="Title" name="title" required defaultValue={contact.title} />
-            <Area label="Intro" name="intro" required rows={4} defaultValue={contact.intro} />
-            <Field label="Email" name="email" type="email" defaultValue={contact.email} />
+              </>
+            ),
+          },
+          {
+            id: "contact",
+            label: "Contact",
+            title: "Contact Page",
+            description:
+              "Contact copy, direct email, social links, and the incoming message queue.",
+            content: (
+              <>
+                <form action={saveContactContentAction} className="grid gap-5">
+            <Field
+              label="Title"
+              name="title"
+              required
+              defaultValue={contact.title}
+            />
+            <Area
+              label="Intro"
+              name="intro"
+              required
+              rows={4}
+              defaultValue={contact.intro}
+            />
+            <Field
+              label="Email"
+              name="email"
+              type="email"
+              defaultValue={contact.email}
+            />
             <SubmitRow saveLabel="Save Contact Content" />
           </form>
 
           <div id="contact-links" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase">Contact Social Links</p>
+            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+              Contact Social Links
+            </p>
             {contactLinks.map((link) => (
               <form
                 key={link.id}
                 action={saveSocialLinkAction}
-                className="grid gap-4 rounded-[1.5rem] border border-border/70 bg-background/40 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+                className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
               >
                 <input type="hidden" name="id" value={link.id} />
                 <input type="hidden" name="section" value="CONTACT" />
-                <Field label="Platform" name="platform" required defaultValue={link.platform} />
-                <Field label="Label" name="label" required defaultValue={link.label} />
-                <Field label="URL" name="url" type="url" required defaultValue={link.url} />
-                <Field label="Order" name="sortOrder" type="number" defaultValue={link.sortOrder} />
+                <Field
+                  label="Platform"
+                  name="platform"
+                  required
+                  defaultValue={link.platform}
+                />
+                <Field
+                  label="Label"
+                  name="label"
+                  required
+                  defaultValue={link.label}
+                />
+                <Field
+                  label="URL"
+                  name="url"
+                  type="url"
+                  required
+                  defaultValue={link.url}
+                />
+                <Field
+                  label="Order"
+                  name="sortOrder"
+                  type="number"
+                  defaultValue={link.sortOrder}
+                />
                 <div className="self-end">
                   <SubmitRow saveLabel="Save Link">
                     <button
                       type="submit"
                       formAction={deleteSocialLinkAction}
-                      className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-destructive/40 hover:text-destructive"
+                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
                     >
                       Delete
                     </button>
@@ -724,13 +954,34 @@ export default async function AdminPage({
 
             <form
               action={saveSocialLinkAction}
-              className="grid gap-4 rounded-[1.5rem] border border-dashed border-border/70 bg-background/25 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+              className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
             >
               <input type="hidden" name="section" value="CONTACT" />
-              <Field label="Platform" name="platform" required placeholder="Instagram" />
-              <Field label="Label" name="label" required placeholder="Message" />
-              <Field label="URL" name="url" type="url" required placeholder="https://..." />
-              <Field label="Order" name="sortOrder" type="number" defaultValue={0} />
+              <Field
+                label="Platform"
+                name="platform"
+                required
+                placeholder="Instagram"
+              />
+              <Field
+                label="Label"
+                name="label"
+                required
+                placeholder="Message"
+              />
+              <Field
+                label="URL"
+                name="url"
+                type="url"
+                required
+                placeholder="https://..."
+              />
+              <Field
+                label="Order"
+                name="sortOrder"
+                type="number"
+                defaultValue={0}
+              />
               <div className="self-end">
                 <SubmitRow saveLabel="Add Link" />
               </div>
@@ -738,23 +989,27 @@ export default async function AdminPage({
           </div>
 
           <div id="submissions" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.3em] text-primary uppercase">Latest Submissions</p>
+            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+              Latest Submissions
+            </p>
             <div className="grid gap-4">
               {submissions.map((submission) => (
                 <article
                   key={submission.id}
-                  className="rounded-[1.5rem] border border-border/70 bg-background/40 p-5"
+                  className="border border-border bg-background p-5"
                 >
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div>
-                      <p className="text-lg text-foreground">{submission.name}</p>
+                      <p className="text-lg text-foreground">
+                        {submission.name}
+                      </p>
                       <a
                         href={`mailto:${submission.email}`}
-                        className="mt-1 block text-sm text-primary hover:underline"
+                        className="mt-1 block text-sm text-foreground hover:underline"
                       >
                         {submission.email}
                       </a>
-                      <p className="mt-4 max-w-3xl whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
+                      <p className="mt-4 max-w-3xl text-sm leading-7 whitespace-pre-wrap text-muted-foreground">
                         {submission.message}
                       </p>
                     </div>
@@ -771,7 +1026,7 @@ export default async function AdminPage({
                         />
                         <button
                           type="submit"
-                          className="rounded-full border border-border/70 px-4 py-2 text-[11px] font-semibold tracking-[0.24em] text-muted-foreground uppercase transition hover:border-primary/40 hover:text-foreground"
+                          className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
                         >
                           {submission.isRead ? "Mark Unread" : "Mark Read"}
                         </button>
@@ -781,14 +1036,17 @@ export default async function AdminPage({
                 </article>
               ))}
               {!submissions.length ? (
-                <p className="rounded-[1.5rem] border border-dashed border-border/70 bg-background/20 px-4 py-5 text-sm text-muted-foreground">
+                <p className="border border-dashed border-border bg-secondary/50 px-4 py-5 text-sm text-muted-foreground">
                   No contact submissions yet.
                 </p>
               ) : null}
             </div>
           </div>
-        </Section>
-      </div>
+              </>
+            ),
+          },
+        ]}
+      />
     </main>
   )
 }

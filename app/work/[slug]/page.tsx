@@ -52,7 +52,10 @@ export default async function ProjectPage({
         title={project.title}
         description={project.description}
       >
-        <Link href="/work" className={cn(buttonVariants({ variant: "outline" }), "mt-2")}>
+        <Link
+          href="/work"
+          className={cn(buttonVariants({ variant: "outline" }), "mt-2")}
+        >
           Back to Work
         </Link>
       </PageHero>
@@ -67,28 +70,41 @@ export default async function ProjectPage({
             />
           </Reveal>
           <Reveal delay={0.12}>
-            <aside className="space-y-6 rounded-[2rem] border border-border/70 bg-card/70 p-6 backdrop-blur">
+            <aside className="space-y-6 border border-border bg-background p-6">
               <div>
-                <p className="text-xs tracking-[0.3em] text-primary uppercase">Category</p>
-                <p className="mt-3 text-lg text-foreground">{project.category}</p>
+                <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                  Category
+                </p>
+                <p className="mt-3 text-lg text-foreground">
+                  {project.category}
+                </p>
               </div>
               {project.role ? (
                 <div>
-                  <p className="text-xs tracking-[0.3em] text-primary uppercase">Role</p>
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Role
+                  </p>
                   <p className="mt-3 text-lg text-foreground">{project.role}</p>
                 </div>
               ) : null}
               {project.credits ? (
                 <div>
-                  <p className="text-xs tracking-[0.3em] text-primary uppercase">Credits</p>
-                  <p className="mt-3 text-lg leading-7 text-foreground">{project.credits}</p>
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Credits
+                  </p>
+                  <p className="mt-3 text-lg leading-7 text-foreground">
+                    {project.credits}
+                  </p>
                 </div>
               ) : null}
               <div>
-                <p className="text-xs tracking-[0.3em] text-primary uppercase">Playback</p>
+                <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                  Playback
+                </p>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  The video is embedded directly in the portfolio using the CRM-provided
-                  YouTube URL, with lazy loading for better performance.
+                  The video is embedded directly in the portfolio using the
+                  CRM-provided YouTube URL, with lazy loading for better
+                  performance.
                 </p>
               </div>
             </aside>
@@ -99,10 +115,10 @@ export default async function ProjectPage({
       {relatedProjects.length ? (
         <Section
           eyebrow="More Work"
-          title="Continue the reel."
-          description="A few more projects from the Wizard Films archive."
+          title="More from the archive."
+          description="A few more CRM-driven case studies in the same editorial layout."
         >
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-10 lg:grid-cols-3">
             {relatedProjects.map((entry, index) => (
               <Reveal key={entry.id} delay={index * 0.06}>
                 <VideoCard project={entry} />

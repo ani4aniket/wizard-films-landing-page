@@ -18,15 +18,22 @@ export function PageHero({
   className,
 }: PageHeroProps) {
   return (
-    <section className={cn("mx-auto max-w-7xl px-6 pt-32 pb-12 md:px-10 md:pt-40", className)}>
-      <div className="max-w-4xl space-y-6">
-        <p className="text-xs font-semibold tracking-[0.32em] text-primary uppercase">
+    <section
+      className={cn(
+        "mx-auto max-w-[1440px] px-6 pt-28 pb-10 md:px-10 md:pt-36",
+        className
+      )}
+    >
+      <div className="section-rule max-w-5xl space-y-5 pt-8">
+        <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
           {eyebrow}
         </p>
-        <h1 className="font-heading text-5xl leading-none text-foreground md:text-7xl">
+        <h1 className="max-w-4xl text-4xl leading-none font-medium text-foreground md:text-6xl">
           {title}
         </h1>
-        <p className="max-w-2xl text-lg leading-8 text-muted-foreground">{description}</p>
+        <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+          {description}
+        </p>
         {children}
       </div>
     </section>

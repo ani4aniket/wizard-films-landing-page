@@ -23,23 +23,57 @@ export function Navbar({ siteName }: { siteName: string }) {
   }, [])
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        isScrolled
-          ? "border-b border-border/70 bg-background/88 backdrop-blur-xl"
-          : "bg-transparent",
-      )}
-    >
-      <nav className="mx-auto max-w-7xl px-6 py-5 md:px-10">
-        <div className="flex items-center justify-between gap-6">
-          <Link
-            href="/"
-            className="font-heading text-2xl tracking-[0.18em] text-foreground uppercase"
-          >
-            {siteName}
-          </Link>
-          <div className="hidden items-center gap-6 md:flex">
+    <header className="fixed inset-x-0 top-0 z-50">
+      <nav
+        className={cn(
+          "border-b border-transparent bg-background/96 transition-all duration-300",
+          isScrolled && "border-border"
+        )}
+      >
+        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 py-4 md:px-10">
+          <div className="flex min-w-0 items-center gap-4">
+            <Link
+              href="/"
+              className="shrink-0 text-base font-medium tracking-[0.18em] text-foreground uppercase"
+            >
+              {siteName}
+            </Link>
+            <div className="hidden items-center gap-8 lg:flex">
+              {NAV_LINKS.map((item) => {
+                const isActive = pathname === item.href
+
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      "border-b-2 pb-1 text-base font-medium text-foreground transition-colors",
+                      isActive
+                        ? "border-foreground"
+                        : "border-transparent hover:border-border hover:text-muted-foreground"
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+          <div className="hidden items-center gap-3 md:flex">
+            <Link
+              href="/work"
+              className="pill-feedback inline-flex h-10 min-w-48 items-center rounded-full bg-secondary px-4 text-sm text-muted-foreground"
+            >
+              Search the archive
+            </Link>
+            <Link
+              href="/contact"
+              className="pill-feedback inline-flex h-12 items-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
+            >
+              Start a Project
+            </Link>
+          </div>
+          <div className="hidden gap-3 overflow-x-auto md:flex lg:hidden">
             {NAV_LINKS.map((item) => {
               const isActive = pathname === item.href
 
@@ -48,10 +82,10 @@ export function Navbar({ siteName }: { siteName: string }) {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "text-xs tracking-[0.28em] uppercase transition-colors",
+                    "shrink-0 rounded-full border px-4 py-2 text-sm",
                     isActive
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground",
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background text-foreground"
                   )}
                 >
                   {item.label}
@@ -60,7 +94,7 @@ export function Navbar({ siteName }: { siteName: string }) {
             })}
           </div>
         </div>
-        <div className="mt-4 flex gap-4 overflow-x-auto pb-1 md:hidden">
+        <div className="mx-auto flex max-w-[1440px] gap-3 overflow-x-auto px-6 pb-4 md:hidden">
           {NAV_LINKS.map((item) => {
             const isActive = pathname === item.href
 
@@ -69,8 +103,10 @@ export function Navbar({ siteName }: { siteName: string }) {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "shrink-0 text-[11px] tracking-[0.28em] uppercase transition-colors",
-                  isActive ? "text-primary" : "text-muted-foreground hover:text-foreground",
+                  "shrink-0 rounded-full border px-4 py-2 text-sm",
+                  isActive
+                    ? "border-foreground bg-foreground text-background"
+                    : "border-border bg-background text-foreground"
                 )}
               >
                 {item.label}

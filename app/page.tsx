@@ -11,15 +11,19 @@ import { getHomepageContent, getProjects, getServices } from "@/lib/crm"
 import { cn } from "@/lib/utils"
 
 export default async function Page() {
-  const [homepageResult, projectsResult, servicesResult] = await Promise.allSettled([
-    getHomepageContent(),
-    getProjects(),
-    getServices(),
-  ])
+  const [homepageResult, projectsResult, servicesResult] =
+    await Promise.allSettled([
+      getHomepageContent(),
+      getProjects(),
+      getServices(),
+    ])
 
-  const homepage = homepageResult.status === "fulfilled" ? homepageResult.value : null
-  const projects = projectsResult.status === "fulfilled" ? projectsResult.value : []
-  const services = servicesResult.status === "fulfilled" ? servicesResult.value : []
+  const homepage =
+    homepageResult.status === "fulfilled" ? homepageResult.value : null
+  const projects =
+    projectsResult.status === "fulfilled" ? projectsResult.value : []
+  const services =
+    servicesResult.status === "fulfilled" ? servicesResult.value : []
   const featuredProjects =
     projects.filter((project) => project.featured).slice(0, 3).length > 0
       ? projects.filter((project) => project.featured).slice(0, 3)
@@ -28,11 +32,11 @@ export default async function Page() {
   return (
     <main>
       {homepage ? (
-        <section className="relative flex min-h-screen items-end overflow-hidden px-6 pt-28 pb-12 md:px-10 md:pt-36">
-          <div className="absolute inset-0">
+        <section className="mx-auto max-w-[1440px] px-6 pt-24 md:px-10 md:pt-28">
+          <div className="relative min-h-[78svh] overflow-hidden bg-black">
             {homepage.heroVideoUrl ? (
               <video
-                className="h-full w-full object-cover"
+                className="absolute inset-0 h-full w-full object-cover"
                 src={homepage.heroVideoUrl}
                 poster={homepage.heroPosterUrl}
                 autoPlay
@@ -48,69 +52,79 @@ export default async function Page() {
                 fill
                 priority
                 sizes="100vw"
-                className="object-cover"
+                className="object-cover opacity-90"
               />
             ) : (
-              <div className="h-full w-full bg-[radial-gradient(circle_at_top,rgba(201,162,39,0.32),transparent_26%),linear-gradient(160deg,#0d0d10_0%,#15131d_45%,#09090b_100%)]" />
+              <div className="absolute inset-0 bg-[linear-gradient(135deg,#111111_0%,#2b2b2d_55%,#111111_100%)]" />
             )}
-            <div className="absolute inset-0 bg-black/45" />
-            <div className="absolute inset-0 bg-linear-to-t from-background via-background/28 to-black/70" />
-          </div>
-          <div className="relative z-10 mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
-            <Reveal className="space-y-8">
-              <div className="space-y-5">
-                <p className="text-xs font-semibold tracking-[0.34em] text-primary uppercase">
-                  Independent Film Studio
-                </p>
-                <h1 className="max-w-4xl font-heading text-6xl leading-none text-white md:text-8xl">
-                  {homepage.headline}
-                </h1>
-                <p className="max-w-2xl text-xl text-white/86 md:text-2xl">
-                  {homepage.tagline}
-                </p>
-                {homepage.intro ? (
-                  <p className="max-w-2xl text-base leading-7 text-white/70 md:text-lg">
-                    {homepage.intro}
+            <div className="absolute inset-0 bg-black/40" />
+            <div className="relative z-10 flex min-h-[78svh] items-end">
+              <div className="grid w-full gap-10 px-6 py-10 md:px-10 md:py-12 lg:grid-cols-[1.45fr_0.55fr] lg:items-end">
+                <Reveal className="space-y-8">
+                  <div className="space-y-5">
+                    <p className="text-xs tracking-[0.28em] text-white/78 uppercase">
+                      Editorial Portfolio
+                    </p>
+                    <h1 className="editorial-display max-w-5xl text-white">
+                      {homepage.headline}
+                    </h1>
+                    <p className="max-w-2xl text-lg leading-7 text-white/90 md:text-2xl md:leading-8">
+                      {homepage.tagline}
+                    </p>
+                    {homepage.intro ? (
+                      <p className="max-w-2xl text-base leading-7 text-white/74">
+                        {homepage.intro}
+                      </p>
+                    ) : null}
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <Link
+                      href={homepage.primaryCtaHref}
+                      className={buttonVariants({
+                        variant: "secondary",
+                        size: "lg",
+                      })}
+                    >
+                      {homepage.primaryCtaLabel}
+                    </Link>
+                    <Link
+                      href={homepage.secondaryCtaHref}
+                      className={buttonVariants({
+                        variant: "outline",
+                        size: "lg",
+                      })}
+                    >
+                      {homepage.secondaryCtaLabel}
+                    </Link>
+                  </div>
+                </Reveal>
+                <Reveal
+                  delay={0.15}
+                  className="self-end border border-white/18 bg-white/10 p-6 backdrop-blur-sm"
+                >
+                  <p className="text-xs tracking-[0.24em] text-white/70 uppercase">
+                    Current Focus
                   </p>
-                ) : null}
+                  <p className="mt-4 text-3xl leading-tight font-medium text-white">
+                    Campaign cuts, social edit systems, and fast-turn post
+                    packages.
+                  </p>
+                  <Link
+                    href="#featured"
+                    className={cn(
+                      buttonVariants({ variant: "secondary" }),
+                      "mt-6 bg-white text-foreground"
+                    )}
+                  >
+                    View Selected Work
+                  </Link>
+                </Reveal>
               </div>
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href={homepage.primaryCtaHref}
-                  className={buttonVariants({ variant: "default", size: "lg" })}
-                >
-                  {homepage.primaryCtaLabel}
-                </Link>
-                <Link
-                  href={homepage.secondaryCtaHref}
-                  className={buttonVariants({ variant: "outline", size: "lg" })}
-                >
-                  {homepage.secondaryCtaLabel}
-                </Link>
-              </div>
-            </Reveal>
-            <Reveal
-              delay={0.15}
-              className="justify-self-start rounded-[2rem] border border-white/10 bg-white/6 p-6 backdrop-blur-xl lg:justify-self-end"
-            >
-              <p className="text-xs tracking-[0.3em] text-white/52 uppercase">Signature Craft</p>
-              <p className="mt-4 font-heading text-3xl text-white md:text-4xl">
-                Editing. Color. Sound. Story.
-              </p>
-              <Link
-                href="#featured"
-                className={cn(
-                  buttonVariants({ variant: "outline" }),
-                  "mt-6 border-white/20 bg-white/5 text-white hover:border-primary/50 hover:text-white",
-                )}
-              >
-                Scroll to Showreel
-              </Link>
-            </Reveal>
+            </div>
           </div>
         </section>
       ) : (
-        <div className="mx-auto max-w-7xl px-6 pt-36 pb-16 md:px-10">
+        <div className="mx-auto max-w-[1440px] px-6 pt-32 pb-16 md:px-10">
           <CmsErrorState
             title="Homepage content could not be loaded."
             message="Connect the custom CRM endpoints in .env to populate the showreel, copy, and homepage sections."
@@ -121,8 +135,8 @@ export default async function Page() {
       <Section
         id="featured"
         eyebrow="Selected Work"
-        title="Frames built to hold attention."
-        description="Project thumbnails, descriptions, and playback are all driven dynamically from the CRM, with embedded YouTube viewing inside the portfolio."
+        title="Catalog structure. Cinematic content."
+        description="The archive is pulled from the CRM and presented like a flat editorial product grid: square imagery, restrained metadata, and one clear path into each case study."
       >
         {projectsResult.status === "rejected" ? (
           <CmsErrorState
@@ -130,7 +144,7 @@ export default async function Page() {
             message="The work page is ready, but the CRM project endpoint did not respond."
           />
         ) : featuredProjects.length ? (
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
             {featuredProjects.map((project, index) => (
               <Reveal key={project.id} delay={index * 0.08}>
                 <VideoCard project={project} priority={index === 0} />
@@ -147,8 +161,8 @@ export default async function Page() {
 
       <Section
         eyebrow="Services"
-        title="Post-production and production, shaped with restraint."
-        description="Each service block can be managed from the CRM with custom descriptions, icons, and optional demo clips."
+        title="What the studio ships."
+        description="These service blocks are CRM-managed too, so you can swap positioning, descriptions, and demo media without touching the frontend."
       >
         {servicesResult.status === "rejected" ? (
           <CmsErrorState
@@ -163,6 +177,27 @@ export default async function Page() {
             message="Publish service entries from the CRM to populate this section."
           />
         )}
+      </Section>
+
+      <Section
+        eyebrow="Process"
+        title="One system, repeated cleanly."
+        description="Homepage hero, archive cards, service rows, and detail pages all now share the same restrained visual language so the content carries the atmosphere, not the chrome."
+      >
+        <div className="grid gap-4 md:grid-cols-3">
+          {[
+            "Full-bleed campaign presentation for the hero tier.",
+            "Soft-cloud media staging for every case-study thumbnail.",
+            "Pill CTAs and neutral typography across the public site and CRM.",
+          ].map((item) => (
+            <div
+              key={item}
+              className="surface-soft p-6 text-base leading-7 text-foreground"
+            >
+              {item}
+            </div>
+          ))}
+        </div>
       </Section>
     </main>
   )

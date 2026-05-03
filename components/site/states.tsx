@@ -11,12 +11,14 @@ export function CmsErrorState({
   message: string
 }) {
   return (
-    <div className="rounded-[2rem] border border-border/70 bg-card/70 p-8 backdrop-blur">
-      <p className="text-xs font-semibold tracking-[0.32em] text-primary uppercase">
+    <div className="border border-border bg-secondary p-8">
+      <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
         Content Unavailable
       </p>
-      <h2 className="mt-4 font-heading text-3xl text-foreground">{title}</h2>
-      <p className="mt-3 max-w-2xl text-muted-foreground">{message}</p>
+      <h2 className="mt-4 text-3xl font-medium text-foreground">{title}</h2>
+      <p className="mt-3 max-w-2xl text-base leading-7 text-muted-foreground">
+        {message}
+      </p>
     </div>
   )
 }
@@ -33,11 +35,16 @@ export function EmptyState({
   label?: string
 }) {
   return (
-    <div className="rounded-[2rem] border border-border/70 bg-card/70 p-8 text-center backdrop-blur">
-      <h3 className="font-heading text-3xl text-foreground">{title}</h3>
-      <p className="mx-auto mt-3 max-w-xl text-muted-foreground">{message}</p>
+    <div className="border border-border bg-secondary p-8 text-center">
+      <h3 className="text-3xl font-medium text-foreground">{title}</h3>
+      <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-muted-foreground">
+        {message}
+      </p>
       {href && label ? (
-        <Link href={href} className={cn(buttonVariants({ variant: "outline" }), "mt-6")}>
+        <Link
+          href={href}
+          className={cn(buttonVariants({ variant: "outline" }), "mt-6")}
+        >
           {label}
         </Link>
       ) : null}
@@ -51,7 +58,7 @@ export function LoadingGrid({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }).map((_, index) => (
         <div
           key={index}
-          className="h-[24rem] animate-pulse rounded-[2rem] border border-border/60 bg-card/60"
+          className="h-[24rem] animate-pulse border border-border bg-secondary"
         />
       ))}
     </div>

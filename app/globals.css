@@ -48,40 +48,41 @@
 }
 
 :root {
-  --font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Times New Roman", serif;
-  --font-body: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
-  --background: oklch(0.14 0.01 285);
-  --foreground: oklch(0.96 0.01 90);
-  --card: oklch(0.19 0.015 285 / 0.82);
-  --card-foreground: oklch(0.97 0 0);
-  --popover: oklch(0.18 0.015 285);
-  --popover-foreground: oklch(0.97 0 0);
-  --primary: oklch(0.76 0.11 82);
-  --primary-foreground: oklch(0.14 0.01 285);
-  --secondary: oklch(0.28 0.01 285);
-  --secondary-foreground: oklch(0.96 0 0);
-  --muted: oklch(0.22 0.01 285);
-  --muted-foreground: oklch(0.74 0.01 90);
-  --accent: oklch(0.24 0.01 285);
-  --accent-foreground: oklch(0.96 0 0);
-  --destructive: oklch(0.68 0.18 26);
-  --border: oklch(0.34 0.01 285 / 0.8);
-  --input: oklch(0.26 0.01 285);
-  --ring: oklch(0.76 0.11 82 / 0.6);
-  --chart-1: oklch(0.76 0.11 82);
-  --chart-2: oklch(0.58 0.02 285);
-  --chart-3: oklch(0.38 0.015 285);
-  --chart-4: oklch(0.3 0.015 285);
-  --chart-5: oklch(0.22 0.01 285);
-  --radius: 1.4rem;
-  --sidebar: oklch(0.18 0.015 285);
-  --sidebar-foreground: oklch(0.97 0 0);
-  --sidebar-primary: oklch(0.76 0.11 82);
-  --sidebar-primary-foreground: oklch(0.14 0.01 285);
-  --sidebar-accent: oklch(0.24 0.01 285);
-  --sidebar-accent-foreground: oklch(0.97 0 0);
-  --sidebar-border: oklch(0.34 0.01 285 / 0.8);
-  --sidebar-ring: oklch(0.76 0.11 82 / 0.5);
+  --font-display:
+    "Arial Narrow", "Helvetica Neue", "Inter", "Arial", sans-serif;
+  --font-body: "Inter", "Helvetica Neue", "Arial", sans-serif;
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --popover: #ffffff;
+  --popover-foreground: #111111;
+  --primary: #111111;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #111111;
+  --muted: #f5f5f5;
+  --muted-foreground: #707072;
+  --accent: #f5f5f5;
+  --accent-foreground: #111111;
+  --destructive: #d30005;
+  --border: #cacacb;
+  --input: #f5f5f5;
+  --ring: rgb(17 17 17 / 0.18);
+  --chart-1: #111111;
+  --chart-2: #39393b;
+  --chart-3: #707072;
+  --chart-4: #9e9ea0;
+  --chart-5: #f5f5f5;
+  --radius: 1.875rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #111111;
+  --sidebar-primary: #111111;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #111111;
+  --sidebar-border: #cacacb;
+  --sidebar-ring: rgb(17 17 17 / 0.18);
 }
 
 @layer base {
@@ -95,27 +96,15 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image:
-      linear-gradient(to bottom, rgba(255, 255, 255, 0.015), transparent),
-      radial-gradient(circle at top, rgba(201, 162, 39, 0.08), transparent 28%);
-  }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.1;
-    z-index: -1;
-    background-image:
-      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 3px 3px, 3px 3px;
-    mask-image: radial-gradient(circle at center, black, transparent 80%);
+    font-feature-settings:
+      "ss01" 1,
+      "cv02" 1,
+      "cv03" 1;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 40%, transparent);
+    background: #111111;
+    color: #ffffff;
   }
 
   a,
@@ -127,5 +116,36 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .editorial-display {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 700;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-transform: uppercase;
+  }
+
+  .section-rule {
+    box-shadow: inset 0 1px 0 var(--border);
+  }
+
+  .surface-soft {
+    background: #f5f5f5;
+  }
+
+  .pill-feedback {
+    transition:
+      transform 150ms ease,
+      opacity 150ms ease,
+      background-color 150ms ease,
+      border-color 150ms ease,
+      color 150ms ease;
+  }
+
+  .pill-feedback:active {
+    transform: scale(0.97);
+    opacity: 0.82;
   }
 }

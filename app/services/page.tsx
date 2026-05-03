@@ -8,7 +8,8 @@ import { getServices } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Services",
-  description: "Editing, color grading, audio production, and shoot production by Wizard Films.",
+  description:
+    "Editing, color grading, audio production, and shoot production by Wizard Films.",
 }
 
 export default async function ServicesPage() {
@@ -20,10 +21,10 @@ export default async function ServicesPage() {
     <main>
       <PageHero
         eyebrow="Services"
-        title="Editorial precision, crafted atmosphere."
-        description="Each service section is designed to be managed through the custom CRM, including clip previews and flexible descriptions."
+        title="Studio capabilities, expressed with restraint."
+        description="Each service card is CRM-managed and now sits inside the same black, white, and soft-gray editorial system as the portfolio."
       />
-      <Section className="pt-4">
+      <Section className="pt-2">
         {servicesResult.error ? (
           <CmsErrorState
             title="Services could not be loaded."

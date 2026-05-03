@@ -11,8 +11,11 @@ const ALL_CATEGORY = "All"
 
 export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
   const categories = useMemo(
-    () => [ALL_CATEGORY, ...new Set(projects.map((project) => project.category))],
-    [projects],
+    () => [
+      ALL_CATEGORY,
+      ...new Set(projects.map((project) => project.category)),
+    ],
+    [projects]
   )
   const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORY)
 
@@ -36,10 +39,10 @@ export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
               type="button"
               onClick={() => setActiveCategory(category)}
               className={cn(
-                "rounded-full border px-4 py-2 text-xs tracking-[0.28em] uppercase transition-all",
+                "pill-feedback rounded-full border px-4 py-2 text-sm transition-all",
                 isActive
-                  ? "border-primary/60 bg-primary text-primary-foreground"
-                  : "border-border/70 bg-card/60 text-muted-foreground hover:border-primary/40 hover:text-foreground",
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border bg-background text-foreground hover:bg-secondary"
               )}
             >
               {category}
@@ -47,7 +50,10 @@ export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
           )
         })}
       </div>
-      <motion.div layout className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <motion.div
+        layout
+        className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3"
+      >
         <AnimatePresence mode="popLayout">
           {filteredProjects.map((project, index) => (
             <motion.div
@@ -57,7 +63,6 @@ export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 24 }}
               transition={{ duration: 0.35, delay: index * 0.03 }}
-              className={cn(index % 3 === 1 ? "xl:translate-y-12" : "")}
             >
               <VideoCard project={project} priority={index < 2} />
             </motion.div>
