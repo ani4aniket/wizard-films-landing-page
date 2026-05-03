@@ -1,7 +1,7 @@
-import Image from "next/image"
 import Link from "next/link"
 
 import { Reveal } from "@/components/site/reveal"
+import { HeroMediaWall } from "@/components/site/hero-media-wall"
 import { Section } from "@/components/site/section"
 import { CmsErrorState, EmptyState } from "@/components/site/states"
 import { VideoCard } from "@/components/site/video-card"
@@ -28,36 +28,25 @@ export default async function Page() {
     projects.filter((project) => project.featured).slice(0, 3).length > 0
       ? projects.filter((project) => project.featured).slice(0, 3)
       : projects.slice(0, 3)
+  const heroMediaImages = projects
+    .filter((project) => project.thumbnailUrl)
+    .map((project) => ({ src: project.thumbnailUrl, alt: project.title }))
+  const heroMediaLoop =
+    heroMediaImages.length > 0
+      ? [...heroMediaImages, ...heroMediaImages, ...heroMediaImages].slice(0, 12)
+      : []
 
   return (
     <main>
       {homepage ? (
         <section className="mx-auto max-w-[1440px] px-6 pt-24 md:px-10 md:pt-28">
-          <div className="relative min-h-[78svh] overflow-hidden bg-black">
-            {homepage.heroVideoUrl ? (
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                src={homepage.heroVideoUrl}
-                poster={homepage.heroPosterUrl}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="metadata"
-              />
-            ) : homepage.heroPosterUrl ? (
-              <Image
-                src={homepage.heroPosterUrl}
-                alt={homepage.headline}
-                fill
-                priority
-                sizes="100vw"
-                className="object-cover opacity-90"
-              />
+          <div className="relative min-h-[78svh] overflow-hidden border border-white/14 bg-black">
+            {heroMediaLoop.length > 0 ? (
+              <HeroMediaWall media={heroMediaLoop} />
             ) : (
               <div className="absolute inset-0 bg-[linear-gradient(135deg,#111111_0%,#2b2b2d_55%,#111111_100%)]" />
             )}
-            <div className="absolute inset-0 bg-black/40" />
+            <div className="absolute inset-0 bg-black/52" />
             <div className="relative z-10 flex min-h-[78svh] items-end">
               <div className="grid w-full gap-10 px-6 py-10 md:px-10 md:py-12 lg:grid-cols-[1.45fr_0.55fr] lg:items-end">
                 <Reveal className="space-y-8">
@@ -71,11 +60,6 @@ export default async function Page() {
                     <p className="max-w-2xl text-lg leading-7 text-white/90 md:text-2xl md:leading-8">
                       {homepage.tagline}
                     </p>
-                    {homepage.intro ? (
-                      <p className="max-w-2xl text-base leading-7 text-white/74">
-                        {homepage.intro}
-                      </p>
-                    ) : null}
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <Link
@@ -88,7 +72,7 @@ export default async function Page() {
                       {homepage.primaryCtaLabel}
                     </Link>
                     <Link
-                      href={homepage.secondaryCtaHref}
+                      href="/work"
                       className={buttonVariants({
                         variant: "outline",
                         size: "lg",
@@ -102,11 +86,9 @@ export default async function Page() {
                   delay={0.15}
                   className="self-end border border-white/18 bg-white/10 p-6 backdrop-blur-sm"
                 >
-                  <p className="text-xs tracking-[0.24em] text-white/70 uppercase">
-                    Creative Focus
-                  </p>
-                  <p className="mt-4 text-3xl leading-tight font-medium text-white">
-                    Direction, edits, and shoot execution.
+                  <p className="text-xs tracking-[0.24em] text-white/70 uppercase">Creative Focus</p>
+                  <p className="mt-4 text-xl leading-tight font-medium text-white">
+                    Direction. Production. Edit.
                   </p>
                   <Link
                     href="#featured"
@@ -143,12 +125,25 @@ export default async function Page() {
             message="Projects could not be fetched from CRM."
           />
         ) : featuredProjects.length ? (
-          <div className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
-            {featuredProjects.map((project, index) => (
-              <Reveal key={project.id} delay={index * 0.08}>
-                <VideoCard project={project} priority={index === 0} />
-              </Reveal>
-            ))}
+          <div className="space-y-10">
+            <div className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
+              {featuredProjects.map((project, index) => (
+                <Reveal key={project.id} delay={index * 0.08}>
+                  <VideoCard project={project} priority={index === 0} />
+                </Reveal>
+              ))}
+            </div>
+            <div className="flex justify-center">
+              <Link
+                href="/work"
+                className={buttonVariants({
+                  variant: "outline",
+                  size: "lg",
+                })}
+              >
+                View More Work
+              </Link>
+            </div>
           </div>
         ) : (
           <EmptyState
