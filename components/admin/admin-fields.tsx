@@ -10,13 +10,13 @@ import { Textarea } from "@/components/ui/textarea"
 import { cn } from "@/lib/utils"
 
 const fieldLabelClass =
-  "w-full items-start justify-start text-left text-xs tracking-[0.24em] text-muted-foreground uppercase"
+  "text-left text-xs font-medium uppercase tracking-[0.12em] text-muted-foreground"
 
 const inputChromeClass =
-  "h-12 w-full rounded-none border border-transparent bg-secondary px-4 text-sm text-foreground transition outline-none focus-visible:border-primary focus-visible:ring-0 focus-visible:bg-background"
+  "h-11 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/30"
 
 const textareaChromeClass =
-  "min-h-[unset] w-full resize-y rounded-none border border-transparent bg-secondary px-4 py-3 text-sm text-foreground transition outline-none focus-visible:border-primary focus-visible:ring-0 focus-visible:bg-background"
+  "min-h-[unset] w-full resize-y rounded-md border border-border bg-background px-3 py-2.5 text-sm text-foreground shadow-sm transition-[border-color,box-shadow] outline-none placeholder:text-muted-foreground focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-ring/30"
 
 const RACK_COL = {
   1: "md:col-start-1",
@@ -83,7 +83,7 @@ export function Field({
     <Label
       htmlFor={inputId}
       className={cn(
-        "flex w-full flex-col gap-2",
+        "flex w-full flex-col items-start gap-1.5",
         fieldLabelClass,
         rack && "md:row-start-1 md:self-end",
         rack && col
@@ -121,7 +121,7 @@ export function Field({
 
   if (!rack) {
     return (
-      <div className="space-y-2">
+      <div className="space-y-1.5">
         {labelEl}
         {inputEl}
         {hintEl}
@@ -130,7 +130,7 @@ export function Field({
   }
 
   return (
-    <div className="max-md:space-y-2 md:contents">
+    <div className="max-md:space-y-1.5 md:contents">
       {labelEl}
       {inputEl}
       {hintEl}
@@ -159,10 +159,13 @@ export function Area({
   const areaId = `${baseId}-area`
   const hintElId = hint ? `${baseId}-hint` : undefined
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       <Label
         htmlFor={areaId}
-        className={cn("flex w-full flex-col gap-2", fieldLabelClass)}
+        className={cn(
+          "flex w-full flex-col items-start gap-1.5",
+          fieldLabelClass
+        )}
       >
         {label}
       </Label>
