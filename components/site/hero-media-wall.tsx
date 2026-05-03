@@ -18,12 +18,27 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
   const { scrollY } = useScroll()
   const autoLift = useMotionValue(0)
   const animationStartRef = useRef<number | null>(null)
-  const driftY = useTransform(scrollY, [0, 900], [0, -130])
-  const cinematicY = useTransform([driftY, autoLift], ([scrollShift, autoShift]) => scrollShift - autoShift)
-  const tiltX = useTransform(scrollY, [0, 900], [11, 4])
-  const tiltY = useTransform(scrollY, [0, 900], [-14, -5])
+  const hasUserScrolledRef = useRef(false)
+  const driftY = useTransform(scrollY, [0, 900], [0, -320])
+  const cinematicY = useTransform(() => driftY.get() - autoLift.get())
+  const tiltX = useTransform(scrollY, [0, 900], [12.5, 3.5])
+  const tiltY = useTransform(scrollY, [0, 900], [-16, -4])
+
+  useEffect(() => {
+    const unsubscribe = scrollY.on("change", (latest) => {
+      if (latest > 0) {
+        hasUserScrolledRef.current = true
+      }
+    })
+    return unsubscribe
+  }, [scrollY])
 
   useAnimationFrame((_, delta) => {
+    if (!hasUserScrolledRef.current) {
+      animationStartRef.current = null
+      return
+    }
+
     if (animationStartRef.current === null) {
       animationStartRef.current = performance.now()
     }
@@ -33,7 +48,8 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
       return
     }
 
-    const next = (autoLift.get() + delta * 0.02) % 120
+    const cycleHeight = 120
+    const next = (autoLift.get() + delta * 0.01) % cycleHeight
     autoLift.set(next)
   })
 
@@ -65,7 +81,10 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
   const displayItems = useMemo(() => {
     if (!validMedia.length) return []
     const filled: HeroMediaItem[] = []
-    const totalCards = 42
+    const cols = 7
+    const rowsPerCycle = 6
+    const cycles = 2
+    const totalCards = cols * rowsPerCycle * cycles
     for (let i = 0; i < totalCards; i++) {
       filled.push(validMedia[i % validMedia.length])
     }
@@ -96,7 +115,7 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
           const col = index % cols
           const row = Math.floor(index / cols)
           const x = -51 + col * 16
-          const y = -48 + row * 20
+          const y = -18 + row * 20
           const depth = 240 - row * 46 - (col % 3) * 20
           const rotate = (col - 2.5) * 2.1 + (row % 2 === 0 ? -1 : 1)
 

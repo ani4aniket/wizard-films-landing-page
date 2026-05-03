@@ -20,6 +20,29 @@ export interface SiteSettings {
   contactEmail?: string
   socialLinks: SocialLink[]
   ogImage?: string
+  navCtaLabel?: string
+  navCtaHref?: string
+  searchArchivePlaceholder?: string
+  footerLeadLine?: string
+  workPageEyebrow?: string
+  workPageHeroTitle?: string
+  workPageHeroDescription?: string
+  servicesPageEyebrow?: string
+  servicesPageHeroTitle?: string
+  servicesPageHeroDescription?: string
+  projectRelatedEyebrow?: string
+  projectRelatedTitle?: string
+  projectRelatedDescription?: string
+  projectPlaybackNote?: string
+  homeFeaturedWorkCtaLabel?: string
+  homeFeaturedWorkCtaHref?: string
+}
+
+export interface NavLinkItem {
+  id: string
+  label: string
+  href: string
+  sortOrder: number
 }
 
 export interface HomepageContent {
@@ -32,6 +55,19 @@ export interface HomepageContent {
   primaryCtaHref: string
   secondaryCtaLabel: string
   secondaryCtaHref: string
+  heroEyebrow?: string
+  heroAsideEyebrow?: string
+  heroAsideFocus?: string
+  featuredEyebrow?: string
+  featuredTitle?: string
+  featuredDescription?: string
+  servicesEyebrow?: string
+  servicesTitle?: string
+  servicesDescription?: string
+  approachEyebrow?: string
+  approachTitle?: string
+  approachDescription?: string
+  approachBullets: string[]
 }
 
 export interface PortfolioProject {
@@ -63,6 +99,9 @@ export interface AboutContent {
   story: string
   craftNotes: string[]
   portraitUrl?: string
+  pageHeroEyebrow?: string
+  pageHeroTitle?: string
+  pageHeroDescription?: string
 }
 
 export interface ContactContent {
@@ -70,6 +109,9 @@ export interface ContactContent {
   intro: string
   email?: string
   socialLinks: SocialLink[]
+  pageHeroEyebrow?: string
+  pageHeroTitle?: string
+  pageHeroDescription?: string
 }
 
 export interface ContactSubmission {

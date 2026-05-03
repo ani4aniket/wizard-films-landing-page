@@ -2,10 +2,12 @@ import { unstable_noStore as noStore } from "next/cache"
 
 import { ensureCmsSeeded } from "@/lib/crm-defaults"
 import { prisma } from "@/lib/prisma"
+import { NAV_LINKS } from "@/lib/constants"
 import type {
   AboutContent,
   ContactContent,
   HomepageContent,
+  NavLinkItem,
   PortfolioProject,
   ServiceItem,
   SiteSettings,
@@ -115,7 +117,63 @@ export async function getSiteSettings(): Promise<SiteSettings> {
     contactEmail: normalizeOptionalString(settings.contactEmail),
     ogImage: normalizeOptionalString(settings.ogImage),
     socialLinks: socialLinks.map(mapSocialLink),
+    navCtaLabel: normalizeOptionalString(settings.navCtaLabel),
+    navCtaHref: normalizeOptionalString(settings.navCtaHref),
+    searchArchivePlaceholder: normalizeOptionalString(
+      settings.searchArchivePlaceholder
+    ),
+    footerLeadLine: normalizeOptionalString(settings.footerLeadLine),
+    workPageEyebrow: normalizeOptionalString(settings.workPageEyebrow),
+    workPageHeroTitle: normalizeOptionalString(settings.workPageHeroTitle),
+    workPageHeroDescription: normalizeOptionalString(
+      settings.workPageHeroDescription
+    ),
+    servicesPageEyebrow: normalizeOptionalString(settings.servicesPageEyebrow),
+    servicesPageHeroTitle: normalizeOptionalString(
+      settings.servicesPageHeroTitle
+    ),
+    servicesPageHeroDescription: normalizeOptionalString(
+      settings.servicesPageHeroDescription
+    ),
+    projectRelatedEyebrow: normalizeOptionalString(
+      settings.projectRelatedEyebrow
+    ),
+    projectRelatedTitle: normalizeOptionalString(settings.projectRelatedTitle),
+    projectRelatedDescription: normalizeOptionalString(
+      settings.projectRelatedDescription
+    ),
+    projectPlaybackNote: normalizeOptionalString(settings.projectPlaybackNote),
+    homeFeaturedWorkCtaLabel: normalizeOptionalString(
+      settings.homeFeaturedWorkCtaLabel
+    ),
+    homeFeaturedWorkCtaHref: normalizeOptionalString(
+      settings.homeFeaturedWorkCtaHref
+    ),
   }
+}
+
+export async function getNavigationLinks(): Promise<NavLinkItem[]> {
+  await prepareRead()
+
+  const links = await prisma.navLink.findMany({
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  })
+
+  if (links.length) {
+    return links.map((link) => ({
+      id: link.id,
+      label: link.label,
+      href: link.href,
+      sortOrder: link.sortOrder,
+    }))
+  }
+
+  return NAV_LINKS.map((item, index) => ({
+    id: `fallback-${index}`,
+    label: item.label,
+    href: item.href,
+    sortOrder: index,
+  }))
 }
 
 export async function getHomepageContent(): Promise<HomepageContent> {
@@ -135,6 +193,19 @@ export async function getHomepageContent(): Promise<HomepageContent> {
     primaryCtaHref: homepage.primaryCtaHref,
     secondaryCtaLabel: homepage.secondaryCtaLabel,
     secondaryCtaHref: homepage.secondaryCtaHref,
+    heroEyebrow: normalizeOptionalString(homepage.heroEyebrow),
+    heroAsideEyebrow: normalizeOptionalString(homepage.heroAsideEyebrow),
+    heroAsideFocus: normalizeOptionalString(homepage.heroAsideFocus),
+    featuredEyebrow: normalizeOptionalString(homepage.featuredEyebrow),
+    featuredTitle: normalizeOptionalString(homepage.featuredTitle),
+    featuredDescription: normalizeOptionalString(homepage.featuredDescription),
+    servicesEyebrow: normalizeOptionalString(homepage.servicesEyebrow),
+    servicesTitle: normalizeOptionalString(homepage.servicesTitle),
+    servicesDescription: normalizeOptionalString(homepage.servicesDescription),
+    approachEyebrow: normalizeOptionalString(homepage.approachEyebrow),
+    approachTitle: normalizeOptionalString(homepage.approachTitle),
+    approachDescription: normalizeOptionalString(homepage.approachDescription),
+    approachBullets: homepage.approachBullets.filter(Boolean),
   }
 }
 
@@ -172,6 +243,9 @@ export async function getAboutContent(): Promise<AboutContent> {
     story: about.story,
     craftNotes: about.craftNotes.filter(Boolean),
     portraitUrl: normalizeOptionalString(about.portraitUrl),
+    pageHeroEyebrow: normalizeOptionalString(about.pageHeroEyebrow),
+    pageHeroTitle: normalizeOptionalString(about.pageHeroTitle),
+    pageHeroDescription: normalizeOptionalString(about.pageHeroDescription),
   }
 }
 
@@ -193,6 +267,9 @@ export async function getContactContent(): Promise<ContactContent> {
     intro: contact.intro,
     email: normalizeOptionalString(contact.email),
     socialLinks: socialLinks.map(mapSocialLink),
+    pageHeroEyebrow: normalizeOptionalString(contact.pageHeroEyebrow),
+    pageHeroTitle: normalizeOptionalString(contact.pageHeroTitle),
+    pageHeroDescription: normalizeOptionalString(contact.pageHeroDescription),
   }
 }
 

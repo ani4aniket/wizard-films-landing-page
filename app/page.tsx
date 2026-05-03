@@ -1,21 +1,29 @@
 import Link from "next/link"
 
 import { Reveal } from "@/components/site/reveal"
+import { FeaturedVideoCard } from "@/components/site/featured-video-card"
 import { HeroMediaWall } from "@/components/site/hero-media-wall"
 import { Section } from "@/components/site/section"
 import { CmsErrorState, EmptyState } from "@/components/site/states"
-import { VideoCard } from "@/components/site/video-card"
 import { ServiceGrid } from "@/components/site/service-grid"
 import { buttonVariants } from "@/components/ui/button"
-import { getHomepageContent, getProjects, getServices } from "@/lib/crm"
+import {
+  getAboutContent,
+  getHomepageContent,
+  getProjects,
+  getServices,
+  getSiteSettings,
+} from "@/lib/crm"
 import { cn } from "@/lib/utils"
 
 export default async function Page() {
-  const [homepageResult, projectsResult, servicesResult] =
+  const [homepageResult, projectsResult, servicesResult, aboutResult, siteSettingsResult] =
     await Promise.allSettled([
       getHomepageContent(),
       getProjects(),
       getServices(),
+      getAboutContent(),
+      getSiteSettings(),
     ])
 
   const homepage =
@@ -24,6 +32,9 @@ export default async function Page() {
     projectsResult.status === "fulfilled" ? projectsResult.value : []
   const services =
     servicesResult.status === "fulfilled" ? servicesResult.value : []
+  const about = aboutResult.status === "fulfilled" ? aboutResult.value : null
+  const siteSettings =
+    siteSettingsResult.status === "fulfilled" ? siteSettingsResult.value : null
   const featuredProjects =
     projects.filter((project) => project.featured).slice(0, 3).length > 0
       ? projects.filter((project) => project.featured).slice(0, 3)
@@ -38,6 +49,53 @@ export default async function Page() {
           12
         )
       : []
+  const primaryCtaHref = homepage?.primaryCtaHref || "/work"
+  const primaryCtaLabel = homepage?.primaryCtaLabel || "View Work"
+  const secondaryCtaHref = homepage?.secondaryCtaHref || "/contact"
+  const secondaryCtaLabel = homepage?.secondaryCtaLabel || "Start a Project"
+  const siteName = siteSettings?.siteName || "Wizard Films"
+  const heroEyebrow =
+    homepage?.heroEyebrow?.trim() || `${siteName} Portfolio`
+  const heroAsideEyebrow = homepage?.heroAsideEyebrow || "Creative Focus"
+  const heroFocus =
+    homepage?.heroAsideFocus?.trim() ||
+    (about?.craftNotes.length
+      ? about.craftNotes.slice(0, 3).join(" · ")
+      : "Direction · Production · Edit")
+  const featuredEyebrow = homepage?.featuredEyebrow || "Selected Work"
+  const featuredTitle = homepage?.featuredTitle || "Featured projects."
+  const featuredDescription =
+    homepage?.featuredDescription ||
+    homepage?.tagline ||
+    "Highlighted videos with direct playback."
+  const servicesEyebrow = homepage?.servicesEyebrow || "Services"
+  const servicesTitle = homepage?.servicesTitle || "Services"
+  const servicesDescription =
+    homepage?.servicesDescription ||
+    homepage?.intro ||
+    "Direction, editing, shoot execution, and music-led visual services."
+  const approachEyebrow = homepage?.approachEyebrow || "Approach"
+  const approachTitle =
+    homepage?.approachTitle || about?.title || "How each release is shaped."
+  const approachDescription =
+    homepage?.approachDescription ||
+    about?.story ||
+    homepage?.intro ||
+    homepage?.tagline ||
+    ""
+  const approachItems = homepage?.approachBullets.length
+    ? homepage.approachBullets
+    : about?.craftNotes.length
+      ? about.craftNotes
+      : [
+          "Direction that supports artist identity and song emotion.",
+          "Editing built around rhythm, energy shifts, and narrative flow.",
+          "Shoot execution and post finishing aligned for final impact.",
+        ]
+  const featuredWorkCtaLabel =
+    siteSettings?.homeFeaturedWorkCtaLabel || "View More Work"
+  const featuredWorkCtaHref =
+    siteSettings?.homeFeaturedWorkCtaHref || "/work"
 
   return (
     <main>
@@ -55,7 +113,7 @@ export default async function Page() {
                 <Reveal className="space-y-8">
                   <div className="space-y-5">
                     <p className="text-xs tracking-[0.28em] text-white/78 uppercase">
-                      Music Video Portfolio
+                      {heroEyebrow}
                     </p>
                     <h1 className="editorial-display max-w-5xl tracking-wider text-white">
                       {homepage.headline}
@@ -66,22 +124,13 @@ export default async function Page() {
                   </div>
                   <div className="flex flex-wrap gap-3">
                     <Link
-                      href={homepage.primaryCtaHref}
+                      href={primaryCtaHref}
                       className={buttonVariants({
                         variant: "secondary",
                         size: "lg",
                       })}
                     >
-                      {homepage.primaryCtaLabel}
-                    </Link>
-                    <Link
-                      href="/work"
-                      className={buttonVariants({
-                        variant: "outline",
-                        size: "lg",
-                      })}
-                    >
-                      {homepage.secondaryCtaLabel}
+                      {primaryCtaLabel}
                     </Link>
                   </div>
                 </Reveal>
@@ -90,19 +139,19 @@ export default async function Page() {
                   className="self-end border border-white/18 bg-white/10 p-6 backdrop-blur-sm"
                 >
                   <p className="text-xs tracking-[0.24em] text-white/70 uppercase">
-                    Creative Focus
+                    {heroAsideEyebrow}
                   </p>
                   <p className="mt-4 text-xl leading-tight font-medium text-white">
-                    Direction. Production. Edit.
+                    {heroFocus}
                   </p>
                   <Link
-                    href="#featured"
+                    href={secondaryCtaHref}
                     className={cn(
                       buttonVariants({ variant: "secondary" }),
                       "mt-6 bg-white text-foreground"
                     )}
                   >
-                    View Selected Work
+                    {secondaryCtaLabel}
                   </Link>
                 </Reveal>
               </div>
@@ -120,9 +169,9 @@ export default async function Page() {
 
       <Section
         id="featured"
-        eyebrow="Selected Work"
-        title="Featured projects."
-        description="Highlighted videos from CRM with project roles, descriptions, and direct playback."
+        eyebrow={featuredEyebrow}
+        title={featuredTitle}
+        description={featuredDescription}
       >
         {projectsResult.status === "rejected" ? (
           <CmsErrorState
@@ -134,19 +183,19 @@ export default async function Page() {
             <div className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
               {featuredProjects.map((project, index) => (
                 <Reveal key={project.id} delay={index * 0.08}>
-                  <VideoCard project={project} priority={index === 0} />
+                  <FeaturedVideoCard project={project} priority={index === 0} />
                 </Reveal>
               ))}
             </div>
             <div className="flex justify-center">
               <Link
-                href="/work"
+                href={featuredWorkCtaHref}
                 className={buttonVariants({
                   variant: "outline",
                   size: "lg",
                 })}
               >
-                View More Work
+                {featuredWorkCtaLabel}
               </Link>
             </div>
           </div>
@@ -159,9 +208,9 @@ export default async function Page() {
       </Section>
 
       <Section
-        eyebrow="Services"
-        title="Services"
-        description="Direction, editing, shoot execution, and music-led visual services managed from CRM."
+        eyebrow={servicesEyebrow}
+        title={servicesTitle}
+        description={servicesDescription}
       >
         {servicesResult.status === "rejected" ? (
           <CmsErrorState
@@ -179,16 +228,12 @@ export default async function Page() {
       </Section>
 
       <Section
-        eyebrow="Approach"
-        title="How each release is shaped."
-        description="A clear workflow from concept to delivery with direction, edit precision, and music-aware visual pacing."
+        eyebrow={approachEyebrow}
+        title={approachTitle}
+        description={approachDescription}
       >
         <div className="grid gap-4 md:grid-cols-3">
-          {[
-            "Direction that supports artist identity and song emotion.",
-            "Editing built around rhythm, energy shifts, and narrative flow.",
-            "Shoot execution and post finishing aligned for final impact.",
-          ].map((item) => (
+          {approachItems.map((item) => (
             <div
               key={item}
               className="surface-soft p-6 text-base leading-7 text-foreground"

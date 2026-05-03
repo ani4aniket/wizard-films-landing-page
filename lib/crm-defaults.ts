@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma"
-import { SITE_NAME } from "@/lib/constants"
+import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
 import { slugify } from "@/lib/youtube"
 
 const LEGACY_SITE_DESCRIPTION =
@@ -39,6 +39,22 @@ const SAMPLE_HOMEPAGE = {
   primaryCtaHref: "/work",
   secondaryCtaLabel: "Start a Project",
   secondaryCtaHref: "/contact",
+  heroEyebrow: "",
+  heroAsideEyebrow: "Creative Focus",
+  heroAsideFocus: "",
+  featuredEyebrow: "Selected Work",
+  featuredTitle: "Featured projects.",
+  featuredDescription:
+    "Highlighted selections with roles, descriptions, and direct playback.",
+  servicesEyebrow: "Services",
+  servicesTitle: "Services",
+  servicesDescription:
+    "Direction, editing, shoot execution, and music-led storytelling—kept current from admin.",
+  approachEyebrow: "Approach",
+  approachTitle: "How each release is shaped.",
+  approachDescription:
+    "A focused path from concept to delivery: direction, rhythm-aware editing, and polished finishing.",
+  approachBullets: [] as string[],
 }
 
 const SAMPLE_ABOUT = {
@@ -53,6 +69,9 @@ const SAMPLE_ABOUT = {
     "Artist visual storytelling",
   ],
   portraitUrl: "https://img.youtube.com/vi/RmTLqCPnUcs/hqdefault.jpg",
+  pageHeroEyebrow: "About",
+  pageHeroTitle: "",
+  pageHeroDescription: "",
 }
 
 const SAMPLE_CONTACT = {
@@ -60,6 +79,10 @@ const SAMPLE_CONTACT = {
   intro:
     "Available for music videos, creative direction, editing, and shoot-based projects. Share the track, references, timeline, and how you want the release to feel.",
   email: "hello@wizardfilms.studio",
+  pageHeroEyebrow: "Contact",
+  pageHeroTitle: "Start your next release.",
+  pageHeroDescription:
+    "Share your track, references, and timeline. Contact details and links stay current from admin.",
 }
 
 const SAMPLE_SITE_SETTINGS = {
@@ -68,7 +91,34 @@ const SAMPLE_SITE_SETTINGS = {
   footerBlurb:
     "Wizard Films · Wizard Films: music video direction, editing, shoot execution, and artist-focused visual storytelling.",
   contactEmail: "hello@wizardfilms.studio",
+  navCtaLabel: "Start a Project",
+  navCtaHref: "/contact",
+  searchArchivePlaceholder: "Search the archive",
+  footerLeadLine:
+    "Music videos shaped through direction, editing, and rhythm-led storytelling.",
+  workPageEyebrow: "",
+  workPageHeroTitle: "Music videos and visual stories.",
+  workPageHeroDescription:
+    "Browse projects with direction credits, roles, and playback.",
+  servicesPageEyebrow: "Services",
+  servicesPageHeroTitle: "What I do across music video production.",
+  servicesPageHeroDescription:
+    "Wizard Films builds cinematic visuals that follow the rhythm and emotion of each track.",
+  projectRelatedEyebrow: "More Work",
+  projectRelatedTitle: "More videos.",
+  projectRelatedDescription:
+    "More projects with credits, roles, and embedded playback.",
+  projectPlaybackNote:
+    "Embedded playback with optimized loading for smoother viewing and faster page performance.",
+  homeFeaturedWorkCtaLabel: "View More Work",
+  homeFeaturedWorkCtaHref: "/work",
 }
+
+const SAMPLE_NAV_LINKS = NAV_LINKS.map((link, index) => ({
+  label: link.label,
+  href: link.href,
+  sortOrder: index,
+}))
 
 const SAMPLE_SITE_LINKS = [
   {
@@ -473,6 +523,7 @@ export async function replaceCmsWithSampleData() {
     await tx.project.deleteMany()
     await tx.service.deleteMany()
     await tx.socialLink.deleteMany()
+    await tx.navLink.deleteMany()
 
     await tx.siteSettings.upsert({
       where: { id: "site-settings" },
@@ -483,6 +534,24 @@ export async function replaceCmsWithSampleData() {
         footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
         contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
         ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
+        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
+        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
+        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
+        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
+        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
+        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
+        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
+        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
+        servicesPageHeroDescription:
+          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
+        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
+        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
+        projectRelatedDescription:
+          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
+        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
+        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
+        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
       },
       create: {
         id: "site-settings",
@@ -492,6 +561,24 @@ export async function replaceCmsWithSampleData() {
         footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
         contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
         ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
+        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
+        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
+        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
+        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
+        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
+        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
+        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
+        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
+        servicesPageHeroDescription:
+          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
+        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
+        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
+        projectRelatedDescription:
+          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
+        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
+        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
+        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
       },
     })
 
@@ -507,6 +594,19 @@ export async function replaceCmsWithSampleData() {
         primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
         secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
         secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
+        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
+        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
+        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
+        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
+        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
+        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
+        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
+        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
+        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
+        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
       },
       create: {
         id: "homepage",
@@ -519,6 +619,19 @@ export async function replaceCmsWithSampleData() {
         primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
         secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
         secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
+        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
+        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
+        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
+        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
+        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
+        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
+        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
+        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
+        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
+        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
       },
     })
 
@@ -529,6 +642,9 @@ export async function replaceCmsWithSampleData() {
         story: SAMPLE_ABOUT.story,
         craftNotes: SAMPLE_ABOUT.craftNotes,
         portraitUrl: SAMPLE_ABOUT.portraitUrl,
+        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
+        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
       },
       create: {
         id: "about",
@@ -536,6 +652,9 @@ export async function replaceCmsWithSampleData() {
         story: SAMPLE_ABOUT.story,
         craftNotes: SAMPLE_ABOUT.craftNotes,
         portraitUrl: SAMPLE_ABOUT.portraitUrl,
+        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
+        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
       },
     })
 
@@ -545,18 +664,25 @@ export async function replaceCmsWithSampleData() {
         title: SAMPLE_CONTACT.title,
         intro: SAMPLE_CONTACT.intro,
         email: SAMPLE_CONTACT.email,
+        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
+        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
       },
       create: {
         id: "contact",
         title: SAMPLE_CONTACT.title,
         intro: SAMPLE_CONTACT.intro,
         email: SAMPLE_CONTACT.email,
+        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
+        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
       },
     })
 
     await tx.socialLink.createMany({
       data: [...SAMPLE_SITE_LINKS, ...SAMPLE_CONTACT_LINKS],
     })
+    await tx.navLink.createMany({ data: SAMPLE_NAV_LINKS })
     await tx.service.createMany({ data: SAMPLE_SERVICES })
     await tx.project.createMany({ data: SAMPLE_PROJECTS })
     await tx.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
@@ -582,6 +708,24 @@ export async function ensureCmsSeeded() {
         footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
         contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
         ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
+        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
+        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
+        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
+        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
+        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
+        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
+        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
+        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
+        servicesPageHeroDescription:
+          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription,
+        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
+        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
+        projectRelatedDescription:
+          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
+        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
+        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
+        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
       },
     })
 
@@ -612,6 +756,70 @@ export async function ensureCmsSeeded() {
       })
     }
 
+    const siteAfterLegacy = await prisma.siteSettings.findUniqueOrThrow({
+      where: { id: "site-settings" },
+    })
+    const siteUiFill: Record<string, string> = {}
+    if (isBlank(siteAfterLegacy.navCtaLabel)) {
+      siteUiFill.navCtaLabel = SAMPLE_SITE_SETTINGS.navCtaLabel
+    }
+    if (isBlank(siteAfterLegacy.navCtaHref)) {
+      siteUiFill.navCtaHref = SAMPLE_SITE_SETTINGS.navCtaHref
+    }
+    if (isBlank(siteAfterLegacy.searchArchivePlaceholder)) {
+      siteUiFill.searchArchivePlaceholder =
+        SAMPLE_SITE_SETTINGS.searchArchivePlaceholder
+    }
+    if (isBlank(siteAfterLegacy.footerLeadLine)) {
+      siteUiFill.footerLeadLine = SAMPLE_SITE_SETTINGS.footerLeadLine
+    }
+    if (isBlank(siteAfterLegacy.workPageHeroTitle)) {
+      siteUiFill.workPageHeroTitle = SAMPLE_SITE_SETTINGS.workPageHeroTitle
+    }
+    if (isBlank(siteAfterLegacy.workPageHeroDescription)) {
+      siteUiFill.workPageHeroDescription =
+        SAMPLE_SITE_SETTINGS.workPageHeroDescription
+    }
+    if (isBlank(siteAfterLegacy.servicesPageEyebrow)) {
+      siteUiFill.servicesPageEyebrow = SAMPLE_SITE_SETTINGS.servicesPageEyebrow
+    }
+    if (isBlank(siteAfterLegacy.servicesPageHeroTitle)) {
+      siteUiFill.servicesPageHeroTitle =
+        SAMPLE_SITE_SETTINGS.servicesPageHeroTitle
+    }
+    if (isBlank(siteAfterLegacy.servicesPageHeroDescription)) {
+      siteUiFill.servicesPageHeroDescription =
+        SAMPLE_SITE_SETTINGS.servicesPageHeroDescription
+    }
+    if (isBlank(siteAfterLegacy.projectRelatedEyebrow)) {
+      siteUiFill.projectRelatedEyebrow =
+        SAMPLE_SITE_SETTINGS.projectRelatedEyebrow
+    }
+    if (isBlank(siteAfterLegacy.projectRelatedTitle)) {
+      siteUiFill.projectRelatedTitle = SAMPLE_SITE_SETTINGS.projectRelatedTitle
+    }
+    if (isBlank(siteAfterLegacy.projectRelatedDescription)) {
+      siteUiFill.projectRelatedDescription =
+        SAMPLE_SITE_SETTINGS.projectRelatedDescription
+    }
+    if (isBlank(siteAfterLegacy.projectPlaybackNote)) {
+      siteUiFill.projectPlaybackNote = SAMPLE_SITE_SETTINGS.projectPlaybackNote
+    }
+    if (isBlank(siteAfterLegacy.homeFeaturedWorkCtaLabel)) {
+      siteUiFill.homeFeaturedWorkCtaLabel =
+        SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel
+    }
+    if (isBlank(siteAfterLegacy.homeFeaturedWorkCtaHref)) {
+      siteUiFill.homeFeaturedWorkCtaHref =
+        SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref
+    }
+    if (Object.keys(siteUiFill).length > 0) {
+      await prisma.siteSettings.update({
+        where: { id: "site-settings" },
+        data: siteUiFill,
+      })
+    }
+
     const homepage = await prisma.homepageContent.upsert({
       where: { id: "homepage" },
       update: {},
@@ -626,6 +834,19 @@ export async function ensureCmsSeeded() {
         primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
         secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
         secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
+        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
+        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
+        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
+        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
+        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
+        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
+        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
+        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
+        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
+        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
       },
     })
 
@@ -661,7 +882,63 @@ export async function ensureCmsSeeded() {
             homepage.secondaryCtaLabel || SAMPLE_HOMEPAGE.secondaryCtaLabel,
           secondaryCtaHref:
             homepage.secondaryCtaHref || SAMPLE_HOMEPAGE.secondaryCtaHref,
+          heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+          heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+          heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
+          featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
+          featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
+          featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
+          servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
+          servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
+          servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
+          approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
+          approachTitle: SAMPLE_HOMEPAGE.approachTitle,
+          approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
         },
+      })
+    }
+
+    const homepageAfterLegacy = await prisma.homepageContent.findUniqueOrThrow({
+      where: { id: "homepage" },
+    })
+    const homeSectionFill: Record<string, string> = {}
+    if (isBlank(homepageAfterLegacy.heroAsideEyebrow)) {
+      homeSectionFill.heroAsideEyebrow = SAMPLE_HOMEPAGE.heroAsideEyebrow
+    }
+    if (isBlank(homepageAfterLegacy.featuredEyebrow)) {
+      homeSectionFill.featuredEyebrow = SAMPLE_HOMEPAGE.featuredEyebrow
+    }
+    if (isBlank(homepageAfterLegacy.featuredTitle)) {
+      homeSectionFill.featuredTitle = SAMPLE_HOMEPAGE.featuredTitle
+    }
+    if (isBlank(homepageAfterLegacy.featuredDescription)) {
+      homeSectionFill.featuredDescription = SAMPLE_HOMEPAGE.featuredDescription
+    }
+    if (isBlank(homepageAfterLegacy.servicesEyebrow)) {
+      homeSectionFill.servicesEyebrow = SAMPLE_HOMEPAGE.servicesEyebrow
+    }
+    if (isBlank(homepageAfterLegacy.servicesTitle)) {
+      homeSectionFill.servicesTitle = SAMPLE_HOMEPAGE.servicesTitle
+    }
+    if (isBlank(homepageAfterLegacy.approachEyebrow)) {
+      homeSectionFill.approachEyebrow = SAMPLE_HOMEPAGE.approachEyebrow
+    }
+    if (isBlank(homepageAfterLegacy.approachTitle)) {
+      homeSectionFill.approachTitle = SAMPLE_HOMEPAGE.approachTitle
+    }
+    if (isBlank(homepageAfterLegacy.servicesDescription)) {
+      homeSectionFill.servicesDescription = SAMPLE_HOMEPAGE.servicesDescription
+    }
+    if (isBlank(homepageAfterLegacy.approachDescription)) {
+      homeSectionFill.approachDescription = SAMPLE_HOMEPAGE.approachDescription
+    }
+    if (isBlank(homepageAfterLegacy.heroAsideEyebrow)) {
+      homeSectionFill.heroAsideEyebrow = SAMPLE_HOMEPAGE.heroAsideEyebrow
+    }
+    if (Object.keys(homeSectionFill).length > 0) {
+      await prisma.homepageContent.update({
+        where: { id: "homepage" },
+        data: homeSectionFill,
       })
     }
 
@@ -674,6 +951,9 @@ export async function ensureCmsSeeded() {
         story: SAMPLE_ABOUT.story,
         craftNotes: SAMPLE_ABOUT.craftNotes,
         portraitUrl: SAMPLE_ABOUT.portraitUrl,
+        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
+        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
       },
     })
 
@@ -700,7 +980,42 @@ export async function ensureCmsSeeded() {
           portraitUrl: isBlank(about.portraitUrl)
             ? SAMPLE_ABOUT.portraitUrl
             : about.portraitUrl,
+          pageHeroEyebrow: isBlank(about.pageHeroEyebrow)
+            ? SAMPLE_ABOUT.pageHeroEyebrow
+            : about.pageHeroEyebrow,
+          pageHeroTitle: isBlank(about.pageHeroTitle)
+            ? SAMPLE_ABOUT.pageHeroTitle || null
+            : about.pageHeroTitle,
+          pageHeroDescription: isBlank(about.pageHeroDescription)
+            ? SAMPLE_ABOUT.pageHeroDescription || null
+            : about.pageHeroDescription,
         },
+      })
+    }
+
+    const aboutAfterLegacy = await prisma.aboutContent.findUniqueOrThrow({
+      where: { id: "about" },
+    })
+    const aboutHeroFill: Record<string, string> = {}
+    if (isBlank(aboutAfterLegacy.pageHeroEyebrow)) {
+      aboutHeroFill.pageHeroEyebrow = SAMPLE_ABOUT.pageHeroEyebrow
+    }
+    if (isBlank(aboutAfterLegacy.pageHeroTitle)) {
+      const fallback = SAMPLE_ABOUT.pageHeroTitle?.trim()
+      if (fallback) {
+        aboutHeroFill.pageHeroTitle = fallback
+      }
+    }
+    if (isBlank(aboutAfterLegacy.pageHeroDescription)) {
+      const fallback = SAMPLE_ABOUT.pageHeroDescription?.trim()
+      if (fallback) {
+        aboutHeroFill.pageHeroDescription = fallback
+      }
+    }
+    if (Object.keys(aboutHeroFill).length > 0) {
+      await prisma.aboutContent.update({
+        where: { id: "about" },
+        data: aboutHeroFill,
       })
     }
 
@@ -712,6 +1027,9 @@ export async function ensureCmsSeeded() {
         title: SAMPLE_CONTACT.title,
         intro: SAMPLE_CONTACT.intro,
         email: SAMPLE_CONTACT.email,
+        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
+        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
+        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
       },
     })
 
@@ -732,19 +1050,50 @@ export async function ensureCmsSeeded() {
               ? SAMPLE_CONTACT.intro
               : contact.intro,
           email: isBlank(contact.email) ? SAMPLE_CONTACT.email : contact.email,
+          pageHeroEyebrow: isBlank(contact.pageHeroEyebrow)
+            ? SAMPLE_CONTACT.pageHeroEyebrow
+            : contact.pageHeroEyebrow,
+          pageHeroTitle: isBlank(contact.pageHeroTitle)
+            ? SAMPLE_CONTACT.pageHeroTitle
+            : contact.pageHeroTitle,
+          pageHeroDescription: isBlank(contact.pageHeroDescription)
+            ? SAMPLE_CONTACT.pageHeroDescription
+            : contact.pageHeroDescription,
         },
+      })
+    }
+
+    const contactAfterLegacy = await prisma.contactContent.findUniqueOrThrow({
+      where: { id: "contact" },
+    })
+    const contactHeroFill: Record<string, string> = {}
+    if (isBlank(contactAfterLegacy.pageHeroEyebrow)) {
+      contactHeroFill.pageHeroEyebrow = SAMPLE_CONTACT.pageHeroEyebrow
+    }
+    if (isBlank(contactAfterLegacy.pageHeroTitle)) {
+      contactHeroFill.pageHeroTitle = SAMPLE_CONTACT.pageHeroTitle
+    }
+    if (isBlank(contactAfterLegacy.pageHeroDescription)) {
+      contactHeroFill.pageHeroDescription = SAMPLE_CONTACT.pageHeroDescription
+    }
+    if (Object.keys(contactHeroFill).length > 0) {
+      await prisma.contactContent.update({
+        where: { id: "contact" },
+        data: contactHeroFill,
       })
     }
 
     const [
       siteLinkCount,
       contactLinkCount,
+      navLinkCount,
       projectCount,
       serviceCount,
       submissionCount,
     ] = await Promise.all([
       prisma.socialLink.count({ where: { section: "SITE" } }),
       prisma.socialLink.count({ where: { section: "CONTACT" } }),
+      prisma.navLink.count(),
       prisma.project.count(),
       prisma.service.count(),
       prisma.contactSubmission.count(),
@@ -756,6 +1105,10 @@ export async function ensureCmsSeeded() {
 
     if (contactLinkCount === 0) {
       await prisma.socialLink.createMany({ data: SAMPLE_CONTACT_LINKS })
+    }
+
+    if (navLinkCount === 0) {
+      await prisma.navLink.createMany({ data: SAMPLE_NAV_LINKS })
     }
 
     if (projectCount > 0) {

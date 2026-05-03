@@ -24,7 +24,13 @@ function SocialList({ socialLinks }: { socialLinks: SocialLink[] }) {
   )
 }
 
-export function Footer({ settings }: { settings: SiteSettings }) {
+export function Footer({
+  settings,
+  navLinks,
+}: {
+  settings: SiteSettings
+  navLinks: { label: string; href: string }[]
+}) {
   return (
     <footer className="mt-16 border-t border-border bg-background">
       <div className="mx-auto grid max-w-[1440px] gap-10 px-6 py-12 md:grid-cols-4 md:px-10">
@@ -33,8 +39,8 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             {settings.siteName}
           </p>
           <p className="mt-4 max-w-xl text-3xl leading-tight text-foreground md:text-4xl">
-            Music videos shaped through direction, editing, and rhythm-led
-            storytelling.
+            {settings.footerLeadLine ||
+              "Music videos shaped through direction, editing, and rhythm-led storytelling."}
           </p>
           <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
             {settings.footerBlurb ||
@@ -44,21 +50,15 @@ export function Footer({ settings }: { settings: SiteSettings }) {
         <div>
           <p className="text-base font-medium text-foreground">Browse</p>
           <div className="mt-4 space-y-3 text-sm text-muted-foreground">
-            <Link href="/" className="block hover:text-foreground">
-              Home
-            </Link>
-            <Link href="/work" className="block hover:text-foreground">
-              Work
-            </Link>
-            <Link href="/services" className="block hover:text-foreground">
-              Services
-            </Link>
-            <Link href="/about" className="block hover:text-foreground">
-              About
-            </Link>
-            <Link href="/contact" className="block hover:text-foreground">
-              Contact
-            </Link>
+            {navLinks.map((item) => (
+              <Link
+                key={`${item.href}-${item.label}`}
+                href={item.href}
+                className="block hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
         <div className="space-y-4">

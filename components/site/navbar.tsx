@@ -4,10 +4,21 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { type FormEvent, useEffect, useState } from "react"
 
-import { NAV_LINKS } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
-export function Navbar({ siteName }: { siteName: string }) {
+export function Navbar({
+  siteName,
+  navLinks,
+  navCtaLabel,
+  navCtaHref,
+  searchPlaceholder,
+}: {
+  siteName: string
+  navLinks: { label: string; href: string }[]
+  navCtaLabel: string
+  navCtaHref: string
+  searchPlaceholder: string
+}) {
   const pathname = usePathname()
   const router = useRouter()
   const [isScrolled, setIsScrolled] = useState(false)
@@ -56,12 +67,12 @@ export function Navbar({ siteName }: { siteName: string }) {
               {siteName}
             </Link>
             <div className="hidden items-center gap-8 lg:flex">
-              {NAV_LINKS.map((item) => {
+              {navLinks.map((item) => {
                 const isActive = pathname === item.href
 
                 return (
                   <Link
-                    key={item.href}
+                    key={`${item.href}-${item.label}`}
                     href={item.href}
                     className={cn(
                       "border-b-2 pb-1 text-base font-medium text-foreground transition-colors",
@@ -85,7 +96,7 @@ export function Navbar({ siteName }: { siteName: string }) {
                 type="text"
                 value={archiveQuery}
                 onChange={(event) => setArchiveQuery(event.target.value)}
-                placeholder="Search the archive"
+                placeholder={searchPlaceholder}
                 aria-label="Search work archive"
                 autoComplete="off"
                 className="w-full bg-transparent px-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
@@ -95,19 +106,19 @@ export function Navbar({ siteName }: { siteName: string }) {
               </button>
             </form>
             <Link
-              href="/contact"
+              href={navCtaHref}
               className="pill-feedback inline-flex h-12 items-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
             >
-              Start a Project
+              {navCtaLabel}
             </Link>
           </div>
           <div className="hidden gap-3 overflow-x-auto md:flex lg:hidden">
-            {NAV_LINKS.map((item) => {
+            {navLinks.map((item) => {
               const isActive = pathname === item.href
 
               return (
                 <Link
-                  key={item.href}
+                  key={`${item.href}-${item.label}`}
                   href={item.href}
                   className={cn(
                     "shrink-0 rounded-full border px-4 py-2 text-sm",
@@ -131,7 +142,7 @@ export function Navbar({ siteName }: { siteName: string }) {
               type="text"
               value={archiveQuery}
               onChange={(event) => setArchiveQuery(event.target.value)}
-              placeholder="Search the archive"
+              placeholder={searchPlaceholder}
               aria-label="Search work archive"
               autoComplete="off"
               className="w-full bg-transparent px-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
@@ -141,12 +152,12 @@ export function Navbar({ siteName }: { siteName: string }) {
             </button>
           </form>
           <div className="flex gap-3 overflow-x-auto pb-4">
-            {NAV_LINKS.map((item) => {
+            {navLinks.map((item) => {
               const isActive = pathname === item.href
 
               return (
                 <Link
-                  key={item.href}
+                  key={`${item.href}-${item.label}`}
                   href={item.href}
                   className={cn(
                     "shrink-0 rounded-full border px-4 py-2 text-sm",

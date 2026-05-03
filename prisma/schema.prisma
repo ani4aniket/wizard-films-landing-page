@@ -20,6 +20,22 @@ model SiteSettings {
   footerBlurb     String?
   contactEmail    String?
   ogImage         String?
+  navCtaLabel              String?
+  navCtaHref               String?
+  searchArchivePlaceholder String?
+  footerLeadLine           String?
+  workPageEyebrow            String?
+  workPageHeroTitle          String?
+  workPageHeroDescription    String?
+  servicesPageEyebrow         String?
+  servicesPageHeroTitle       String?
+  servicesPageHeroDescription String?
+  projectRelatedEyebrow       String?
+  projectRelatedTitle         String?
+  projectRelatedDescription   String?
+  projectPlaybackNote         String?
+  homeFeaturedWorkCtaLabel    String?
+  homeFeaturedWorkCtaHref     String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -35,6 +51,19 @@ model HomepageContent {
   primaryCtaHref    String
   secondaryCtaLabel String
   secondaryCtaHref  String
+  heroEyebrow         String?
+  heroAsideEyebrow    String?
+  heroAsideFocus      String?
+  featuredEyebrow     String?
+  featuredTitle       String?
+  featuredDescription String?
+  servicesEyebrow     String?
+  servicesTitle       String?
+  servicesDescription String?
+  approachEyebrow     String?
+  approachTitle       String?
+  approachDescription String?
+  approachBullets     String[] @default([])
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -73,6 +102,9 @@ model AboutContent {
   story       String
   craftNotes  String[]
   portraitUrl String?
+  pageHeroEyebrow       String?
+  pageHeroTitle         String?
+  pageHeroDescription   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -82,6 +114,18 @@ model ContactContent {
   title     String
   intro     String
   email     String?
+  pageHeroEyebrow       String?
+  pageHeroTitle         String?
+  pageHeroDescription   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NavLink {
+  id        String   @id @default(cuid())
+  label     String
+  href      String
+  sortOrder Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

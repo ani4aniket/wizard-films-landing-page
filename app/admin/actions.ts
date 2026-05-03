@@ -100,6 +100,46 @@ export async function saveSiteSettingsAction(formData: FormData) {
       footerBlurb: getOptionalString(formData, "footerBlurb"),
       contactEmail: getOptionalString(formData, "contactEmail"),
       ogImage: getOptionalString(formData, "ogImage"),
+      navCtaLabel: getOptionalString(formData, "navCtaLabel"),
+      navCtaHref: getOptionalString(formData, "navCtaHref"),
+      searchArchivePlaceholder: getOptionalString(
+        formData,
+        "searchArchivePlaceholder"
+      ),
+      footerLeadLine: getOptionalString(formData, "footerLeadLine"),
+      workPageEyebrow: getOptionalString(formData, "workPageEyebrow"),
+      workPageHeroTitle: getOptionalString(formData, "workPageHeroTitle"),
+      workPageHeroDescription: getOptionalString(
+        formData,
+        "workPageHeroDescription"
+      ),
+      servicesPageEyebrow: getOptionalString(formData, "servicesPageEyebrow"),
+      servicesPageHeroTitle: getOptionalString(
+        formData,
+        "servicesPageHeroTitle"
+      ),
+      servicesPageHeroDescription: getOptionalString(
+        formData,
+        "servicesPageHeroDescription"
+      ),
+      projectRelatedEyebrow: getOptionalString(
+        formData,
+        "projectRelatedEyebrow"
+      ),
+      projectRelatedTitle: getOptionalString(formData, "projectRelatedTitle"),
+      projectRelatedDescription: getOptionalString(
+        formData,
+        "projectRelatedDescription"
+      ),
+      projectPlaybackNote: getOptionalString(formData, "projectPlaybackNote"),
+      homeFeaturedWorkCtaLabel: getOptionalString(
+        formData,
+        "homeFeaturedWorkCtaLabel"
+      ),
+      homeFeaturedWorkCtaHref: getOptionalString(
+        formData,
+        "homeFeaturedWorkCtaHref"
+      ),
     },
   })
 
@@ -123,6 +163,19 @@ export async function saveHomepageAction(formData: FormData) {
       primaryCtaHref: getString(formData, "primaryCtaHref"),
       secondaryCtaLabel: getString(formData, "secondaryCtaLabel"),
       secondaryCtaHref: getString(formData, "secondaryCtaHref"),
+      heroEyebrow: getOptionalString(formData, "heroEyebrow"),
+      heroAsideEyebrow: getOptionalString(formData, "heroAsideEyebrow"),
+      heroAsideFocus: getOptionalString(formData, "heroAsideFocus"),
+      featuredEyebrow: getOptionalString(formData, "featuredEyebrow"),
+      featuredTitle: getOptionalString(formData, "featuredTitle"),
+      featuredDescription: getOptionalString(formData, "featuredDescription"),
+      servicesEyebrow: getOptionalString(formData, "servicesEyebrow"),
+      servicesTitle: getOptionalString(formData, "servicesTitle"),
+      servicesDescription: getOptionalString(formData, "servicesDescription"),
+      approachEyebrow: getOptionalString(formData, "approachEyebrow"),
+      approachTitle: getOptionalString(formData, "approachTitle"),
+      approachDescription: getOptionalString(formData, "approachDescription"),
+      approachBullets: getCraftNotes(formData, "approachBullets"),
     },
   })
 
@@ -141,6 +194,9 @@ export async function saveAboutAction(formData: FormData) {
       story: getString(formData, "story"),
       craftNotes: getCraftNotes(formData, "craftNotes"),
       portraitUrl: getOptionalString(formData, "portraitUrl"),
+      pageHeroEyebrow: getOptionalString(formData, "pageHeroEyebrow"),
+      pageHeroTitle: getOptionalString(formData, "pageHeroTitle"),
+      pageHeroDescription: getOptionalString(formData, "pageHeroDescription"),
     },
   })
 
@@ -158,11 +214,53 @@ export async function saveContactContentAction(formData: FormData) {
       title: getString(formData, "title"),
       intro: getString(formData, "intro"),
       email: getOptionalString(formData, "email"),
+      pageHeroEyebrow: getOptionalString(formData, "pageHeroEyebrow"),
+      pageHeroTitle: getOptionalString(formData, "pageHeroTitle"),
+      pageHeroDescription: getOptionalString(formData, "pageHeroDescription"),
     },
   })
 
   revalidateCmsPaths()
   redirectTo("contact")
+}
+
+export async function saveNavLinkAction(formData: FormData) {
+  await requireAdminSession()
+  await ensureCmsSeeded()
+
+  const id = getString(formData, "id")
+
+  await prisma.navLink.upsert({
+    where: { id: id || "__new__" },
+    update: {
+      label: getString(formData, "label"),
+      href: getString(formData, "href"),
+      sortOrder: getNumber(formData, "sortOrder"),
+    },
+    create: {
+      label: getString(formData, "label"),
+      href: getString(formData, "href"),
+      sortOrder: getNumber(formData, "sortOrder"),
+    },
+  })
+
+  revalidateCmsPaths()
+  redirectTo("nav-links")
+}
+
+export async function deleteNavLinkAction(formData: FormData) {
+  await requireAdminSession()
+
+  const id = getString(formData, "id")
+
+  if (id) {
+    await prisma.navLink.delete({
+      where: { id },
+    })
+  }
+
+  revalidateCmsPaths()
+  redirectTo("nav-links")
 }
 
 export async function saveSocialLinkAction(formData: FormData) {

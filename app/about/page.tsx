@@ -20,9 +20,17 @@ export default async function AboutPage() {
   return (
     <main>
       <PageHero
-        eyebrow="About"
-        title="Direction, edit, and shoot craft."
-        description="This page is CRM-driven and reflects the current bio, focus, and creative approach."
+        eyebrow={aboutResult.about?.pageHeroEyebrow || "About"}
+        title={
+          aboutResult.about?.pageHeroTitle ||
+          aboutResult.about?.title ||
+          "Direction, edit, and shoot craft."
+        }
+        description={
+          aboutResult.about?.pageHeroDescription ||
+          aboutResult.about?.story ||
+          "This page reflects the current bio, focus, and creative approach."
+        }
       />
       <Section className="pt-2">
         {aboutResult.error || !aboutResult.about ? (

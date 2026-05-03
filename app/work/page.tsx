@@ -4,7 +4,7 @@ import { PageHero } from "@/components/site/page-hero"
 import { ProjectGallery } from "@/components/site/project-gallery"
 import { CmsErrorState, EmptyState } from "@/components/site/states"
 import { Section } from "@/components/site/section"
-import { getProjects } from "@/lib/crm"
+import { getProjects, getSiteSettings } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Work",
@@ -25,16 +25,30 @@ export default async function WorkPage({
         ? rawQuery[0]?.trim() ?? ""
         : ""
 
-  const projectsResult = await getProjects()
-    .then((projects) => ({ projects, error: null }))
-    .catch((error) => ({ projects: [], error }))
+  const [projectsResult, siteSettingsResult] = await Promise.all([
+    getProjects()
+      .then((projects) => ({ projects, error: null }))
+      .catch((error) => ({ projects: [], error })),
+    getSiteSettings()
+      .then((siteSettings) => ({ siteSettings, error: null }))
+      .catch((error) => ({ siteSettings: null, error })),
+  ])
+
+  const settings = siteSettingsResult.siteSettings
+  const workEyebrow =
+    settings?.workPageEyebrow?.trim() || settings?.siteName || "Work"
+  const workTitle =
+    settings?.workPageHeroTitle || "Music videos and visual stories."
+  const workDescription =
+    settings?.workPageHeroDescription ||
+    "Browse projects with direction credits, roles, and playback."
 
   return (
     <main>
       <PageHero
-        eyebrow="Work"
-        title="Music videos and visual stories."
-        description="Browse projects synced from CRM, including direction credits, roles, and playback."
+        eyebrow={workEyebrow}
+        title={workTitle}
+        description={workDescription}
       />
       <Section className="pt-2">
         {projectsResult.error ? (

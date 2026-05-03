@@ -5,8 +5,8 @@ import { Footer } from "@/components/site/footer"
 import { Navbar } from "@/components/site/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
 import { buildSiteMetadata } from "@/lib/metadata"
-import { getContactContent, getSiteSettings } from "@/lib/crm"
-import { SITE_NAME } from "@/lib/constants"
+import { getContactContent, getNavigationLinks, getSiteSettings } from "@/lib/crm"
+import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -19,9 +19,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [settingsResult, contactResult] = await Promise.allSettled([
+  const [settingsResult, contactResult, navResult] = await Promise.allSettled([
     getSiteSettings(),
     getContactContent(),
+    getNavigationLinks(),
   ])
 
   const settings =
@@ -49,6 +50,16 @@ export default async function RootLayout({
       (contactResult.status === "fulfilled" ? contactResult.value.email : ""),
   }
 
+  const navLinks =
+    navResult.status === "fulfilled"
+      ? navResult.value.map((item) => ({ label: item.label, href: item.href }))
+      : NAV_LINKS
+
+  const navCtaLabel = mergedSettings.navCtaLabel || "Start a Project"
+  const navCtaHref = mergedSettings.navCtaHref || "/contact"
+  const searchPlaceholder =
+    mergedSettings.searchArchivePlaceholder || "Search the archive"
+
   return (
     <html
       lang="en"
@@ -61,9 +72,15 @@ export default async function RootLayout({
           forcedTheme="light"
           enableSystem={false}
         >
-          <Navbar siteName={mergedSettings.siteName} />
+          <Navbar
+            siteName={mergedSettings.siteName}
+            navLinks={navLinks}
+            navCtaLabel={navCtaLabel}
+            navCtaHref={navCtaHref}
+            searchPlaceholder={searchPlaceholder}
+          />
           {children}
-          <Footer settings={mergedSettings} />
+          <Footer settings={mergedSettings} navLinks={navLinks} />
         </ThemeProvider>
       </body>
     </html>

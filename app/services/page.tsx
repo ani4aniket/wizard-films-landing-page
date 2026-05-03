@@ -4,7 +4,7 @@ import { PageHero } from "@/components/site/page-hero"
 import { ServiceGrid } from "@/components/site/service-grid"
 import { Section } from "@/components/site/section"
 import { CmsErrorState, EmptyState } from "@/components/site/states"
-import { getServices } from "@/lib/crm"
+import { getServices, getSiteSettings } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Services",
@@ -13,16 +13,30 @@ export const metadata: Metadata = {
 }
 
 export default async function ServicesPage() {
-  const servicesResult = await getServices()
-    .then((services) => ({ services, error: null }))
-    .catch((error) => ({ services: [], error }))
+  const [servicesResult, siteSettingsResult] = await Promise.all([
+    getServices()
+      .then((services) => ({ services, error: null }))
+      .catch((error) => ({ services: [], error })),
+    getSiteSettings()
+      .then((siteSettings) => ({ siteSettings, error: null }))
+      .catch((error) => ({ siteSettings: null, error })),
+  ])
+
+  const settings = siteSettingsResult.siteSettings
+  const servicesEyebrow = settings?.servicesPageEyebrow || "Services"
+  const servicesTitle =
+    settings?.servicesPageHeroTitle ||
+    "What I do across music video production."
+  const servicesDescription =
+    settings?.servicesPageHeroDescription ||
+    "Services can be updated anytime from admin."
 
   return (
     <main>
       <PageHero
-        eyebrow="Services"
-        title="What I do across music video production."
-        description="Services are CRM-managed and can be updated anytime from admin."
+        eyebrow={servicesEyebrow}
+        title={servicesTitle}
+        description={servicesDescription}
       />
       <Section className="pt-2">
         {servicesResult.error ? (

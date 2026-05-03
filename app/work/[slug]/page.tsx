@@ -8,7 +8,7 @@ import { Section } from "@/components/site/section"
 import { VideoCard } from "@/components/site/video-card"
 import { VideoPlayer } from "@/components/site/video-player"
 import { buttonVariants } from "@/components/ui/button"
-import { getProjectBySlug, getProjects } from "@/lib/crm"
+import { getProjectBySlug, getProjects, getSiteSettings } from "@/lib/crm"
 import { buildProjectMetadata } from "@/lib/metadata"
 import { cn } from "@/lib/utils"
 
@@ -35,15 +35,28 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>
 }) {
   const { slug } = await params
-  const project = await getProjectBySlug(slug)
+  const [projects, settings] = await Promise.all([
+    getProjects(),
+    getSiteSettings(),
+  ])
+  const project = projects.find((entry) => entry.slug === slug)
 
   if (!project) {
     notFound()
   }
 
-  const relatedProjects = (await getProjects())
+  const relatedProjects = projects
     .filter((entry) => entry.id !== project.id)
     .slice(0, 3)
+
+  const playbackNote =
+    settings.projectPlaybackNote ||
+    "Embedded playback with optimized loading for smoother viewing and faster page performance."
+  const relatedEyebrow = settings.projectRelatedEyebrow || "More Work"
+  const relatedTitle = settings.projectRelatedTitle || "More videos."
+  const relatedDescription =
+    settings.projectRelatedDescription ||
+    "More projects with credits, roles, and embedded playback."
 
   return (
     <main>
@@ -102,9 +115,7 @@ export default async function ProjectPage({
                   Playback
                 </p>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
-                  The video is embedded directly in the portfolio using the
-                  CRM-provided YouTube URL, with lazy loading for better
-                  performance.
+                  {playbackNote}
                 </p>
               </div>
             </aside>
@@ -114,9 +125,9 @@ export default async function ProjectPage({
 
       {relatedProjects.length ? (
         <Section
-          eyebrow="More Work"
-          title="More videos."
-          description="More projects from CRM with credits, roles, and embedded playback."
+          eyebrow={relatedEyebrow}
+          title={relatedTitle}
+          description={relatedDescription}
         >
           <div className="grid gap-x-6 gap-y-10 lg:grid-cols-3">
             {relatedProjects.map((entry, index) => (

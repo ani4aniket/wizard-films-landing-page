@@ -6,6 +6,7 @@ import type { ReactNode } from "react"
 
 import {
   deleteMediaAssetAction,
+  deleteNavLinkAction,
   deleteProjectAction,
   deleteServiceAction,
   deleteSocialLinkAction,
@@ -14,6 +15,7 @@ import {
   saveAboutAction,
   saveContactContentAction,
   saveHomepageAction,
+  saveNavLinkAction,
   saveProjectAction,
   saveServiceAction,
   saveSiteSettingsAction,
@@ -205,6 +207,7 @@ export default async function AdminPage({
     contact,
     siteLinks,
     contactLinks,
+    navLinks,
     projects,
     services,
     submissions,
@@ -219,6 +222,9 @@ export default async function AdminPage({
     }),
     prisma.socialLink.findMany({
       where: { section: "CONTACT" },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    }),
+    prisma.navLink.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     }),
     prisma.project.findMany({
@@ -429,8 +435,177 @@ export default async function AdminPage({
                     rows={3}
                     defaultValue={siteSettings.footerBlurb}
                   />
+                  <Area
+                    label="Footer Lead Line"
+                    name="footerLeadLine"
+                    rows={2}
+                    placeholder="Large headline above the footer blurb"
+                    defaultValue={siteSettings.footerLeadLine}
+                  />
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Nav CTA Label"
+                      name="navCtaLabel"
+                      defaultValue={siteSettings.navCtaLabel}
+                    />
+                    <Field
+                      label="Nav CTA Href"
+                      name="navCtaHref"
+                      defaultValue={siteSettings.navCtaHref}
+                    />
+                  </div>
+                  <Field
+                    label="Archive Search Placeholder"
+                    name="searchArchivePlaceholder"
+                    defaultValue={siteSettings.searchArchivePlaceholder}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Work Page Hero
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow (optional — defaults to site name)"
+                      name="workPageEyebrow"
+                      defaultValue={siteSettings.workPageEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="workPageHeroTitle"
+                      defaultValue={siteSettings.workPageHeroTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="workPageHeroDescription"
+                    rows={3}
+                    defaultValue={siteSettings.workPageHeroDescription}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Services Page Hero
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="servicesPageEyebrow"
+                      defaultValue={siteSettings.servicesPageEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="servicesPageHeroTitle"
+                      defaultValue={siteSettings.servicesPageHeroTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="servicesPageHeroDescription"
+                    rows={3}
+                    defaultValue={siteSettings.servicesPageHeroDescription}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Project Detail — Related Section
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="projectRelatedEyebrow"
+                      defaultValue={siteSettings.projectRelatedEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="projectRelatedTitle"
+                      defaultValue={siteSettings.projectRelatedTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="projectRelatedDescription"
+                    rows={2}
+                    defaultValue={siteSettings.projectRelatedDescription}
+                  />
+                  <Area
+                    label="Playback Note (sidebar)"
+                    name="projectPlaybackNote"
+                    rows={2}
+                    defaultValue={siteSettings.projectPlaybackNote}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Homepage — Featured CTA
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Label"
+                      name="homeFeaturedWorkCtaLabel"
+                      defaultValue={siteSettings.homeFeaturedWorkCtaLabel}
+                    />
+                    <Field
+                      label="Href"
+                      name="homeFeaturedWorkCtaHref"
+                      defaultValue={siteSettings.homeFeaturedWorkCtaHref}
+                    />
+                  </div>
                   <SubmitRow saveLabel="Save Site Settings" />
                 </form>
+
+                <div id="nav-links" className="mt-10 space-y-4">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Header Navigation
+                  </p>
+                  {navLinks.map((link) => (
+                    <form
+                      key={link.id}
+                      action={saveNavLinkAction}
+                      className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_120px_auto]"
+                    >
+                      <input type="hidden" name="id" value={link.id} />
+                      <Field
+                        label="Label"
+                        name="label"
+                        required
+                        defaultValue={link.label}
+                      />
+                      <Field
+                        label="Href"
+                        name="href"
+                        required
+                        defaultValue={link.href}
+                      />
+                      <Field
+                        label="Order"
+                        name="sortOrder"
+                        type="number"
+                        defaultValue={link.sortOrder}
+                      />
+                      <div className="self-end">
+                        <SubmitRow saveLabel="Save Link">
+                          <button
+                            type="submit"
+                            formAction={deleteNavLinkAction}
+                            className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                          >
+                            Delete
+                          </button>
+                        </SubmitRow>
+                      </div>
+                    </form>
+                  ))}
+
+                  <form
+                    action={saveNavLinkAction}
+                    className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_120px_auto]"
+                  >
+                    <Field label="Label" name="label" required />
+                    <Field label="Href" name="href" required placeholder="/work" />
+                    <Field
+                      label="Order"
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={0}
+                    />
+                    <div className="self-end">
+                      <SubmitRow saveLabel="Add Nav Link" />
+                    </div>
+                  </form>
+                </div>
 
                 <div id="site-links" className="mt-10 space-y-4">
                   <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
@@ -589,6 +764,95 @@ export default async function AdminPage({
                       defaultValue={homepage.secondaryCtaHref}
                     />
                   </div>
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Hero — Eyebrow & Aside
+                  </p>
+                  <Field
+                    label="Hero Eyebrow (blank = site name + “ Portfolio”)"
+                    name="heroEyebrow"
+                    defaultValue={homepage.heroEyebrow}
+                  />
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Aside Eyebrow"
+                      name="heroAsideEyebrow"
+                      defaultValue={homepage.heroAsideEyebrow}
+                    />
+                  <Field
+                    label="Aside Focus Line (blank = first About craft notes)"
+                    name="heroAsideFocus"
+                    defaultValue={homepage.heroAsideFocus}
+                  />
+                  </div>
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Featured Section
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="featuredEyebrow"
+                      defaultValue={homepage.featuredEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="featuredTitle"
+                      defaultValue={homepage.featuredTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="featuredDescription"
+                    rows={2}
+                    defaultValue={homepage.featuredDescription}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Services Section
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="servicesEyebrow"
+                      defaultValue={homepage.servicesEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="servicesTitle"
+                      defaultValue={homepage.servicesTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="servicesDescription"
+                    rows={3}
+                    defaultValue={homepage.servicesDescription}
+                  />
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Approach Section
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="approachEyebrow"
+                      defaultValue={homepage.approachEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="approachTitle"
+                      defaultValue={homepage.approachTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="approachDescription"
+                    rows={3}
+                    defaultValue={homepage.approachDescription}
+                  />
+                  <Area
+                    label="Approach Bullets (one per line — optional; falls back to About craft notes)"
+                    name="approachBullets"
+                    rows={4}
+                    defaultValue={homepage.approachBullets.join("\n")}
+                  />
                   <SubmitRow saveLabel="Save Homepage" />
                 </form>
               </>
@@ -878,6 +1142,27 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveAboutAction} className="grid gap-5">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Page Hero (optional overrides)
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="pageHeroEyebrow"
+                      defaultValue={about.pageHeroEyebrow}
+                    />
+                    <Field
+                      label="Title (blank = main title below)"
+                      name="pageHeroTitle"
+                      defaultValue={about.pageHeroTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description (blank = story excerpt on page hero)"
+                    name="pageHeroDescription"
+                    rows={3}
+                    defaultValue={about.pageHeroDescription}
+                  />
                   <Field
                     label="Title"
                     name="title"
@@ -917,6 +1202,27 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveContactContentAction} className="grid gap-5">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Page Hero
+                  </p>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Eyebrow"
+                      name="pageHeroEyebrow"
+                      defaultValue={contact.pageHeroEyebrow}
+                    />
+                    <Field
+                      label="Title"
+                      name="pageHeroTitle"
+                      defaultValue={contact.pageHeroTitle}
+                    />
+                  </div>
+                  <Area
+                    label="Description"
+                    name="pageHeroDescription"
+                    rows={3}
+                    defaultValue={contact.pageHeroDescription}
+                  />
                   <Field
                     label="Title"
                     name="title"

@@ -22,9 +22,14 @@ export default async function ContactPage() {
   return (
     <main>
       <PageHero
-        eyebrow="Contact"
-        title="Start your next release."
-        description="Share your track, references, and timeline. Contact details and links are managed from CRM."
+        eyebrow={contactResult.contact?.pageHeroEyebrow || "Contact"}
+        title={
+          contactResult.contact?.pageHeroTitle || "Start your next release."
+        }
+        description={
+          contactResult.contact?.pageHeroDescription ||
+          "Share your track, references, and timeline. Contact details and links stay current from admin."
+        }
       />
       <Section className="pt-2">
         {contactResult.error || !contactResult.contact ? (
