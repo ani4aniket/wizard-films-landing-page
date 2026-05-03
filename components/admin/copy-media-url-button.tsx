@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react"
 
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 type Props = {
@@ -29,19 +30,18 @@ export function CopyMediaUrlButton({
   }, [url])
 
   return (
-    <button
+    <Button
       type="button"
+      variant="outline"
+      size="sm"
       onClick={copy}
-      className={cn(
-        "pill-feedback rounded-full border border-border px-4 py-2 text-sm text-foreground transition hover:bg-secondary",
-        className,
-      )}
+      className={cn(className)}
     >
       {state === "copied"
         ? "Copied"
         : state === "error"
           ? "Copy failed"
           : label}
-    </button>
+    </Button>
   )
 }

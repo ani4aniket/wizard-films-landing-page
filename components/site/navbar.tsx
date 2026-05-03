@@ -67,7 +67,7 @@ export function Navbar({
               {siteName}
             </Link>
           </div>
-          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-8 lg:flex">
+          <div className="absolute top-1/2 left-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-8 lg:flex">
             {navLinks.map((item) => {
               const isActive = pathname === item.href
 
@@ -79,7 +79,7 @@ export function Navbar({
                     "border-b-2 pb-1 text-base font-medium text-foreground transition-colors",
                     isActive
                       ? "border-foreground"
-                      : "border-transparent hover:border-border hover:text-muted-foreground"
+                      : "border-transparent hover:border-foreground"
                   )}
                 >
                   {item.label}

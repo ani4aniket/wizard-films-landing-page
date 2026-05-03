@@ -3,6 +3,7 @@ import Link from "next/link"
 
 import { ContactForm } from "@/components/site/contact-form"
 import { PageHero } from "@/components/site/page-hero"
+import { SocialGlyph } from "@/components/site/social-glyph"
 import { Reveal } from "@/components/site/reveal"
 import { Section } from "@/components/site/section"
 import { CmsErrorState } from "@/components/site/states"
@@ -63,9 +64,10 @@ export default async function ContactPage() {
                         href={link.url}
                         target="_blank"
                         rel="noreferrer"
-                        className="block text-sm text-foreground transition-colors hover:text-muted-foreground"
+                        className="flex items-center gap-2.5 text-sm text-foreground transition-colors hover:text-muted-foreground"
                       >
-                        {link.label}
+                        <SocialGlyph link={link} />
+                        <span>{link.label}</span>
                       </Link>
                     ))}
                   </div>

@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}${path}`,
       changeFrequency: "weekly" as const,
       priority: path === "" ? 1 : 0.8,
-    }),
+    })
   )
 
   const projects = await getProjects().catch(() => [])

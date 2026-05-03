@@ -12,19 +12,11 @@ interface RevealProps {
   id?: string
 }
 
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-}: RevealProps) {
+export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const prefersReducedMotion = useReducedMotion()
 
   if (prefersReducedMotion) {
-    return (
-      <div className={className}>
-        {children}
-      </div>
-    )
+    return <div className={className}>{children}</div>
   }
 
   return (

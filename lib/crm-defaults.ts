@@ -450,36 +450,11 @@ const SAMPLE_SERVICES = [
   },
 ]
 
-const SAMPLE_SUBMISSIONS = [
-  {
-    name: "Harpreet K.",
-    email: "label.coord@example.com",
-    message:
-      "Punjabi single dropping in six weeks—need director + edit for official music video, two teasers, and vertical cutdowns. Budget and references ready.",
-    isRead: false,
-  },
-  {
-    name: "Simran R.",
-    email: "artist.mgmt@example.com",
-    message:
-      "Looking for Wizard Films to direct next video—night exterior performance, one narrative thread, Wizard Films-style polish.",
-    isRead: true,
-  },
-  {
-    name: "Jaz B.",
-    email: "production@example.com",
-    message:
-      "Need shoot execution and edit-only pass on locked footage for a label lyric video variant—tight turnaround.",
-    isRead: false,
-  },
-]
-
 export async function replaceCmsWithSampleData() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 
   await prisma.$transaction(
     async (tx) => {
-      await tx.contactSubmission.deleteMany()
       await tx.project.deleteMany()
       await tx.service.deleteMany()
       await tx.socialLink.deleteMany()
@@ -649,7 +624,6 @@ export async function replaceCmsWithSampleData() {
       await tx.navLink.createMany({ data: SAMPLE_NAV_LINKS })
       await tx.service.createMany({ data: SAMPLE_SERVICES })
       await tx.project.createMany({ data: SAMPLE_PROJECTS })
-      await tx.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
     },
     { maxWait: 10_000, timeout: 120_000 }
   )

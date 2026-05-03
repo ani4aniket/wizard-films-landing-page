@@ -43,7 +43,10 @@ export function FeaturedVideoCard({
 
   return (
     <article
-      className={cn("group block border border-transparent bg-background", className)}
+      className={cn(
+        "group block border border-transparent bg-background",
+        className
+      )}
     >
       <div className="surface-soft relative aspect-square overflow-hidden">
         {isPlaying ? (

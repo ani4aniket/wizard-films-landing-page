@@ -65,7 +65,9 @@ function mapProject(project: {
     youtubeUrl: project.youtubeUrl,
     videoId,
     embedUrl: getYouTubeEmbedUrl(videoId),
-    thumbnailUrl: normalizeOptionalString(project.thumbnailUrl) || getYouTubeThumbnailUrl(videoId),
+    thumbnailUrl:
+      normalizeOptionalString(project.thumbnailUrl) ||
+      getYouTubeThumbnailUrl(videoId),
     credits: normalizeOptionalString(project.credits),
     role: normalizeOptionalString(project.role),
     featured: project.featured,

@@ -24,7 +24,11 @@ function CinematicPlanes({ media }: { media: HeroMediaItem[] }) {
   useEffect(() => {
     const onWheel = (event: WheelEvent) => {
       scrollVelocityRef.current += event.deltaY * 0.0005
-      scrollVelocityRef.current = THREE.MathUtils.clamp(scrollVelocityRef.current, -2.2, 2.2)
+      scrollVelocityRef.current = THREE.MathUtils.clamp(
+        scrollVelocityRef.current,
+        -2.2,
+        2.2
+      )
     }
     window.addEventListener("wheel", onWheel, { passive: true })
     return () => window.removeEventListener("wheel", onWheel)
@@ -48,7 +52,12 @@ function CinematicPlanes({ media }: { media: HeroMediaItem[] }) {
 
   useFrame((state, delta) => {
     const t = state.clock.getElapsedTime()
-    scrollVelocityRef.current = THREE.MathUtils.damp(scrollVelocityRef.current, 0, 2.2, delta)
+    scrollVelocityRef.current = THREE.MathUtils.damp(
+      scrollVelocityRef.current,
+      0,
+      2.2,
+      delta
+    )
 
     if (groupRef.current) {
       groupRef.current.rotation.x = THREE.MathUtils.lerp(
@@ -73,7 +82,11 @@ function CinematicPlanes({ media }: { media: HeroMediaItem[] }) {
       const spec = layout[i]
       const pulse = Math.sin(t * 1.2 + spec.driftSeed) * 0.18
       const sideFloat = Math.cos(t * 0.7 + spec.driftSeed) * 0.12
-      mesh.position.x = THREE.MathUtils.lerp(mesh.position.x, spec.baseX + sideFloat, 0.08)
+      mesh.position.x = THREE.MathUtils.lerp(
+        mesh.position.x,
+        spec.baseX + sideFloat,
+        0.08
+      )
       mesh.position.y = THREE.MathUtils.lerp(
         mesh.position.y,
         spec.baseY + pulse + scrollVelocityRef.current * 0.6,
@@ -98,8 +111,11 @@ function CinematicPlanes({ media }: { media: HeroMediaItem[] }) {
       <group ref={groupRef} position={[0, -0.1, -0.4]}>
         {media.map((item, i) => {
           const texture = textures[i]
-          const image = texture?.image as { width?: number; height?: number } | undefined
-          const aspect = image?.width && image?.height ? image.width / image.height : 16 / 9
+          const image = texture?.image as
+            | { width?: number; height?: number }
+            | undefined
+          const aspect =
+            image?.width && image?.height ? image.width / image.height : 16 / 9
           const width = 2.5
           const height = width / Math.max(aspect, 0.65)
 
@@ -150,8 +166,10 @@ export function HeroWebGLWall({ media }: HeroWebGLWallProps) {
   const [resolvedMedia, setResolvedMedia] = useState<HeroMediaItem[]>([])
   const [webglAllowed] = useState(() => {
     if (typeof window === "undefined") return true
-    const crashedBefore = window.sessionStorage.getItem("hero-webgl-disabled") === "1"
-    const memory = (navigator as Navigator & { deviceMemory?: number }).deviceMemory
+    const crashedBefore =
+      window.sessionStorage.getItem("hero-webgl-disabled") === "1"
+    const memory = (navigator as Navigator & { deviceMemory?: number })
+      .deviceMemory
     const veryLowMemory = typeof memory === "number" && memory <= 2
     return !(crashedBefore || veryLowMemory)
   })
@@ -166,29 +184,31 @@ export function HeroWebGLWall({ media }: HeroWebGLWallProps) {
 
     async function resolveValidMedia() {
       const checks = await Promise.all(
-        candidates.map(
-          async (item): Promise<HeroMediaItem | null> => {
-            try {
-              const response = await fetch(item.src, { cache: "force-cache" })
-              if (!response.ok) return null
+        candidates.map(async (item): Promise<HeroMediaItem | null> => {
+          try {
+            const response = await fetch(item.src, { cache: "force-cache" })
+            if (!response.ok) return null
 
-              const contentType = response.headers.get("content-type") ?? ""
-              if (!contentType.startsWith("image/")) return null
+            const contentType = response.headers.get("content-type") ?? ""
+            if (!contentType.startsWith("image/")) return null
 
-              const blob = await response.blob()
-              const blobUrl = URL.createObjectURL(blob)
-              objectUrls.push(blobUrl)
+            const blob = await response.blob()
+            const blobUrl = URL.createObjectURL(blob)
+            objectUrls.push(blobUrl)
 
-              return { src: blobUrl, alt: item.alt }
-            } catch {
-              return null
-            }
+            return { src: blobUrl, alt: item.alt }
+          } catch {
+            return null
           }
-        )
+        })
       )
 
       if (!cancelled) {
-        setResolvedMedia(checks.filter((item): item is HeroMediaItem => Boolean(item)).slice(0, 4))
+        setResolvedMedia(
+          checks
+            .filter((item): item is HeroMediaItem => Boolean(item))
+            .slice(0, 4)
+        )
       } else {
         objectUrls.forEach((url) => URL.revokeObjectURL(url))
         objectUrls = []
@@ -214,7 +234,11 @@ export function HeroWebGLWall({ media }: HeroWebGLWallProps) {
         <Canvas
           camera={{ position: [0, 0, 8], fov: 42 }}
           dpr={1}
-          gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+          gl={{
+            antialias: false,
+            alpha: true,
+            powerPreference: "high-performance",
+          }}
           onCreated={({ gl }) => {
             gl.domElement.addEventListener(
               "webglcontextlost",

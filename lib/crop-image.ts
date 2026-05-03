@@ -13,7 +13,7 @@ export async function getCroppedImageBlob(
   imageSrc: string,
   pixelCrop: Area,
   mime: "image/jpeg" | "image/png" | "image/webp",
-  quality = 0.92,
+  quality = 0.92
 ): Promise<Blob> {
   const image = await loadImage(imageSrc)
   const canvas = document.createElement("canvas")
@@ -32,7 +32,7 @@ export async function getCroppedImageBlob(
     0,
     0,
     pixelCrop.width,
-    pixelCrop.height,
+    pixelCrop.height
   )
   return new Promise((resolve, reject) => {
     canvas.toBlob(
@@ -41,7 +41,7 @@ export async function getCroppedImageBlob(
         else reject(new Error("Crop produced empty image"))
       },
       mime,
-      mime === "image/png" ? undefined : quality,
+      mime === "image/png" ? undefined : quality
     )
   })
 }

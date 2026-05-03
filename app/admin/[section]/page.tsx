@@ -9,7 +9,11 @@ export default async function AdminSectionPage({
   searchParams,
 }: {
   params: Promise<{ section: string }>
-  searchParams: Promise<{ error?: string; uploadedUrl?: string }>
+  searchParams: Promise<{
+    error?: string
+    uploadedUrl?: string
+    toast?: string
+  }>
 }) {
   const { section: raw } = await params
   if (!isAdminTabId(raw)) {
@@ -20,11 +24,7 @@ export default async function AdminSectionPage({
 
   return (
     <AdminGate error={error}>
-      <AdminDashboard
-        section={raw}
-        error={error}
-        uploadedUrl={uploadedUrl}
-      />
+      <AdminDashboard section={raw} error={error} uploadedUrl={uploadedUrl} />
     </AdminGate>
   )
 }

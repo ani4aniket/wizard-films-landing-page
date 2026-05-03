@@ -4,8 +4,13 @@ import "./globals.css"
 import { Footer } from "@/components/site/footer"
 import { Navbar } from "@/components/site/navbar"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Toaster } from "@/components/ui/sonner"
 import { buildSiteMetadata } from "@/lib/metadata"
-import { getContactContent, getNavigationLinks, getSiteSettings } from "@/lib/crm"
+import {
+  getContactContent,
+  getNavigationLinks,
+  getSiteSettings,
+} from "@/lib/crm"
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
@@ -81,6 +86,7 @@ export default async function RootLayout({
           />
           {children}
           <Footer settings={mergedSettings} navLinks={navLinks} />
+          <Toaster position="top-center" richColors closeButton />
         </ThemeProvider>
       </body>
     </html>

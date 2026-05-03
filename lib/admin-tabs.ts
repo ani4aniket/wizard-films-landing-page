@@ -10,6 +10,13 @@ export const ADMIN_TAB_IDS = [
 
 export type AdminTabId = (typeof ADMIN_TAB_IDS)[number]
 
+/** Shown together in the admin tab bar before the per-page tabs, with a divider after. */
+export const ADMIN_TAB_SITE_GROUP_IDS = ["media", "site-settings"] as const
+
+export function isAdminTabSiteGroupId(id: AdminTabId): boolean {
+  return (ADMIN_TAB_SITE_GROUP_IDS as readonly string[]).includes(id)
+}
+
 export const DEFAULT_ADMIN_TAB: AdminTabId = "media"
 
 export function isAdminTabId(value: string): value is AdminTabId {

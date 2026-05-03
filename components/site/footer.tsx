@@ -1,5 +1,6 @@
 import Link from "next/link"
 
+import { SocialGlyph } from "@/components/site/social-glyph"
 import type { SiteSettings, SocialLink } from "@/lib/types"
 
 function SocialList({ socialLinks }: { socialLinks: SocialLink[] }) {
@@ -15,9 +16,10 @@ function SocialList({ socialLinks }: { socialLinks: SocialLink[] }) {
           href={item.url}
           target="_blank"
           rel="noreferrer"
-          className="rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="inline-flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          {item.label}
+          <SocialGlyph link={item} className="text-current" />
+          <span>{item.label}</span>
         </Link>
       ))}
     </div>

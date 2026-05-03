@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useTransition } from "react"
+import { toast } from "sonner"
 
 import { Button } from "@/components/ui/button"
 
@@ -12,7 +13,6 @@ const EMPTY_FORM = {
 
 export function ContactForm() {
   const [form, setForm] = useState(EMPTY_FORM)
-  const [status, setStatus] = useState<string>("")
   const [isPending, startTransition] = useTransition()
 
   function updateField(field: keyof typeof EMPTY_FORM, value: string) {
@@ -21,28 +21,37 @@ export function ContactForm() {
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    setStatus("")
 
     startTransition(async () => {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(form),
-      })
+      const loadingId = toast.loading("Sending…")
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        })
 
-      const payload = (await response.json().catch(() => null)) as {
-        message?: string
-      } | null
+        const payload = (await response.json().catch(() => null)) as {
+          message?: string
+        } | null
 
-      if (!response.ok) {
-        setStatus(payload?.message || "Unable to send your message right now.")
-        return
+        toast.dismiss(loadingId)
+
+        if (!response.ok) {
+          toast.error(
+            payload?.message || "Unable to send your message right now."
+          )
+          return
+        }
+
+        toast.success("Message sent. You will hear back soon.")
+        setForm(EMPTY_FORM)
+      } catch {
+        toast.dismiss(loadingId)
+        toast.error("Unable to send your message right now.")
       }
-
-      setStatus("Message sent. You will hear back soon.")
-      setForm(EMPTY_FORM)
     })
   }
 
@@ -92,9 +101,6 @@ export function ContactForm() {
         <Button type="submit" disabled={isPending}>
           {isPending ? "Sending..." : "Send Message"}
         </Button>
-        {status ? (
-          <p className="text-sm leading-6 text-muted-foreground">{status}</p>
-        ) : null}
       </div>
     </form>
   )

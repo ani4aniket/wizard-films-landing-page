@@ -7,7 +7,12 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
 import { adminPathAfterAction } from "@/lib/admin-tabs"
-import { endAdminSession, isAdminPasswordConfigured, requireAdminSession, startAdminSession } from "@/lib/admin-auth"
+import {
+  endAdminSession,
+  isAdminPasswordConfigured,
+  requireAdminSession,
+  startAdminSession,
+} from "@/lib/admin-auth"
 import { prisma } from "@/lib/prisma"
 import { slugify } from "@/lib/youtube"
 
@@ -68,8 +73,26 @@ function buildUploadPath(filename: string) {
   return `wizard-films/${Date.now()}-${slug}${extension.toLowerCase()}`
 }
 
-function redirectTo(section: string) {
-  redirect(adminPathAfterAction(section))
+type AdminFlash =
+  | "saved"
+  | "deleted"
+  | "signed-in"
+  | "signed-out"
+  | "uploaded"
+
+function redirectTo(section: string, flash?: AdminFlash) {
+  const raw = adminPathAfterAction(section)
+  const hashIndex = raw.indexOf("#")
+  const pathOnly = hashIndex === -1 ? raw : raw.slice(0, hashIndex)
+  const hash = hashIndex === -1 ? "" : raw.slice(hashIndex)
+
+  if (!flash) {
+    redirect(`${pathOnly}${hash}`)
+    return
+  }
+
+  const sep = pathOnly.includes("?") ? "&" : "?"
+  redirect(`${pathOnly}${sep}toast=${flash}${hash}`)
 }
 
 export async function loginAction(formData: FormData) {
@@ -83,12 +106,12 @@ export async function loginAction(formData: FormData) {
     redirect("/admin?error=invalid-password")
   }
 
-  redirect("/admin/media")
+  redirect("/admin/media?toast=signed-in")
 }
 
 export async function logoutAction() {
   await endAdminSession()
-  redirect("/admin")
+  redirect("/admin?toast=signed-out")
 }
 
 export async function saveSiteSettingsAction(formData: FormData) {
@@ -146,7 +169,7 @@ export async function saveSiteSettingsAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("site-settings")
+  redirectTo("site-settings", "saved")
 }
 
 export async function saveHomepageAction(formData: FormData) {
@@ -180,7 +203,7 @@ export async function saveHomepageAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("homepage")
+  redirectTo("homepage", "saved")
 }
 
 export async function saveAboutAction(formData: FormData) {
@@ -199,7 +222,7 @@ export async function saveAboutAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("about")
+  redirectTo("about", "saved")
 }
 
 export async function saveContactContentAction(formData: FormData) {
@@ -217,7 +240,7 @@ export async function saveContactContentAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("contact")
+  redirectTo("contact", "saved")
 }
 
 export async function saveNavLinkAction(formData: FormData) {
@@ -239,7 +262,7 @@ export async function saveNavLinkAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("nav-links")
+  redirectTo("nav-links", "saved")
 }
 
 export async function deleteNavLinkAction(formData: FormData) {
@@ -254,7 +277,7 @@ export async function deleteNavLinkAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo("nav-links")
+  redirectTo("nav-links", "deleted")
 }
 
 export async function saveSocialLinkAction(formData: FormData) {
@@ -280,7 +303,7 @@ export async function saveSocialLinkAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo(section === "CONTACT" ? "contact-links" : "site-links")
+  redirectTo(section === "CONTACT" ? "contact-links" : "site-links", "saved")
 }
 
 export async function deleteSocialLinkAction(formData: FormData) {
@@ -296,7 +319,7 @@ export async function deleteSocialLinkAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo(section === "CONTACT" ? "contact-links" : "site-links")
+  redirectTo(section === "CONTACT" ? "contact-links" : "site-links", "deleted")
 }
 
 export async function saveProjectAction(formData: FormData) {
@@ -325,7 +348,7 @@ export async function saveProjectAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo("projects")
+  redirectTo("projects", "saved")
 }
 
 export async function deleteProjectAction(formData: FormData) {
@@ -340,7 +363,7 @@ export async function deleteProjectAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo("projects")
+  redirectTo("projects", "deleted")
 }
 
 export async function saveServiceAction(formData: FormData) {
@@ -365,7 +388,7 @@ export async function saveServiceAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo("services")
+  redirectTo("services", "saved")
 }
 
 export async function deleteServiceAction(formData: FormData) {
@@ -380,7 +403,7 @@ export async function deleteServiceAction(formData: FormData) {
   }
 
   revalidateCmsPaths()
-  redirectTo("services")
+  redirectTo("services", "deleted")
 }
 
 export async function uploadMediaAction(formData: FormData) {
@@ -414,7 +437,9 @@ export async function uploadMediaAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirect(`/admin/media?uploadedUrl=${encodeURIComponent(blob.url)}`)
+  redirect(
+    `/admin/media?uploadedUrl=${encodeURIComponent(blob.url)}&toast=uploaded`
+  )
 }
 
 export async function deleteMediaAssetAction(formData: FormData) {
@@ -441,7 +466,7 @@ export async function deleteMediaAssetAction(formData: FormData) {
   }
 
   revalidateAdminDashboard()
-  redirectTo("media")
+  redirectTo("media", "deleted")
 }
 
 export async function toggleSubmissionReadAction(formData: FormData) {
@@ -458,7 +483,7 @@ export async function toggleSubmissionReadAction(formData: FormData) {
   }
 
   revalidateAdminDashboard()
-  redirectTo("submissions")
+  redirectTo("submissions", "saved")
 }
 
 export async function deleteSubmissionAction(formData: FormData) {
@@ -473,5 +498,5 @@ export async function deleteSubmissionAction(formData: FormData) {
   }
 
   revalidateAdminDashboard()
-  redirectTo("submissions")
+  redirectTo("submissions", "deleted")
 }

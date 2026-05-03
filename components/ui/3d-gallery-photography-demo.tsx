@@ -32,7 +32,12 @@ const sampleImages = [
 export default function GalleryPhotographyDemo() {
   return (
     <main className="h-screen min-h-screen w-full">
-      <InfiniteGallery images={sampleImages} speed={1.2} visibleCount={12} className="h-screen w-full" />
+      <InfiniteGallery
+        images={sampleImages}
+        speed={1.2}
+        visibleCount={12}
+        className="h-screen w-full"
+      />
     </main>
   )
 }

@@ -189,11 +189,16 @@ function GalleryScene({
   const lastInteraction = useRef(Date.now())
 
   const normalizedImages = useMemo(
-    () => images.map((img) => (typeof img === "string" ? { src: img, alt: "" } : img)),
+    () =>
+      images.map((img) =>
+        typeof img === "string" ? { src: img, alt: "" } : img
+      ),
     [images]
   )
 
-  const textures = useTexture(normalizedImages.map((img) => img.src)) as THREE.Texture[]
+  const textures = useTexture(
+    normalizedImages.map((img) => img.src)
+  ) as THREE.Texture[]
 
   const materials = useMemo(
     () => Array.from({ length: visibleCount }, () => createClothMaterial()),
@@ -217,8 +222,11 @@ function GalleryScene({
       const horizontalRadius = (i % 3) * 1.2
       const verticalRadius = ((i + 1) % 4) * 0.8
 
-      const x = (Math.sin(horizontalAngle) * horizontalRadius * MAX_HORIZONTAL_OFFSET) / 3
-      const y = (Math.cos(verticalAngle) * verticalRadius * MAX_VERTICAL_OFFSET) / 4
+      const x =
+        (Math.sin(horizontalAngle) * horizontalRadius * MAX_HORIZONTAL_OFFSET) /
+        3
+      const y =
+        (Math.cos(verticalAngle) * verticalRadius * MAX_VERTICAL_OFFSET) / 4
 
       positions.push({ x, y })
     }
@@ -242,7 +250,10 @@ function GalleryScene({
   useEffect(() => {
     planesData.current = Array.from({ length: visibleCount }, (_, i) => ({
       index: i,
-      z: visibleCount > 0 ? ((depthRange / Math.max(visibleCount, 1)) * i) % depthRange : 0,
+      z:
+        visibleCount > 0
+          ? ((depthRange / Math.max(visibleCount, 1)) * i) % depthRange
+          : 0,
       imageIndex: totalImages > 0 ? i % totalImages : 0,
       x: spatialPositions[i]?.x ?? 0,
       y: spatialPositions[i]?.y ?? 0,
@@ -305,7 +316,8 @@ function GalleryScene({
       material.uniforms.scrollForce.value = scrollVelocity
     }
 
-    const imageAdvance = totalImages > 0 ? visibleCount % totalImages || totalImages : 0
+    const imageAdvance =
+      totalImages > 0 ? visibleCount % totalImages || totalImages : 0
     const totalRange = depthRange
 
     planesData.current.forEach((plane, i) => {
@@ -322,7 +334,8 @@ function GalleryScene({
       }
 
       if (wrapsForward > 0 && imageAdvance > 0 && totalImages > 0) {
-        plane.imageIndex = (plane.imageIndex + wrapsForward * imageAdvance) % totalImages
+        plane.imageIndex =
+          (plane.imageIndex + wrapsForward * imageAdvance) % totalImages
       }
 
       if (wrapsBackward > 0 && imageAdvance > 0 && totalImages > 0) {
@@ -403,8 +416,11 @@ function GalleryScene({
         if (!texture || !material) return null
 
         const worldZ = plane.z - depthRange / 2
-        const image = texture.image as { width?: number; height?: number } | undefined
-        const aspect = image?.width && image?.height ? image.width / image.height : 1
+        const image = texture.image as
+          | { width?: number; height?: number }
+          | undefined
+        const aspect =
+          image?.width && image?.height ? image.width / image.height : 1
         const scale: [number, number, number] =
           aspect > 1 ? [2 * aspect, 2, 1] : [2, 2 / Math.max(aspect, 0.001), 1]
 
@@ -424,13 +440,18 @@ function GalleryScene({
 
 function FallbackGallery({ images }: { images: ImageItem[] }) {
   const normalizedImages = useMemo(
-    () => images.map((img) => (typeof img === "string" ? { src: img, alt: "" } : img)),
+    () =>
+      images.map((img) =>
+        typeof img === "string" ? { src: img, alt: "" } : img
+      ),
     [images]
   )
 
   return (
     <div className="flex h-full flex-col items-center justify-center bg-zinc-900 p-4 text-white">
-      <p className="mb-4 text-white/80">WebGL not supported. Showing image list:</p>
+      <p className="mb-4 text-white/80">
+        WebGL not supported. Showing image list:
+      </p>
       <div className="grid max-h-96 grid-cols-2 gap-4 overflow-y-auto md:grid-cols-3">
         {normalizedImages.map((img, i) => (
           <img
@@ -466,7 +487,8 @@ export default function InfiniteGallery({
   useEffect(() => {
     try {
       const canvas = document.createElement("canvas")
-      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
+      const gl =
+        canvas.getContext("webgl") || canvas.getContext("experimental-webgl")
       if (!gl) setWebglSupported(false)
     } catch {
       setWebglSupported(false)
@@ -483,7 +505,10 @@ export default function InfiniteGallery({
 
   return (
     <div className={className} style={style}>
-      <Canvas camera={{ position: [0, 0, 0], fov: 55 }} gl={{ antialias: true, alpha: true }}>
+      <Canvas
+        camera={{ position: [0, 0, 0], fov: 55 }}
+        gl={{ antialias: true, alpha: true }}
+      >
         <GalleryScene
           images={images}
           speed={speed}

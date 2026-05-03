@@ -17,14 +17,19 @@ import {
 import { cn } from "@/lib/utils"
 
 export default async function Page() {
-  const [homepageResult, projectsResult, servicesResult, aboutResult, siteSettingsResult] =
-    await Promise.allSettled([
-      getHomepageContent(),
-      getProjects(),
-      getServices(),
-      getAboutContent(),
-      getSiteSettings(),
-    ])
+  const [
+    homepageResult,
+    projectsResult,
+    servicesResult,
+    aboutResult,
+    siteSettingsResult,
+  ] = await Promise.allSettled([
+    getHomepageContent(),
+    getProjects(),
+    getServices(),
+    getAboutContent(),
+    getSiteSettings(),
+  ])
 
   const homepage =
     homepageResult.status === "fulfilled" ? homepageResult.value : null
@@ -54,8 +59,7 @@ export default async function Page() {
   const secondaryCtaHref = homepage?.secondaryCtaHref || "/contact"
   const secondaryCtaLabel = homepage?.secondaryCtaLabel || "Start a Project"
   const siteName = siteSettings?.siteName || "Wizard Films"
-  const heroEyebrow =
-    homepage?.heroEyebrow?.trim() || `${siteName} Portfolio`
+  const heroEyebrow = homepage?.heroEyebrow?.trim() || `${siteName} Portfolio`
   const heroAsideEyebrow = homepage?.heroAsideEyebrow || "Creative Focus"
   const heroFocus =
     homepage?.heroAsideFocus?.trim() ||
@@ -94,8 +98,7 @@ export default async function Page() {
         ]
   const featuredWorkCtaLabel =
     siteSettings?.homeFeaturedWorkCtaLabel || "View More Work"
-  const featuredWorkCtaHref =
-    siteSettings?.homeFeaturedWorkCtaHref || "/work"
+  const featuredWorkCtaHref = siteSettings?.homeFeaturedWorkCtaHref || "/work"
 
   return (
     <main>

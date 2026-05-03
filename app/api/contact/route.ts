@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 
 import { submitContactForm } from "@/lib/crm"
+import { sendContactNotification } from "@/lib/send-contact-notification"
 
 export async function POST(request: Request) {
   try {
@@ -13,15 +14,18 @@ export async function POST(request: Request) {
     if (!payload.name || !payload.email || !payload.message) {
       return NextResponse.json(
         { message: "Name, email, and message are required." },
-        { status: 400 },
+        { status: 400 }
       )
     }
 
-    await submitContactForm({
+    const submission = {
       name: payload.name,
       email: payload.email,
       message: payload.message,
-    })
+    }
+
+    await submitContactForm(submission)
+    await sendContactNotification(submission)
 
     return NextResponse.json({ ok: true })
   } catch (error) {

@@ -9,7 +9,8 @@ import { getAboutContent } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "About",
-  description: "About Wizard Films: direction, editing, shoot execution, and music-led visuals.",
+  description:
+    "About Wizard Films: direction, editing, shoot execution, and music-led visuals.",
 }
 
 export default async function AboutPage() {

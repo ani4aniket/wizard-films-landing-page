@@ -22,7 +22,7 @@ export default async function WorkPage({
     typeof rawQuery === "string"
       ? rawQuery.trim()
       : Array.isArray(rawQuery)
-        ? rawQuery[0]?.trim() ?? ""
+        ? (rawQuery[0]?.trim() ?? "")
         : ""
 
   const [projectsResult, siteSettingsResult] = await Promise.all([
