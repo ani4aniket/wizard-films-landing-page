@@ -1,15 +1,17 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useEffect, useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { type FormEvent, useEffect, useState } from "react"
 
 import { NAV_LINKS } from "@/lib/constants"
 import { cn } from "@/lib/utils"
 
 export function Navbar({ siteName }: { siteName: string }) {
   const pathname = usePathname()
+  const router = useRouter()
   const [isScrolled, setIsScrolled] = useState(false)
+  const [archiveQuery, setArchiveQuery] = useState("")
 
   useEffect(() => {
     const onScroll = () => {
@@ -22,11 +24,26 @@ export function Navbar({ siteName }: { siteName: string }) {
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
+  const handleArchiveSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    const search = archiveQuery.trim()
+    if (!search) {
+      router.push("/work")
+      return
+    }
+
+    router.push(`/work?q=${encodeURIComponent(search)}`)
+  }
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50">
+    <header className="sticky inset-x-0 top-0 z-50">
       <nav
         className={cn(
-          "border-b border-transparent bg-background/96 transition-all duration-300",
+          "border-b border-transparent transition-all duration-300",
+          pathname === "/" && !isScrolled
+            ? "bg-transparent"
+            : "bg-background/96 backdrop-blur supports-backdrop-filter:bg-background/90",
           isScrolled && "border-border"
         )}
       >
@@ -60,12 +77,23 @@ export function Navbar({ siteName }: { siteName: string }) {
             </div>
           </div>
           <div className="hidden items-center gap-3 md:flex">
-            <Link
-              href="/work"
-              className="pill-feedback inline-flex h-10 min-w-48 items-center rounded-full bg-secondary px-4 text-sm text-muted-foreground"
+            <form
+              onSubmit={handleArchiveSearch}
+              className="pill-feedback flex h-10 min-w-48 items-center rounded-full bg-secondary px-3"
             >
-              Search the archive
-            </Link>
+              <input
+                type="text"
+                value={archiveQuery}
+                onChange={(event) => setArchiveQuery(event.target.value)}
+                placeholder="Search the archive"
+                aria-label="Search work archive"
+                autoComplete="off"
+                className="w-full bg-transparent px-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+              />
+              <button type="submit" className="sr-only">
+                Search
+              </button>
+            </form>
             <Link
               href="/contact"
               className="pill-feedback inline-flex h-12 items-center rounded-full bg-primary px-6 text-base font-medium text-primary-foreground"
@@ -94,25 +122,44 @@ export function Navbar({ siteName }: { siteName: string }) {
             })}
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1440px] gap-3 overflow-x-auto px-6 pb-4 md:hidden">
-          {NAV_LINKS.map((item) => {
-            const isActive = pathname === item.href
+        <div className="mx-auto max-w-[1440px] px-6 md:hidden">
+          <form
+            onSubmit={handleArchiveSearch}
+            className="pill-feedback mb-3 flex h-10 items-center rounded-full bg-secondary px-3"
+          >
+            <input
+              type="text"
+              value={archiveQuery}
+              onChange={(event) => setArchiveQuery(event.target.value)}
+              placeholder="Search the archive"
+              aria-label="Search work archive"
+              autoComplete="off"
+              className="w-full bg-transparent px-1 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
+            />
+            <button type="submit" className="sr-only">
+              Search
+            </button>
+          </form>
+          <div className="flex gap-3 overflow-x-auto pb-4">
+            {NAV_LINKS.map((item) => {
+              const isActive = pathname === item.href
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "shrink-0 rounded-full border px-4 py-2 text-sm",
-                  isActive
-                    ? "border-foreground bg-foreground text-background"
-                    : "border-border bg-background text-foreground"
-                )}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "shrink-0 rounded-full border px-4 py-2 text-sm",
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border bg-background text-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
+          </div>
         </div>
       </nav>
     </header>

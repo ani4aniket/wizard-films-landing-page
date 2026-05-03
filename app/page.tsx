@@ -33,13 +33,16 @@ export default async function Page() {
     .map((project) => ({ src: project.thumbnailUrl, alt: project.title }))
   const heroMediaLoop =
     heroMediaImages.length > 0
-      ? [...heroMediaImages, ...heroMediaImages, ...heroMediaImages].slice(0, 12)
+      ? [...heroMediaImages, ...heroMediaImages, ...heroMediaImages].slice(
+          0,
+          12
+        )
       : []
 
   return (
     <main>
       {homepage ? (
-        <section className="mx-auto max-w-[1440px] px-6 pt-24 md:px-10 md:pt-28">
+        <section className="mx-auto max-w-[1440px] px-6 pt-0 md:px-10 md:pt-0">
           <div className="relative min-h-[78svh] overflow-hidden border border-white/14 bg-black">
             {heroMediaLoop.length > 0 ? (
               <HeroMediaWall media={heroMediaLoop} />
@@ -86,7 +89,9 @@ export default async function Page() {
                   delay={0.15}
                   className="self-end border border-white/18 bg-white/10 p-6 backdrop-blur-sm"
                 >
-                  <p className="text-xs tracking-[0.24em] text-white/70 uppercase">Creative Focus</p>
+                  <p className="text-xs tracking-[0.24em] text-white/70 uppercase">
+                    Creative Focus
+                  </p>
                   <p className="mt-4 text-xl leading-tight font-medium text-white">
                     Direction. Production. Edit.
                   </p>

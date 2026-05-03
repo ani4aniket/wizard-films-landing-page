@@ -11,7 +11,20 @@ export const metadata: Metadata = {
   description: "Music videos and visual projects by Wizard Films.",
 }
 
-export default async function WorkPage() {
+export default async function WorkPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ q?: string | string[] }>
+}) {
+  const resolvedSearchParams = await searchParams
+  const rawQuery = resolvedSearchParams?.q
+  const initialQuery =
+    typeof rawQuery === "string"
+      ? rawQuery.trim()
+      : Array.isArray(rawQuery)
+        ? rawQuery[0]?.trim() ?? ""
+        : ""
+
   const projectsResult = await getProjects()
     .then((projects) => ({ projects, error: null }))
     .catch((error) => ({ projects: [], error }))
@@ -30,7 +43,10 @@ export default async function WorkPage() {
             message="Project data could not be fetched from CRM."
           />
         ) : projectsResult.projects.length ? (
-          <ProjectGallery projects={projectsResult.projects} />
+          <ProjectGallery
+            projects={projectsResult.projects}
+            initialQuery={initialQuery}
+          />
         ) : (
           <EmptyState
             title="No portfolio projects yet."

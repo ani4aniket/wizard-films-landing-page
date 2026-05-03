@@ -9,7 +9,13 @@ import { cn } from "@/lib/utils"
 
 const ALL_CATEGORY = "All"
 
-export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
+export function ProjectGallery({
+  projects,
+  initialQuery = "",
+}: {
+  projects: PortfolioProject[]
+  initialQuery?: string
+}) {
   const categories = useMemo(
     () => [
       ALL_CATEGORY,
@@ -18,14 +24,32 @@ export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
     [projects]
   )
   const [activeCategory, setActiveCategory] = useState<string>(ALL_CATEGORY)
+  const normalizedInitialQuery = initialQuery.trim().toLowerCase()
 
   const filteredProjects = useMemo(() => {
-    if (activeCategory === ALL_CATEGORY) {
-      return projects
+    const categoryFiltered =
+      activeCategory === ALL_CATEGORY
+        ? projects
+        : projects.filter((project) => project.category === activeCategory)
+
+    if (!normalizedInitialQuery) {
+      return categoryFiltered
     }
 
-    return projects.filter((project) => project.category === activeCategory)
-  }, [activeCategory, projects])
+    return categoryFiltered.filter((project) => {
+      const searchableText = [
+        project.title,
+        project.description,
+        project.category,
+        project.role ?? "",
+        project.credits ?? "",
+      ]
+        .join(" ")
+        .toLowerCase()
+
+      return searchableText.includes(normalizedInitialQuery)
+    })
+  }, [activeCategory, normalizedInitialQuery, projects])
 
   return (
     <div className="space-y-8">
@@ -69,6 +93,11 @@ export function ProjectGallery({ projects }: { projects: PortfolioProject[] }) {
           ))}
         </AnimatePresence>
       </motion.div>
+      {!filteredProjects.length && normalizedInitialQuery ? (
+        <p className="text-sm text-muted-foreground">
+          No projects found for &quot;{initialQuery}&quot;.
+        </p>
+      ) : null}
     </div>
   )
 }

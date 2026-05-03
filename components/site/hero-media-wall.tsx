@@ -1,8 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useMemo, useState } from "react"
-import { motion, useScroll, useTransform } from "framer-motion"
+import { useEffect, useMemo, useRef, useState } from "react"
+import { motion, useAnimationFrame, useMotionValue, useScroll, useTransform } from "framer-motion"
 
 interface HeroMediaItem {
   src: string
@@ -16,9 +16,26 @@ interface HeroMediaWallProps {
 export function HeroMediaWall({ media }: HeroMediaWallProps) {
   const [validMedia, setValidMedia] = useState<HeroMediaItem[]>([])
   const { scrollY } = useScroll()
+  const autoLift = useMotionValue(0)
+  const animationStartRef = useRef<number | null>(null)
   const driftY = useTransform(scrollY, [0, 900], [0, -130])
+  const cinematicY = useTransform([driftY, autoLift], ([scrollShift, autoShift]) => scrollShift - autoShift)
   const tiltX = useTransform(scrollY, [0, 900], [11, 4])
   const tiltY = useTransform(scrollY, [0, 900], [-14, -5])
+
+  useAnimationFrame((_, delta) => {
+    if (animationStartRef.current === null) {
+      animationStartRef.current = performance.now()
+    }
+
+    const delayMs = 900
+    if (performance.now() - animationStartRef.current < delayMs) {
+      return
+    }
+
+    const next = (autoLift.get() + delta * 0.02) % 120
+    autoLift.set(next)
+  })
 
   useEffect(() => {
     let cancelled = false
@@ -48,7 +65,7 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
   const displayItems = useMemo(() => {
     if (!validMedia.length) return []
     const filled: HeroMediaItem[] = []
-    const totalCards = 30
+    const totalCards = 42
     for (let i = 0; i < totalCards; i++) {
       filled.push(validMedia[i % validMedia.length])
     }
@@ -68,19 +85,19 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
       <motion.div
         className="absolute inset-0 transform-3d"
         style={{
-          y: driftY,
+          y: cinematicY,
           rotateX: tiltX,
           rotateY: tiltY,
           translateZ: "-60px",
         }}
       >
         {displayItems.map((item, index) => {
-          const cols = 6
+          const cols = 7
           const col = index % cols
           const row = Math.floor(index / cols)
-          const x = -45 + col * 18
-          const y = -8 + row * 18
-          const depth = 220 - row * 52 - (col % 3) * 22
+          const x = -51 + col * 16
+          const y = -48 + row * 20
+          const depth = 240 - row * 46 - (col % 3) * 20
           const rotate = (col - 2.5) * 2.1 + (row % 2 === 0 ? -1 : 1)
 
           return (
@@ -104,6 +121,7 @@ export function HeroMediaWall({ media }: HeroMediaWallProps) {
           )
         })}
       </motion.div>
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-linear-to-b from-black via-black/80 to-transparent" />
     </div>
   )
 }
