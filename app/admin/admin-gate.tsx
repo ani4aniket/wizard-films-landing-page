@@ -4,10 +4,9 @@ import {
   isAdminAuthenticated,
   isAdminPasswordConfigured,
 } from "@/lib/admin-auth"
-import { Field } from "@/components/admin/admin-fields"
 import { SITE_NAME } from "@/lib/constants"
 
-import { loginAction } from "./actions"
+import { AdminLoginForm } from "./admin-login-form"
 
 export function LoginScreen({ error }: { error?: string }) {
   const errorMessage =
@@ -24,28 +23,9 @@ export function LoginScreen({ error }: { error?: string }) {
           {SITE_NAME} CRM
         </p>
         <h1 className="mt-4 text-4xl font-medium text-foreground">
-          Admin sign in
+          Admin Login
         </h1>
-        <form action={loginAction} className="mt-8 flex flex-col gap-2">
-          <div className="flex flex-col gap-1">
-            <Field
-              label="Password"
-              name="password"
-              required
-              type="password"
-              placeholder="Enter the admin password"
-            />
-          </div>
-          <button
-            type="submit"
-            className="pill-feedback w-1/2 rounded-full border border-primary bg-primary px-6 py-3 text-base font-medium text-primary-foreground"
-          >
-            Enter Admin
-          </button>
-        </form>
-        {errorMessage ? (
-          <p className="mt-4 text-sm text-destructive">{errorMessage}</p>
-        ) : null}
+        <AdminLoginForm errorMessage={errorMessage} />
       </div>
     </main>
   )

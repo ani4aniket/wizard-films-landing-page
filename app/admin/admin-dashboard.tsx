@@ -1,4 +1,6 @@
 import type { MediaAsset } from "@prisma/client"
+import { ArrowUpRight01Icon } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -117,13 +119,41 @@ export async function AdminDashboard({
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/"
-            className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              buttonVariants({ variant: "outline", size: "sm" }),
+              "inline-flex gap-1.5",
+            )}
+            aria-label="View site in a new tab"
           >
             View Site
+            <HugeiconsIcon
+              icon={ArrowUpRight01Icon}
+              strokeWidth={2}
+              className="size-4"
+              aria-hidden
+            />
           </Link>
           <form action={logoutAction}>
-            <Button type="submit" variant="outline" size="sm">
-              Sign Out
+            <Button
+              type="submit"
+              variant="default"
+              size="sm"
+              aria-label="Exit admin, sign out"
+              className={cn(
+                "transition-colors duration-200",
+                "hover:border-destructive hover:bg-destructive hover:text-white",
+              )}
+            >
+              <span className="relative inline-grid min-w-27 place-items-center">
+                <span className="col-start-1 row-start-1 transition-opacity duration-200 group-hover/button:opacity-0">
+                  Exit admin
+                </span>
+                <span className="col-start-1 row-start-1 opacity-0 transition-opacity duration-200 group-hover/button:opacity-100">
+                  Sign out
+                </span>
+              </span>
             </Button>
           </form>
         </div>
