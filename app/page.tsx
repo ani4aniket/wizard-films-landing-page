@@ -65,7 +65,7 @@ export default async function Page() {
                     <p className="text-xs tracking-[0.28em] text-white/78 uppercase">
                       Music Video Portfolio
                     </p>
-                    <h1 className="editorial-display max-w-5xl text-white">
+                    <h1 className="editorial-display max-w-5xl tracking-wider text-white">
                       {homepage.headline}
                     </h1>
                     <p className="max-w-2xl text-lg leading-7 text-white/90 md:text-2xl md:leading-8">
@@ -103,11 +103,10 @@ export default async function Page() {
                   className="self-end border border-white/18 bg-white/10 p-6 backdrop-blur-sm"
                 >
                   <p className="text-xs tracking-[0.24em] text-white/70 uppercase">
-                    Current Focus
+                    Creative Focus
                   </p>
                   <p className="mt-4 text-3xl leading-tight font-medium text-white">
-                    Direction, rhythm-led edits, and shoot execution for songs
-                    that need cinematic visuals.
+                    Direction, edits, and shoot execution.
                   </p>
                   <Link
                     href="#featured"
