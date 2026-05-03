@@ -1,8 +1,8 @@
-import { ensureCmsSeeded } from "../lib/crm-defaults"
+import { replaceCmsWithSampleData } from "../lib/crm-defaults"
 import { prisma } from "../lib/prisma"
 
 async function main() {
-  await ensureCmsSeeded()
+  await replaceCmsWithSampleData()
 }
 
 main()

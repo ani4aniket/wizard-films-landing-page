@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma"
 import { SITE_NAME } from "@/lib/constants"
+import { slugify } from "@/lib/youtube"
 
 const LEGACY_SITE_DESCRIPTION =
   "A cinematic portfolio for film editing, color, sound, and story-led production."
@@ -28,12 +29,12 @@ const LEGACY_CONTACT = {
 }
 
 const SAMPLE_HOMEPAGE = {
-  headline: "MAKE THE CUT FEEL PHYSICAL.",
+  headline: "VISUALS THAT MOVE WITH THE SONG.",
   tagline:
-    "A CRM-backed editorial portfolio for campaign films, social systems, and story-led post.",
+    "Akashpxxt — director and visual creative for music videos, editing, shoot execution, and sound- and music-driven storytelling.",
   intro:
-    "Built to feel like a printed catalog with cinematic energy up front and quiet chrome everywhere else.",
-  heroPosterUrl: "https://img.youtube.com/vi/aqz-KE-bpKQ/hqdefault.jpg",
+    "Akashpxxt builds cinematic visuals that follow the rhythm and emotion of each track. He is credited as director on projects including Sikhi Vs Maut and Lahore, working on Punjabi music releases with production teams and label partners. His approach pairs strong direction, polished edits, and on-set visual coordination so the final film lands with impact.",
+  heroPosterUrl: "https://img.youtube.com/vi/RmTLqCPnUcs/hqdefault.jpg",
   primaryCtaLabel: "View Work",
   primaryCtaHref: "/work",
   secondaryCtaLabel: "Start a Project",
@@ -41,30 +42,31 @@ const SAMPLE_HOMEPAGE = {
 }
 
 const SAMPLE_ABOUT = {
-  title: "Editorial discipline for moving image systems.",
+  title: "Akashpxxt",
   story:
-    "Wizard Films builds campaign edits, social cutdowns, color finishing, and sound packages with the same philosophy: keep the interface quiet and let the image do the emotional work. The CRM is seeded with sample content so the site feels alive on first launch.",
+    "Akashpxxt is a director and visual creative working in music videos, video editing, shoot execution, and sound- and music-led storytelling. His work focuses on cinematic visuals that move with the rhythm and emotion of each song. He has been credited as director on projects such as Sikhi Vs Maut and Lahore, collaborating with production teams and labels on Punjabi music releases. His style combines strong direction, refined editing, and on-set visual coordination to deliver memorable final videos. Akashpxxt creates music videos and visual content with a focus on direction, editing, and production detail—turning songs into cinematic pieces that connect with the audience.",
   craftNotes: [
-    "Campaign Editing",
-    "Color Finishing",
-    "Sound Design",
-    "Social Systems",
+    "Music video direction",
+    "Video editing",
+    "Shoot execution",
+    "Sound- and music-led creative work",
+    "Artist visual storytelling",
   ],
-  portraitUrl: "https://img.youtube.com/vi/ysz5S6PUM-U/hqdefault.jpg",
+  portraitUrl: "https://img.youtube.com/vi/RmTLqCPnUcs/hqdefault.jpg",
 }
 
 const SAMPLE_CONTACT = {
   title: "Start a project",
   intro:
-    "Send the brief, timeline, references, and delivery needs. Sample enquiries will appear in the CRM so the pipeline feels real immediately.",
+    "Available for music videos, creative direction, editing, and shoot-based projects. Share the track, references, timeline, and how you want the release to feel.",
   email: "hello@wizardfilms.studio",
 }
 
 const SAMPLE_SITE_SETTINGS = {
   siteDescription:
-    "An editorial portfolio and CRM for campaign films, branded edits, color finishing, and post-production systems.",
+    "Wizard Films presents Akashpxxt — music video direction, editing, shoot execution, and sound-led storytelling for Punjabi and label-driven releases.",
   footerBlurb:
-    "Wizard Films builds campaign edits, color, sound, and fast-turn post systems for brands, artists, and stories that need a clean emotional frame.",
+    "Wizard Films · Akashpxxt: music video direction, editing, shoot execution, and artist-focused visual storytelling.",
   contactEmail: "hello@wizardfilms.studio",
 }
 
@@ -109,113 +111,349 @@ const SAMPLE_CONTACT_LINKS = [
   },
 ]
 
-const SAMPLE_PROJECTS = [
+const PROJECT_CATEGORY = "Music Videos"
+
+const PROJECT_SEED_ROWS = [
   {
-    slug: "night-runner-launch",
-    title: "Night Runner Launch",
+    title: "Sikhi Vs Maut",
+    youtubeUrl: "https://www.youtube.com/watch?v=RmTLqCPnUcs",
+    role: "Director",
     description:
-      "A pace-driven launch cut designed for paid social, broadcast trim-downs, and retail loop playback.",
-    category: "Editing",
-    youtubeUrl: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
-    credits:
-      "Director: Sample Director · Agency: North Unit · Music Edit: Wizard Films",
-    role: "Offline edit, versioning, final conform",
+      "Director on the official music video for Wizard Films, leading music video direction from concept through delivery.",
     featured: true,
-    sortOrder: 0,
   },
   {
-    slug: "city-of-echoes",
-    title: "City of Echoes",
+    title: "Lahore",
+    youtubeUrl: "https://www.youtube.com/watch?v=6FpRgTw7Q1A",
+    role: "Director",
     description:
-      "A tonal brand film with cool-night grading, restrained pacing, and a cleaner dialogue between product and atmosphere.",
-    category: "Color Grading",
-    youtubeUrl: "https://www.youtube.com/watch?v=ysz5S6PUM-U",
-    credits: "Director: Sample Director · DP: Sample DP · Grade: Wizard Films",
-    role: "Look development and finishing",
+      "Director on Lahore—visual direction for the official video under Wizard Films.",
     featured: true,
-    sortOrder: 1,
   },
   {
-    slug: "afterglow-sessions",
-    title: "Afterglow Sessions",
+    title: "Gift",
+    youtubeUrl: "https://www.youtube.com/watch?v=n4Bk4NAjxHY",
+    role: "Director & DOP",
     description:
-      "Music-led social cutdowns built for repeatable release weeks, with alternate hooks and clean end-card packages.",
-    category: "Audio",
-    youtubeUrl: "https://www.youtube.com/watch?v=M7lc1UVf-VE",
-    credits: "Artist: Sample Artist · Mix support: Wizard Films",
-    role: "Sound design, stems prep, delivery",
+      "Director and director of photography on Gift—visual treatment and shoot execution for the official Wizard Films release.",
+    featured: true,
+  },
+  {
+    title: "Sarpanchi",
+    youtubeUrl: "https://www.youtube.com/watch?v=LkzpvGD4T3k",
+    role: "Co-director",
+    description:
+      "Co-director on Sarpanchi—shared direction and screen execution on the official video.",
+    featured: true,
+  },
+  {
+    title: "Bhujangi",
+    youtubeUrl: "https://www.youtube.com/watch?v=U3CU8Gv1dhg",
+    role: "Director",
+    description:
+      "Director on Bhujangi—visual storytelling and overall music video direction for Wizard Films.",
+    featured: true,
+  },
+  {
+    title: "Ranihaar",
+    youtubeUrl: "https://www.youtube.com/watch?v=mZcbxGO57vw",
+    role: "Director",
+    description:
+      "Director on Ranihaar—concept-to-screen visual direction for Wizard Films.",
+    featured: true,
+  },
+  {
+    title: "Ikk Mikk",
+    youtubeUrl: "https://www.youtube.com/watch?v=VMrwnq_GaV4",
+    role: "Director",
+    description:
+      "Director on Ikk Mikk—visual direction and music video execution for Heat Records and Wizard Films.",
     featured: false,
-    sortOrder: 2,
   },
   {
-    slug: "dust-trail-anthem",
-    title: "Dust Trail Anthem",
+    title: "Heeriye",
+    youtubeUrl: "https://www.youtube.com/watch?v=AtRbtqa6WXU",
+    role: "Director",
     description:
-      "A location-driven outdoor spot shaped from field footage into a tight, modular campaign master and social variants.",
-    category: "Shoot",
-    youtubeUrl: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
-    credits: "Production: Wizard Films · Edit assist: Sample Team",
-    role: "Shoot supervision and post pipeline",
-    featured: true,
-    sortOrder: 3,
+      "Director on Heeriye—official video direction and overall visual treatment with Wizard Films.",
+    featured: false,
   },
+  {
+    title: "Shukrana",
+    youtubeUrl: "https://www.youtube.com/watch?v=hpvhwPOFzQk",
+    role: "Director",
+    description:
+      "Director on Shukrana—official video direction; edit through Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Sapera",
+    youtubeUrl: "https://www.youtube.com/watch?v=_Q7GghaHEsA",
+    role: "Director & DOP",
+    description:
+      "Director and DOP on Sapera—direction and camera execution; edit by Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Amli",
+    youtubeUrl: "https://www.youtube.com/watch?v=bp7A1AuHOsk",
+    role: "Director & lyricist",
+    description:
+      "Director and lyricist on Amli—creative direction for the official video plus lyrics credit.",
+    featured: false,
+  },
+  {
+    title: "Taur Banju",
+    youtubeUrl: "https://www.youtube.com/watch?v=nuWegmnXtGY",
+    role: "Director",
+    description:
+      "Director on Taur Banju—visual direction for the official video; edit by Wizard Editing Studio; presentation under Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Saadhe Satt",
+    youtubeUrl: "https://www.youtube.com/watch?v=wVzoLu1fvJQ",
+    role: "Director & DOP",
+    description:
+      "Director and DOP on Saadhe Satt—on-set execution for the official release under Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Bebe Teri Soh",
+    youtubeUrl: "https://www.youtube.com/watch?v=Vlq7LNnX5jc",
+    role: "Director",
+    description:
+      "Director on Bebe Teri Soh—official video direction for Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Let's See",
+    youtubeUrl: "https://www.youtube.com/watch?v=XvbursEIVWE",
+    role: "Portfolio",
+    description:
+      "Included in the portfolio reel; specific on-video credit was not verified from public metadata—role listed as TBD pending label or upload confirmation.",
+    featured: false,
+  },
+  {
+    title: "Mohali Di Cream",
+    youtubeUrl: "https://www.youtube.com/watch?v=jjpZSTCbQHs",
+    role: "Director & DOP",
+    description:
+      "Director and DOP on Mohali Di Cream—direction and cinematography with Team Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Use And Throw",
+    youtubeUrl: "https://www.youtube.com/watch?v=Co7ryB-JObY",
+    role: "Portfolio",
+    description:
+      "Included in the portfolio reel; specific on-video credit was not verified from public metadata—role listed as TBD pending label or upload confirmation.",
+    featured: false,
+  },
+  {
+    title: "Brave Talk",
+    youtubeUrl: "https://www.youtube.com/watch?v=My0eqYmPQxY",
+    role: "DOP & editor",
+    description:
+      "DOP and editor on Brave Talk—camera execution and post-production editing for the official video.",
+    featured: false,
+  },
+  {
+    title: "Rishta",
+    youtubeUrl: "https://www.youtube.com/watch?v=X2f37WTyauM",
+    role: "Director",
+    description:
+      "Director on Rishta—official video direction for Wizard Films; post-production through Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "VIBE",
+    youtubeUrl: "https://www.youtube.com/watch?v=UgWcedfTEUs",
+    role: "Director",
+    description:
+      "Director on VIBE—visual direction for the official video under Wizard Films; edit by Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Mashook",
+    youtubeUrl: "https://www.youtube.com/watch?v=tDdmOZoPCMo",
+    role: "Director",
+    description:
+      "Director on Mashook—official music video direction for the Wizard Films release.",
+    featured: false,
+  },
+  {
+    title: "Dil Mangda",
+    youtubeUrl: "https://www.youtube.com/watch?v=b0H14UoqrmA",
+    role: "Director",
+    description:
+      "Director on Dil Mangda—visual direction for the official video under Wizard Films; post through Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Loon Di Theli",
+    youtubeUrl: "https://www.youtube.com/watch?v=ZBF1zqfzKrc",
+    role: "Director",
+    description:
+      "Director on Loon Di Theli—official video direction for Heat Records with production by Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "KANDDA",
+    youtubeUrl: "https://www.youtube.com/watch?v=CVz-bqQFnhA",
+    role: "Director",
+    description:
+      "Director on KANDDA—visual direction for the official video under Wizard Films; edit by Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Tu Nach Gi",
+    youtubeUrl: "https://www.youtube.com/watch?v=Yc_Rp6pMdD4",
+    role: "Director",
+    description:
+      "Director on Tu Nach Gi—official video direction for Wizard Films; edit through Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Mitha Banke",
+    youtubeUrl: "https://www.youtube.com/watch?v=EXMt2WytSA8",
+    role: "Director",
+    description:
+      "Director on Mitha Banke—official music video direction for Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Pleasure Mood",
+    youtubeUrl: "https://www.youtube.com/watch?v=_yBgpX3R7pw",
+    role: "Director",
+    description:
+      "Director on Pleasure Mood—official video direction for Wizard Films; post-production by Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Hunt",
+    youtubeUrl: "https://www.youtube.com/watch?v=gQ4NsT2O5k0",
+    role: "Director",
+    description:
+      "Director on Hunt—visual direction for the official video under Wizard Films; edit by Wizard Editing Studio.",
+    featured: false,
+  },
+  {
+    title: "Sade Aale",
+    youtubeUrl: "https://www.youtube.com/watch?v=mRhQsa5yNxE",
+    role: "Director",
+    description:
+      "Director on Sade Aale—official video direction for Royal Heat Music with video production by Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "ASLA",
+    youtubeUrl: "https://www.youtube.com/watch?v=e0mhZ4-qx7M",
+    role: "Director",
+    description:
+      "Director on ASLA—official video direction for Wizard Films.",
+    featured: false,
+  },
+  {
+    title: "Black Whip",
+    youtubeUrl: "https://www.youtube.com/watch?v=xgz6ETm6ieI",
+    role: "Production team",
+    description:
+      "Contributed to Black Whip as part of the Wizard Films production team on the official music video presentation.",
+    featured: false,
+  },
+  {
+    title: "Rakh Honsla",
+    youtubeUrl: "https://www.youtube.com/watch?v=iyOEhvOQiBI",
+    role: "Portfolio",
+    description:
+      "Included in the portfolio reel; specific on-video credit was not verified from public description text—role listed as TBD pending confirmation.",
+    featured: false,
+  },
+] as const
+
+const LEGACY_PROJECT_SLUGS = [
+  "night-runner-launch",
+  "city-of-echoes",
+  "afterglow-sessions",
+  "dust-trail-anthem",
 ]
+
+const SAMPLE_PROJECTS = PROJECT_SEED_ROWS.map((project, index) => ({
+  slug: slugify(project.title),
+  title: project.title,
+  description: project.description,
+  category: PROJECT_CATEGORY,
+  youtubeUrl: project.youtubeUrl,
+  credits: `Wizard Films · ${project.role}`,
+  role: project.role,
+  featured: project.featured,
+  sortOrder: index,
+}))
 
 const SAMPLE_SERVICES = [
   {
-    slug: "campaign-editing",
-    title: "Campaign Editing",
+    slug: "music-video-direction",
+    title: "Music Video Direction",
     description:
-      "Narrative assembly, pace design, music-driven cut structure, and delivery masters for launch films and hero edits.",
-    icon: "Edit",
+      "Concept through delivery: performance blocking, narrative beats, on-set leadership, and a clear visual plan that serves the track.",
+    icon: "Production",
     sortOrder: 0,
   },
   {
-    slug: "color-finishing",
-    title: "Color Finishing",
+    slug: "video-editing",
+    title: "Video Editing",
     description:
-      "Look development, shot balancing, and restrained grade systems that keep brand imagery consistent across formats.",
-    icon: "Color",
+      "Pace, structure, and polish—cuts that follow the song, label notes, and platform delivery needs.",
+    icon: "Edit",
     sortOrder: 1,
   },
   {
-    slug: "sound-design",
-    title: "Sound Design",
+    slug: "shoot-execution",
+    title: "Shoot Execution",
     description:
-      "Clean dialog polish, tactile sound layers, music shaping, and final mix prep for social, film, and retail playback.",
-    icon: "Sound",
+      "On-set coverage, DOP collaboration or operation, and coordination so the day captures what the edit will need.",
+    icon: "Production",
     sortOrder: 2,
   },
   {
-    slug: "social-cutdown-systems",
-    title: "Social Cutdown Systems",
+    slug: "sound-music-led-creative",
+    title: "Sound- & Music-Led Creative",
     description:
-      "Versioned assets, alternate hooks, channel-specific durations, and delivery logic for repeatable campaign rollout.",
-    icon: "Production",
+      "Visual storytelling built around rhythm, drops, and emotional shifts in the music—sound-first creative direction.",
+    icon: "Sound",
     sortOrder: 3,
+  },
+  {
+    slug: "artist-visual-storytelling",
+    title: "Artist Visual Storytelling",
+    description:
+      "Imagery that fits the artist’s world—performance, styling context, and memorable frames fans return to.",
+    icon: "Color",
+    sortOrder: 4,
   },
 ]
 
 const SAMPLE_SUBMISSIONS = [
   {
-    name: "Maya Chen",
-    email: "maya@northunit.co",
+    name: "Harpreet K.",
+    email: "label.coord@example.com",
     message:
-      "We need a 45-second launch film plus six social cutdowns for a trail collection. Timeline is two weeks from locked footage.",
+      "Punjabi single dropping in six weeks—need director + edit for official music video, two teasers, and vertical cutdowns. Budget and references ready.",
     isRead: false,
   },
   {
-    name: "Jordan Ellis",
-    email: "jordan@rivetmusic.com",
+    name: "Simran R.",
+    email: "artist.mgmt@example.com",
     message:
-      "Looking for editorial support and finishing on a live session package with three deliverables and quick-turn captions.",
+      "Looking for Akashpxxt to direct next video—night exterior performance, one narrative thread, Wizard Films-style polish.",
     isRead: true,
   },
   {
-    name: "Leah Ortiz",
-    email: "leah@atelierstudio.tv",
+    name: "Jaz B.",
+    email: "production@example.com",
     message:
-      "Can you handle offline edit and color for a short hospitality spot? We have references and rough selects ready.",
+      "Need shoot execution and edit-only pass on locked footage for a label lyric video variant—tight turnaround.",
     isRead: false,
   },
 ]
@@ -224,6 +462,107 @@ let seedPromise: Promise<void> | null = null
 
 function isBlank(value: string | null | undefined) {
   return !value || !value.trim()
+}
+
+export async function replaceCmsWithSampleData() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+
+  await prisma.$transaction(
+    async (tx) => {
+    await tx.contactSubmission.deleteMany()
+    await tx.project.deleteMany()
+    await tx.service.deleteMany()
+    await tx.socialLink.deleteMany()
+
+    await tx.siteSettings.upsert({
+      where: { id: "site-settings" },
+      update: {
+        siteName: SITE_NAME,
+        siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
+        siteUrl,
+        footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
+        contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
+        ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+      },
+      create: {
+        id: "site-settings",
+        siteName: SITE_NAME,
+        siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
+        siteUrl,
+        footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
+        contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
+        ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+      },
+    })
+
+    await tx.homepageContent.upsert({
+      where: { id: "homepage" },
+      update: {
+        headline: SAMPLE_HOMEPAGE.headline,
+        tagline: SAMPLE_HOMEPAGE.tagline,
+        intro: SAMPLE_HOMEPAGE.intro,
+        heroVideoUrl: "",
+        heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
+        primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
+        primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
+        secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
+        secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+      },
+      create: {
+        id: "homepage",
+        headline: SAMPLE_HOMEPAGE.headline,
+        tagline: SAMPLE_HOMEPAGE.tagline,
+        intro: SAMPLE_HOMEPAGE.intro,
+        heroVideoUrl: "",
+        heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
+        primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
+        primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
+        secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
+        secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+      },
+    })
+
+    await tx.aboutContent.upsert({
+      where: { id: "about" },
+      update: {
+        title: SAMPLE_ABOUT.title,
+        story: SAMPLE_ABOUT.story,
+        craftNotes: SAMPLE_ABOUT.craftNotes,
+        portraitUrl: SAMPLE_ABOUT.portraitUrl,
+      },
+      create: {
+        id: "about",
+        title: SAMPLE_ABOUT.title,
+        story: SAMPLE_ABOUT.story,
+        craftNotes: SAMPLE_ABOUT.craftNotes,
+        portraitUrl: SAMPLE_ABOUT.portraitUrl,
+      },
+    })
+
+    await tx.contactContent.upsert({
+      where: { id: "contact" },
+      update: {
+        title: SAMPLE_CONTACT.title,
+        intro: SAMPLE_CONTACT.intro,
+        email: SAMPLE_CONTACT.email,
+      },
+      create: {
+        id: "contact",
+        title: SAMPLE_CONTACT.title,
+        intro: SAMPLE_CONTACT.intro,
+        email: SAMPLE_CONTACT.email,
+      },
+    })
+
+    await tx.socialLink.createMany({
+      data: [...SAMPLE_SITE_LINKS, ...SAMPLE_CONTACT_LINKS],
+    })
+    await tx.service.createMany({ data: SAMPLE_SERVICES })
+    await tx.project.createMany({ data: SAMPLE_PROJECTS })
+    await tx.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
+    },
+    { maxWait: 10_000, timeout: 120_000 }
+  )
 }
 
 export async function ensureCmsSeeded() {
@@ -419,8 +758,25 @@ export async function ensureCmsSeeded() {
       await prisma.socialLink.createMany({ data: SAMPLE_CONTACT_LINKS })
     }
 
-    if (projectCount === 0) {
-      await prisma.project.createMany({ data: SAMPLE_PROJECTS })
+    if (projectCount > 0) {
+      await prisma.project.deleteMany({
+        where: { slug: { in: LEGACY_PROJECT_SLUGS } },
+      })
+    }
+
+    const seededProjects = await prisma.project.findMany({
+      where: { slug: { in: SAMPLE_PROJECTS.map((project) => project.slug) } },
+      select: { slug: true },
+    })
+    const seededProjectSlugs = new Set(
+      seededProjects.map((project) => project.slug)
+    )
+    const missingProjects = SAMPLE_PROJECTS.filter(
+      (project) => !seededProjectSlugs.has(project.slug)
+    )
+
+    if (missingProjects.length > 0) {
+      await prisma.project.createMany({ data: missingProjects })
     }
 
     if (serviceCount === 0) {

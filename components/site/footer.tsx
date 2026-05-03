@@ -79,7 +79,6 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           <p>
             © {new Date().getFullYear()} {settings.siteName}
           </p>
-          <p>Editorial layout, flat chrome, CRM-managed content.</p>
         </div>
       </div>
     </footer>

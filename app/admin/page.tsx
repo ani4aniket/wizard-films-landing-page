@@ -135,21 +135,19 @@ function LoginScreen({ error }: { error?: string }) {
         <h1 className="mt-4 text-4xl font-medium text-foreground">
           Admin sign in
         </h1>
-        <p className="mt-4 text-base leading-7 text-muted-foreground">
-          This route uses a single password from `ADMIN_PASSWORD`. It is
-          intentionally lightweight and does not create user accounts.
-        </p>
-        <form action={loginAction} className="mt-8 space-y-5">
-          <Field
-            label="Password"
-            name="password"
-            required
-            type="password"
-            placeholder="Enter the admin password"
-          />
+        <form action={loginAction} className="mt-8 flex flex-col gap-2">
+          <div className="flex flex-col gap-1">
+            <Field
+              label="Password"
+              name="password"
+              required
+              type="password"
+              placeholder="Enter the admin password"
+            />
+          </div>
           <button
             type="submit"
-            className="pill-feedback rounded-full border border-primary bg-primary px-6 py-3 text-base font-medium text-primary-foreground"
+            className="pill-feedback w-1/2 rounded-full border border-primary bg-primary px-6 py-3 text-base font-medium text-primary-foreground"
           >
             Enter Admin
           </button>
@@ -294,89 +292,89 @@ export default async function AdminPage({
             content: (
               <>
                 <form
-            action={uploadMediaAction}
-            className="grid gap-4 md:grid-cols-[1fr_1fr_auto]"
-          >
-            <label className="space-y-2">
-              <span className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-                File
-              </span>
-              <input
-                name="file"
-                type="file"
-                required
-                className="block h-12 w-full rounded-full border border-transparent bg-secondary px-4 py-3 text-sm text-foreground"
-              />
-            </label>
-            <Field
-              label="Alt Text"
-              name="altText"
-              placeholder="Optional description"
-            />
-            <div className="self-end">
-              <button
-                type="submit"
-                className="pill-feedback h-12 rounded-full border border-primary bg-primary px-6 text-sm font-medium text-primary-foreground"
-              >
-                Upload
-              </button>
-            </div>
-          </form>
-
-          <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-            {media.map((asset) => (
-              <article
-                key={asset.id}
-                className="overflow-hidden border border-border bg-background"
-              >
-                {asset.contentType?.startsWith("video/") ? (
-                  <video
-                    src={asset.url}
-                    controls
-                    className="aspect-video w-full border-b border-border/70 bg-black object-cover"
-                  />
-                ) : (
-                  <div className="relative aspect-video w-full border-b border-border/70 bg-black">
-                    <Image
-                      src={asset.url}
-                      alt={asset.altText || asset.filename}
-                      fill
-                      sizes="(max-width: 1280px) 50vw, 33vw"
-                      className="object-cover"
+                  action={uploadMediaAction}
+                  className="grid gap-4 md:grid-cols-[1fr_1fr_auto]"
+                >
+                  <label className="space-y-2">
+                    <span className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                      File
+                    </span>
+                    <input
+                      name="file"
+                      type="file"
+                      required
+                      className="block h-12 w-full rounded-full border border-transparent bg-secondary px-4 py-3 text-sm text-foreground"
                     />
-                  </div>
-                )}
-                <div className="space-y-3 p-4">
-                  <p className="truncate text-sm text-foreground">
-                    {asset.filename}
-                  </p>
-                  <a
-                    href={asset.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block truncate text-sm text-foreground hover:underline"
-                  >
-                    {asset.url}
-                  </a>
-                  <p className="text-xs text-muted-foreground">
-                    {asset.contentType || "Unknown type"}
-                    {typeof asset.size === "number"
-                      ? ` • ${Math.round(asset.size / 1024)} KB`
-                      : ""}
-                  </p>
-                  <form action={deleteMediaAssetAction}>
-                    <input type="hidden" name="id" value={asset.id} />
+                  </label>
+                  <Field
+                    label="Alt Text"
+                    name="altText"
+                    placeholder="Optional description"
+                  />
+                  <div className="self-end">
                     <button
                       type="submit"
-                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                      className="pill-feedback h-12 rounded-full border border-primary bg-primary px-6 text-sm font-medium text-primary-foreground"
                     >
-                      Delete Asset
+                      Upload
                     </button>
-                  </form>
+                  </div>
+                </form>
+
+                <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {media.map((asset) => (
+                    <article
+                      key={asset.id}
+                      className="overflow-hidden border border-border bg-background"
+                    >
+                      {asset.contentType?.startsWith("video/") ? (
+                        <video
+                          src={asset.url}
+                          controls
+                          className="aspect-video w-full border-b border-border/70 bg-black object-cover"
+                        />
+                      ) : (
+                        <div className="relative aspect-video w-full border-b border-border/70 bg-black">
+                          <Image
+                            src={asset.url}
+                            alt={asset.altText || asset.filename}
+                            fill
+                            sizes="(max-width: 1280px) 50vw, 33vw"
+                            className="object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="space-y-3 p-4">
+                        <p className="truncate text-sm text-foreground">
+                          {asset.filename}
+                        </p>
+                        <a
+                          href={asset.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="block truncate text-sm text-foreground hover:underline"
+                        >
+                          {asset.url}
+                        </a>
+                        <p className="text-xs text-muted-foreground">
+                          {asset.contentType || "Unknown type"}
+                          {typeof asset.size === "number"
+                            ? ` • ${Math.round(asset.size / 1024)} KB`
+                            : ""}
+                        </p>
+                        <form action={deleteMediaAssetAction}>
+                          <input type="hidden" name="id" value={asset.id} />
+                          <button
+                            type="submit"
+                            className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                          >
+                            Delete Asset
+                          </button>
+                        </form>
+                      </div>
+                    </article>
+                  ))}
                 </div>
-              </article>
-            ))}
-          </div>
               </>
             ),
           },
@@ -389,131 +387,136 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveSiteSettingsAction} className="grid gap-5">
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field
-                label="Site Name"
-                name="siteName"
-                required
-                defaultValue={siteSettings.siteName}
-              />
-              <Field
-                label="Contact Email"
-                name="contactEmail"
-                type="email"
-                defaultValue={siteSettings.contactEmail}
-              />
-            </div>
-            <Area
-              label="Site Description"
-              name="siteDescription"
-              required
-              rows={3}
-              defaultValue={siteSettings.siteDescription}
-            />
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field
-                label="Site URL"
-                name="siteUrl"
-                type="url"
-                defaultValue={siteSettings.siteUrl}
-              />
-              <Field
-                label="OG Image URL"
-                name="ogImage"
-                type="url"
-                defaultValue={siteSettings.ogImage}
-              />
-            </div>
-            <Area
-              label="Footer Blurb"
-              name="footerBlurb"
-              rows={3}
-              defaultValue={siteSettings.footerBlurb}
-            />
-            <SubmitRow saveLabel="Save Site Settings" />
-          </form>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Site Name"
+                      name="siteName"
+                      required
+                      defaultValue={siteSettings.siteName}
+                    />
+                    <Field
+                      label="Contact Email"
+                      name="contactEmail"
+                      type="email"
+                      defaultValue={siteSettings.contactEmail}
+                    />
+                  </div>
+                  <Area
+                    label="Site Description"
+                    name="siteDescription"
+                    required
+                    rows={3}
+                    defaultValue={siteSettings.siteDescription}
+                  />
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Site URL"
+                      name="siteUrl"
+                      type="url"
+                      defaultValue={siteSettings.siteUrl}
+                    />
+                    <Field
+                      label="OG Image URL"
+                      name="ogImage"
+                      type="url"
+                      defaultValue={siteSettings.ogImage}
+                    />
+                  </div>
+                  <Area
+                    label="Footer Blurb"
+                    name="footerBlurb"
+                    rows={3}
+                    defaultValue={siteSettings.footerBlurb}
+                  />
+                  <SubmitRow saveLabel="Save Site Settings" />
+                </form>
 
-          <div id="site-links" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-              Site Social Links
-            </p>
-            {siteLinks.map((link) => (
-              <form
-                key={link.id}
-                action={saveSocialLinkAction}
-                className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
-              >
-                <input type="hidden" name="id" value={link.id} />
-                <input type="hidden" name="section" value="SITE" />
-                <Field
-                  label="Platform"
-                  name="platform"
-                  required
-                  defaultValue={link.platform}
-                />
-                <Field
-                  label="Label"
-                  name="label"
-                  required
-                  defaultValue={link.label}
-                />
-                <Field
-                  label="URL"
-                  name="url"
-                  type="url"
-                  required
-                  defaultValue={link.url}
-                />
-                <Field
-                  label="Order"
-                  name="sortOrder"
-                  type="number"
-                  defaultValue={link.sortOrder}
-                />
-                <div className="self-end">
-                  <SubmitRow saveLabel="Save Link">
-                    <button
-                      type="submit"
-                      formAction={deleteSocialLinkAction}
-                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                <div id="site-links" className="mt-10 space-y-4">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Site Social Links
+                  </p>
+                  {siteLinks.map((link) => (
+                    <form
+                      key={link.id}
+                      action={saveSocialLinkAction}
+                      className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
                     >
-                      Delete
-                    </button>
-                  </SubmitRow>
-                </div>
-              </form>
-            ))}
+                      <input type="hidden" name="id" value={link.id} />
+                      <input type="hidden" name="section" value="SITE" />
+                      <Field
+                        label="Platform"
+                        name="platform"
+                        required
+                        defaultValue={link.platform}
+                      />
+                      <Field
+                        label="Label"
+                        name="label"
+                        required
+                        defaultValue={link.label}
+                      />
+                      <Field
+                        label="URL"
+                        name="url"
+                        type="url"
+                        required
+                        defaultValue={link.url}
+                      />
+                      <Field
+                        label="Order"
+                        name="sortOrder"
+                        type="number"
+                        defaultValue={link.sortOrder}
+                      />
+                      <div className="self-end">
+                        <SubmitRow saveLabel="Save Link">
+                          <button
+                            type="submit"
+                            formAction={deleteSocialLinkAction}
+                            className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                          >
+                            Delete
+                          </button>
+                        </SubmitRow>
+                      </div>
+                    </form>
+                  ))}
 
-            <form
-              action={saveSocialLinkAction}
-              className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
-            >
-              <input type="hidden" name="section" value="SITE" />
-              <Field
-                label="Platform"
-                name="platform"
-                required
-                placeholder="Instagram"
-              />
-              <Field label="Label" name="label" required placeholder="Follow" />
-              <Field
-                label="URL"
-                name="url"
-                type="url"
-                required
-                placeholder="https://..."
-              />
-              <Field
-                label="Order"
-                name="sortOrder"
-                type="number"
-                defaultValue={0}
-              />
-              <div className="self-end">
-                <SubmitRow saveLabel="Add Link" />
-              </div>
-            </form>
-          </div>
+                  <form
+                    action={saveSocialLinkAction}
+                    className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+                  >
+                    <input type="hidden" name="section" value="SITE" />
+                    <Field
+                      label="Platform"
+                      name="platform"
+                      required
+                      placeholder="Instagram"
+                    />
+                    <Field
+                      label="Label"
+                      name="label"
+                      required
+                      placeholder="Follow"
+                    />
+                    <Field
+                      label="URL"
+                      name="url"
+                      type="url"
+                      required
+                      placeholder="https://..."
+                    />
+                    <Field
+                      label="Order"
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={0}
+                    />
+                    <div className="self-end">
+                      <SubmitRow saveLabel="Add Link" />
+                    </div>
+                  </form>
+                </div>
               </>
             ),
           },
@@ -525,68 +528,68 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveHomepageAction} className="grid gap-5">
-            <Field
-              label="Headline"
-              name="headline"
-              required
-              defaultValue={homepage.headline}
-            />
-            <Field
-              label="Tagline"
-              name="tagline"
-              required
-              defaultValue={homepage.tagline}
-            />
-            <Area
-              label="Intro"
-              name="intro"
-              rows={4}
-              defaultValue={homepage.intro}
-            />
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field
-                label="Hero Video URL"
-                name="heroVideoUrl"
-                type="url"
-                defaultValue={homepage.heroVideoUrl}
-              />
-              <Field
-                label="Hero Poster URL"
-                name="heroPosterUrl"
-                type="url"
-                defaultValue={homepage.heroPosterUrl}
-              />
-            </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field
-                label="Primary CTA Label"
-                name="primaryCtaLabel"
-                required
-                defaultValue={homepage.primaryCtaLabel}
-              />
-              <Field
-                label="Primary CTA Href"
-                name="primaryCtaHref"
-                required
-                defaultValue={homepage.primaryCtaHref}
-              />
-            </div>
-            <div className="grid gap-5 md:grid-cols-2">
-              <Field
-                label="Secondary CTA Label"
-                name="secondaryCtaLabel"
-                required
-                defaultValue={homepage.secondaryCtaLabel}
-              />
-              <Field
-                label="Secondary CTA Href"
-                name="secondaryCtaHref"
-                required
-                defaultValue={homepage.secondaryCtaHref}
-              />
-            </div>
-            <SubmitRow saveLabel="Save Homepage" />
-          </form>
+                  <Field
+                    label="Headline"
+                    name="headline"
+                    required
+                    defaultValue={homepage.headline}
+                  />
+                  <Field
+                    label="Tagline"
+                    name="tagline"
+                    required
+                    defaultValue={homepage.tagline}
+                  />
+                  <Area
+                    label="Intro"
+                    name="intro"
+                    rows={4}
+                    defaultValue={homepage.intro}
+                  />
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Hero Video URL"
+                      name="heroVideoUrl"
+                      type="url"
+                      defaultValue={homepage.heroVideoUrl}
+                    />
+                    <Field
+                      label="Hero Poster URL"
+                      name="heroPosterUrl"
+                      type="url"
+                      defaultValue={homepage.heroPosterUrl}
+                    />
+                  </div>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Primary CTA Label"
+                      name="primaryCtaLabel"
+                      required
+                      defaultValue={homepage.primaryCtaLabel}
+                    />
+                    <Field
+                      label="Primary CTA Href"
+                      name="primaryCtaHref"
+                      required
+                      defaultValue={homepage.primaryCtaHref}
+                    />
+                  </div>
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <Field
+                      label="Secondary CTA Label"
+                      name="secondaryCtaLabel"
+                      required
+                      defaultValue={homepage.secondaryCtaLabel}
+                    />
+                    <Field
+                      label="Secondary CTA Href"
+                      name="secondaryCtaHref"
+                      required
+                      defaultValue={homepage.secondaryCtaHref}
+                    />
+                  </div>
+                  <SubmitRow saveLabel="Save Homepage" />
+                </form>
               </>
             ),
           },
@@ -598,142 +601,159 @@ export default async function AdminPage({
             content: (
               <>
                 <div className="space-y-6">
-            {projects.map((project) => (
-              <form
-                key={project.id}
-                action={saveProjectAction}
-                className="grid gap-5 border border-border bg-background p-5"
-              >
-                <input type="hidden" name="id" value={project.id} />
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Field
-                    label="Title"
-                    name="title"
-                    required
-                    defaultValue={project.title}
-                  />
-                  <Field label="Slug" name="slug" defaultValue={project.slug} />
-                </div>
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Field
-                    label="Category"
-                    name="category"
-                    required
-                    defaultValue={project.category}
-                  />
-                  <Field label="Role" name="role" defaultValue={project.role} />
-                </div>
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Field
-                    label="YouTube URL"
-                    name="youtubeUrl"
-                    type="url"
-                    required
-                    defaultValue={project.youtubeUrl}
-                  />
-                  <Field
-                    label="Thumbnail URL"
-                    name="thumbnailUrl"
-                    type="url"
-                    defaultValue={project.thumbnailUrl}
-                  />
-                </div>
-                <Area
-                  label="Description"
-                  name="description"
-                  required
-                  rows={4}
-                  defaultValue={project.description}
-                />
-                <Area
-                  label="Credits"
-                  name="credits"
-                  rows={3}
-                  defaultValue={project.credits}
-                />
-                <div className="flex flex-wrap items-center gap-5">
-                  <Field
-                    label="Sort Order"
-                    name="sortOrder"
-                    type="number"
-                    defaultValue={project.sortOrder}
-                  />
-                  <label className="mt-6 inline-flex items-center gap-3 text-sm text-foreground">
-                    <input
-                      type="checkbox"
-                      name="featured"
-                      defaultChecked={project.featured}
-                      className="size-4 rounded border-border"
-                    />
-                    Featured on homepage
-                  </label>
-                </div>
-                <SubmitRow saveLabel="Save Project">
-                  <button
-                    type="submit"
-                    formAction={deleteProjectAction}
-                    className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
-                  >
-                    Delete
-                  </button>
-                </SubmitRow>
-              </form>
-            ))}
+                  {projects.map((project) => (
+                    <form
+                      key={project.id}
+                      action={saveProjectAction}
+                      className="grid gap-5 border border-border bg-background p-5"
+                    >
+                      <input type="hidden" name="id" value={project.id} />
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <Field
+                          label="Title"
+                          name="title"
+                          required
+                          defaultValue={project.title}
+                        />
+                        <Field
+                          label="Slug"
+                          name="slug"
+                          defaultValue={project.slug}
+                        />
+                      </div>
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <Field
+                          label="Category"
+                          name="category"
+                          required
+                          defaultValue={project.category}
+                        />
+                        <Field
+                          label="Role"
+                          name="role"
+                          defaultValue={project.role}
+                        />
+                      </div>
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <Field
+                          label="YouTube URL"
+                          name="youtubeUrl"
+                          type="url"
+                          required
+                          defaultValue={project.youtubeUrl}
+                        />
+                        <Field
+                          label="Thumbnail URL"
+                          name="thumbnailUrl"
+                          type="url"
+                          defaultValue={project.thumbnailUrl}
+                        />
+                      </div>
+                      <Area
+                        label="Description"
+                        name="description"
+                        required
+                        rows={4}
+                        defaultValue={project.description}
+                      />
+                      <Area
+                        label="Credits"
+                        name="credits"
+                        rows={3}
+                        defaultValue={project.credits}
+                      />
+                      <div className="flex flex-wrap items-center gap-5">
+                        <Field
+                          label="Sort Order"
+                          name="sortOrder"
+                          type="number"
+                          defaultValue={project.sortOrder}
+                        />
+                        <label className="mt-6 inline-flex items-center gap-3 text-sm text-foreground">
+                          <input
+                            type="checkbox"
+                            name="featured"
+                            defaultChecked={project.featured}
+                            className="size-4 rounded border-border"
+                          />
+                          Featured on homepage
+                        </label>
+                      </div>
+                      <SubmitRow saveLabel="Save Project">
+                        <button
+                          type="submit"
+                          formAction={deleteProjectAction}
+                          className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                        >
+                          Delete
+                        </button>
+                      </SubmitRow>
+                    </form>
+                  ))}
 
-            <form
-              action={saveProjectAction}
-              className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
-            >
-              <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-                Add Project
-              </p>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Title" name="title" required />
-                <Field
-                  label="Slug"
-                  name="slug"
-                  placeholder="auto-generated-from-title"
-                />
-              </div>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field
-                  label="Category"
-                  name="category"
-                  required
-                  placeholder="Editing"
-                />
-                <Field label="Role" name="role" placeholder="Editor" />
-              </div>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field
-                  label="YouTube URL"
-                  name="youtubeUrl"
-                  type="url"
-                  required
-                />
-                <Field label="Thumbnail URL" name="thumbnailUrl" type="url" />
-              </div>
-              <Area label="Description" name="description" required rows={4} />
-              <Area label="Credits" name="credits" rows={3} />
-              <div className="flex flex-wrap items-center gap-5">
-                <Field
-                  label="Sort Order"
-                  name="sortOrder"
-                  type="number"
-                  defaultValue={0}
-                />
-                <label className="mt-6 inline-flex items-center gap-3 text-sm text-foreground">
-                  <input
-                    type="checkbox"
-                    name="featured"
-                    className="size-4 rounded border-border"
-                  />
-                  Featured on homepage
-                </label>
-              </div>
-              <SubmitRow saveLabel="Create Project" />
-            </form>
-          </div>
+                  <form
+                    action={saveProjectAction}
+                    className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
+                  >
+                    <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                      Add Project
+                    </p>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <Field label="Title" name="title" required />
+                      <Field
+                        label="Slug"
+                        name="slug"
+                        placeholder="auto-generated-from-title"
+                      />
+                    </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <Field
+                        label="Category"
+                        name="category"
+                        required
+                        placeholder="Editing"
+                      />
+                      <Field label="Role" name="role" placeholder="Editor" />
+                    </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <Field
+                        label="YouTube URL"
+                        name="youtubeUrl"
+                        type="url"
+                        required
+                      />
+                      <Field
+                        label="Thumbnail URL"
+                        name="thumbnailUrl"
+                        type="url"
+                      />
+                    </div>
+                    <Area
+                      label="Description"
+                      name="description"
+                      required
+                      rows={4}
+                    />
+                    <Area label="Credits" name="credits" rows={3} />
+                    <div className="flex flex-wrap items-center gap-5">
+                      <Field
+                        label="Sort Order"
+                        name="sortOrder"
+                        type="number"
+                        defaultValue={0}
+                      />
+                      <label className="mt-6 inline-flex items-center gap-3 text-sm text-foreground">
+                        <input
+                          type="checkbox"
+                          name="featured"
+                          className="size-4 rounded border-border"
+                        />
+                        Featured on homepage
+                      </label>
+                    </div>
+                    <SubmitRow saveLabel="Create Project" />
+                  </form>
+                </div>
               </>
             ),
           },
@@ -745,89 +765,106 @@ export default async function AdminPage({
             content: (
               <>
                 <div className="space-y-6">
-            {services.map((service) => (
-              <form
-                key={service.id}
-                action={saveServiceAction}
-                className="grid gap-5 border border-border bg-background p-5"
-              >
-                <input type="hidden" name="id" value={service.id} />
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Field
-                    label="Title"
-                    name="title"
-                    required
-                    defaultValue={service.title}
-                  />
-                  <Field label="Slug" name="slug" defaultValue={service.slug} />
-                </div>
-                <div className="grid gap-5 md:grid-cols-2">
-                  <Field
-                    label="Icon Label"
-                    name="icon"
-                    defaultValue={service.icon}
-                  />
-                  <Field
-                    label="Demo Clip URL"
-                    name="demoClipUrl"
-                    type="url"
-                    defaultValue={service.demoClipUrl}
-                  />
-                </div>
-                <Area
-                  label="Description"
-                  name="description"
-                  required
-                  rows={4}
-                  defaultValue={service.description}
-                />
-                <Field
-                  label="Sort Order"
-                  name="sortOrder"
-                  type="number"
-                  defaultValue={service.sortOrder}
-                />
-                <SubmitRow saveLabel="Save Service">
-                  <button
-                    type="submit"
-                    formAction={deleteServiceAction}
-                    className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
-                  >
-                    Delete
-                  </button>
-                </SubmitRow>
-              </form>
-            ))}
+                  {services.map((service) => (
+                    <form
+                      key={service.id}
+                      action={saveServiceAction}
+                      className="grid gap-5 border border-border bg-background p-5"
+                    >
+                      <input type="hidden" name="id" value={service.id} />
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <Field
+                          label="Title"
+                          name="title"
+                          required
+                          defaultValue={service.title}
+                        />
+                        <Field
+                          label="Slug"
+                          name="slug"
+                          defaultValue={service.slug}
+                        />
+                      </div>
+                      <div className="grid gap-5 md:grid-cols-2">
+                        <Field
+                          label="Icon Label"
+                          name="icon"
+                          defaultValue={service.icon}
+                        />
+                        <Field
+                          label="Demo Clip URL"
+                          name="demoClipUrl"
+                          type="url"
+                          defaultValue={service.demoClipUrl}
+                        />
+                      </div>
+                      <Area
+                        label="Description"
+                        name="description"
+                        required
+                        rows={4}
+                        defaultValue={service.description}
+                      />
+                      <Field
+                        label="Sort Order"
+                        name="sortOrder"
+                        type="number"
+                        defaultValue={service.sortOrder}
+                      />
+                      <SubmitRow saveLabel="Save Service">
+                        <button
+                          type="submit"
+                          formAction={deleteServiceAction}
+                          className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                        >
+                          Delete
+                        </button>
+                      </SubmitRow>
+                    </form>
+                  ))}
 
-            <form
-              action={saveServiceAction}
-              className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
-            >
-              <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-                Add Service
-              </p>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Title" name="title" required />
-                <Field
-                  label="Slug"
-                  name="slug"
-                  placeholder="auto-generated-from-title"
-                />
-              </div>
-              <div className="grid gap-5 md:grid-cols-2">
-                <Field label="Icon Label" name="icon" placeholder="Color" />
-                <Field label="Demo Clip URL" name="demoClipUrl" type="url" />
-              </div>
-              <Area label="Description" name="description" required rows={4} />
-              <Field
-                label="Sort Order"
-                name="sortOrder"
-                type="number"
-                defaultValue={0}
-              />
-              <SubmitRow saveLabel="Create Service" />
-            </form>
-          </div>
+                  <form
+                    action={saveServiceAction}
+                    className="grid gap-5 border border-dashed border-border bg-secondary/50 p-5"
+                  >
+                    <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                      Add Service
+                    </p>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <Field label="Title" name="title" required />
+                      <Field
+                        label="Slug"
+                        name="slug"
+                        placeholder="auto-generated-from-title"
+                      />
+                    </div>
+                    <div className="grid gap-5 md:grid-cols-2">
+                      <Field
+                        label="Icon Label"
+                        name="icon"
+                        placeholder="Color"
+                      />
+                      <Field
+                        label="Demo Clip URL"
+                        name="demoClipUrl"
+                        type="url"
+                      />
+                    </div>
+                    <Area
+                      label="Description"
+                      name="description"
+                      required
+                      rows={4}
+                    />
+                    <Field
+                      label="Sort Order"
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={0}
+                    />
+                    <SubmitRow saveLabel="Create Service" />
+                  </form>
+                </div>
               </>
             ),
           },
@@ -840,33 +877,33 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveAboutAction} className="grid gap-5">
-            <Field
-              label="Title"
-              name="title"
-              required
-              defaultValue={about.title}
-            />
-            <Area
-              label="Story"
-              name="story"
-              required
-              rows={6}
-              defaultValue={about.story}
-            />
-            <Area
-              label="Craft Notes"
-              name="craftNotes"
-              rows={5}
-              defaultValue={about.craftNotes.join("\n")}
-            />
-            <Field
-              label="Portrait URL"
-              name="portraitUrl"
-              type="url"
-              defaultValue={about.portraitUrl}
-            />
-            <SubmitRow saveLabel="Save About Content" />
-          </form>
+                  <Field
+                    label="Title"
+                    name="title"
+                    required
+                    defaultValue={about.title}
+                  />
+                  <Area
+                    label="Story"
+                    name="story"
+                    required
+                    rows={6}
+                    defaultValue={about.story}
+                  />
+                  <Area
+                    label="Craft Notes"
+                    name="craftNotes"
+                    rows={5}
+                    defaultValue={about.craftNotes.join("\n")}
+                  />
+                  <Field
+                    label="Portrait URL"
+                    name="portraitUrl"
+                    type="url"
+                    defaultValue={about.portraitUrl}
+                  />
+                  <SubmitRow saveLabel="Save About Content" />
+                </form>
               </>
             ),
           },
@@ -879,169 +916,175 @@ export default async function AdminPage({
             content: (
               <>
                 <form action={saveContactContentAction} className="grid gap-5">
-            <Field
-              label="Title"
-              name="title"
-              required
-              defaultValue={contact.title}
-            />
-            <Area
-              label="Intro"
-              name="intro"
-              required
-              rows={4}
-              defaultValue={contact.intro}
-            />
-            <Field
-              label="Email"
-              name="email"
-              type="email"
-              defaultValue={contact.email}
-            />
-            <SubmitRow saveLabel="Save Contact Content" />
-          </form>
+                  <Field
+                    label="Title"
+                    name="title"
+                    required
+                    defaultValue={contact.title}
+                  />
+                  <Area
+                    label="Intro"
+                    name="intro"
+                    required
+                    rows={4}
+                    defaultValue={contact.intro}
+                  />
+                  <Field
+                    label="Email"
+                    name="email"
+                    type="email"
+                    defaultValue={contact.email}
+                  />
+                  <SubmitRow saveLabel="Save Contact Content" />
+                </form>
 
-          <div id="contact-links" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-              Contact Social Links
-            </p>
-            {contactLinks.map((link) => (
-              <form
-                key={link.id}
-                action={saveSocialLinkAction}
-                className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
-              >
-                <input type="hidden" name="id" value={link.id} />
-                <input type="hidden" name="section" value="CONTACT" />
-                <Field
-                  label="Platform"
-                  name="platform"
-                  required
-                  defaultValue={link.platform}
-                />
-                <Field
-                  label="Label"
-                  name="label"
-                  required
-                  defaultValue={link.label}
-                />
-                <Field
-                  label="URL"
-                  name="url"
-                  type="url"
-                  required
-                  defaultValue={link.url}
-                />
-                <Field
-                  label="Order"
-                  name="sortOrder"
-                  type="number"
-                  defaultValue={link.sortOrder}
-                />
-                <div className="self-end">
-                  <SubmitRow saveLabel="Save Link">
-                    <button
-                      type="submit"
-                      formAction={deleteSocialLinkAction}
-                      className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                <div id="contact-links" className="mt-10 space-y-4">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Contact Social Links
+                  </p>
+                  {contactLinks.map((link) => (
+                    <form
+                      key={link.id}
+                      action={saveSocialLinkAction}
+                      className="grid gap-4 border border-border bg-background p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
                     >
-                      Delete
-                    </button>
-                  </SubmitRow>
+                      <input type="hidden" name="id" value={link.id} />
+                      <input type="hidden" name="section" value="CONTACT" />
+                      <Field
+                        label="Platform"
+                        name="platform"
+                        required
+                        defaultValue={link.platform}
+                      />
+                      <Field
+                        label="Label"
+                        name="label"
+                        required
+                        defaultValue={link.label}
+                      />
+                      <Field
+                        label="URL"
+                        name="url"
+                        type="url"
+                        required
+                        defaultValue={link.url}
+                      />
+                      <Field
+                        label="Order"
+                        name="sortOrder"
+                        type="number"
+                        defaultValue={link.sortOrder}
+                      />
+                      <div className="self-end">
+                        <SubmitRow saveLabel="Save Link">
+                          <button
+                            type="submit"
+                            formAction={deleteSocialLinkAction}
+                            className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                          >
+                            Delete
+                          </button>
+                        </SubmitRow>
+                      </div>
+                    </form>
+                  ))}
+
+                  <form
+                    action={saveSocialLinkAction}
+                    className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
+                  >
+                    <input type="hidden" name="section" value="CONTACT" />
+                    <Field
+                      label="Platform"
+                      name="platform"
+                      required
+                      placeholder="Instagram"
+                    />
+                    <Field
+                      label="Label"
+                      name="label"
+                      required
+                      placeholder="Message"
+                    />
+                    <Field
+                      label="URL"
+                      name="url"
+                      type="url"
+                      required
+                      placeholder="https://..."
+                    />
+                    <Field
+                      label="Order"
+                      name="sortOrder"
+                      type="number"
+                      defaultValue={0}
+                    />
+                    <div className="self-end">
+                      <SubmitRow saveLabel="Add Link" />
+                    </div>
+                  </form>
                 </div>
-              </form>
-            ))}
 
-            <form
-              action={saveSocialLinkAction}
-              className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_2fr_120px_auto]"
-            >
-              <input type="hidden" name="section" value="CONTACT" />
-              <Field
-                label="Platform"
-                name="platform"
-                required
-                placeholder="Instagram"
-              />
-              <Field
-                label="Label"
-                name="label"
-                required
-                placeholder="Message"
-              />
-              <Field
-                label="URL"
-                name="url"
-                type="url"
-                required
-                placeholder="https://..."
-              />
-              <Field
-                label="Order"
-                name="sortOrder"
-                type="number"
-                defaultValue={0}
-              />
-              <div className="self-end">
-                <SubmitRow saveLabel="Add Link" />
-              </div>
-            </form>
-          </div>
-
-          <div id="submissions" className="mt-10 space-y-4">
-            <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-              Latest Submissions
-            </p>
-            <div className="grid gap-4">
-              {submissions.map((submission) => (
-                <article
-                  key={submission.id}
-                  className="border border-border bg-background p-5"
-                >
-                  <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-                    <div>
-                      <p className="text-lg text-foreground">
-                        {submission.name}
-                      </p>
-                      <a
-                        href={`mailto:${submission.email}`}
-                        className="mt-1 block text-sm text-foreground hover:underline"
+                <div id="submissions" className="mt-10 space-y-4">
+                  <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
+                    Latest Submissions
+                  </p>
+                  <div className="grid gap-4">
+                    {submissions.map((submission) => (
+                      <article
+                        key={submission.id}
+                        className="border border-border bg-background p-5"
                       >
-                        {submission.email}
-                      </a>
-                      <p className="mt-4 max-w-3xl text-sm leading-7 whitespace-pre-wrap text-muted-foreground">
-                        {submission.message}
+                        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+                          <div>
+                            <p className="text-lg text-foreground">
+                              {submission.name}
+                            </p>
+                            <a
+                              href={`mailto:${submission.email}`}
+                              className="mt-1 block text-sm text-foreground hover:underline"
+                            >
+                              {submission.email}
+                            </a>
+                            <p className="mt-4 max-w-3xl text-sm leading-7 whitespace-pre-wrap text-muted-foreground">
+                              {submission.message}
+                            </p>
+                          </div>
+                          <div className="space-y-3">
+                            <p className="text-xs text-muted-foreground">
+                              {submission.createdAt.toLocaleString()}
+                            </p>
+                            <form action={toggleSubmissionReadAction}>
+                              <input
+                                type="hidden"
+                                name="id"
+                                value={submission.id}
+                              />
+                              <input
+                                type="hidden"
+                                name="nextValue"
+                                value={submission.isRead ? "false" : "true"}
+                              />
+                              <button
+                                type="submit"
+                                className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                              >
+                                {submission.isRead
+                                  ? "Mark Unread"
+                                  : "Mark Read"}
+                              </button>
+                            </form>
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                    {!submissions.length ? (
+                      <p className="border border-dashed border-border bg-secondary/50 px-4 py-5 text-sm text-muted-foreground">
+                        No contact submissions yet.
                       </p>
-                    </div>
-                    <div className="space-y-3">
-                      <p className="text-xs text-muted-foreground">
-                        {submission.createdAt.toLocaleString()}
-                      </p>
-                      <form action={toggleSubmissionReadAction}>
-                        <input type="hidden" name="id" value={submission.id} />
-                        <input
-                          type="hidden"
-                          name="nextValue"
-                          value={submission.isRead ? "false" : "true"}
-                        />
-                        <button
-                          type="submit"
-                          className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
-                        >
-                          {submission.isRead ? "Mark Unread" : "Mark Read"}
-                        </button>
-                      </form>
-                    </div>
+                    ) : null}
                   </div>
-                </article>
-              ))}
-              {!submissions.length ? (
-                <p className="border border-dashed border-border bg-secondary/50 px-4 py-5 text-sm text-muted-foreground">
-                  No contact submissions yet.
-                </p>
-              ) : null}
-            </div>
-          </div>
+                </div>
               </>
             ),
           },
