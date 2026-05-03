@@ -6,8 +6,8 @@ import { del, put } from "@vercel/blob"
 import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 
+import { adminPathAfterAction } from "@/lib/admin-tabs"
 import { endAdminSession, isAdminPasswordConfigured, requireAdminSession, startAdminSession } from "@/lib/admin-auth"
-import { ensureCmsSeeded } from "@/lib/crm-defaults"
 import { prisma } from "@/lib/prisma"
 import { slugify } from "@/lib/youtube"
 
@@ -37,9 +37,13 @@ function getCraftNotes(formData: FormData, key: string) {
     .filter(Boolean)
 }
 
+function revalidateAdminDashboard() {
+  revalidatePath("/admin", "layout")
+}
+
 function revalidateCmsPaths() {
   revalidatePath("/", "layout")
-  revalidatePath("/admin")
+  revalidatePath("/admin", "layout")
   revalidatePath("/work")
   revalidatePath("/work/[slug]", "page")
   revalidatePath("/services")
@@ -65,7 +69,7 @@ function buildUploadPath(filename: string) {
 }
 
 function redirectTo(section: string) {
-  redirect(`/admin#${section}`)
+  redirect(adminPathAfterAction(section))
 }
 
 export async function loginAction(formData: FormData) {
@@ -79,7 +83,7 @@ export async function loginAction(formData: FormData) {
     redirect("/admin?error=invalid-password")
   }
 
-  redirect("/admin")
+  redirect("/admin/media")
 }
 
 export async function logoutAction() {
@@ -89,8 +93,6 @@ export async function logoutAction() {
 
 export async function saveSiteSettingsAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   await prisma.siteSettings.update({
     where: { id: "site-settings" },
     data: {
@@ -149,8 +151,6 @@ export async function saveSiteSettingsAction(formData: FormData) {
 
 export async function saveHomepageAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   await prisma.homepageContent.update({
     where: { id: "homepage" },
     data: {
@@ -185,8 +185,6 @@ export async function saveHomepageAction(formData: FormData) {
 
 export async function saveAboutAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   await prisma.aboutContent.update({
     where: { id: "about" },
     data: {
@@ -206,8 +204,6 @@ export async function saveAboutAction(formData: FormData) {
 
 export async function saveContactContentAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   await prisma.contactContent.update({
     where: { id: "contact" },
     data: {
@@ -226,8 +222,6 @@ export async function saveContactContentAction(formData: FormData) {
 
 export async function saveNavLinkAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   const id = getString(formData, "id")
 
   await prisma.navLink.upsert({
@@ -265,8 +259,6 @@ export async function deleteNavLinkAction(formData: FormData) {
 
 export async function saveSocialLinkAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   const id = getString(formData, "id")
   const section = getString(formData, "section")
 
@@ -309,8 +301,6 @@ export async function deleteSocialLinkAction(formData: FormData) {
 
 export async function saveProjectAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   const id = getString(formData, "id")
   const data = {
     slug: slugFromTitle(formData, "slug", "title"),
@@ -355,8 +345,6 @@ export async function deleteProjectAction(formData: FormData) {
 
 export async function saveServiceAction(formData: FormData) {
   await requireAdminSession()
-  await ensureCmsSeeded()
-
   const id = getString(formData, "id")
   const data = {
     slug: slugFromTitle(formData, "slug", "title"),
@@ -399,13 +387,13 @@ export async function uploadMediaAction(formData: FormData) {
   await requireAdminSession()
 
   if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    redirect("/admin?error=missing-blob-token#media")
+    redirect("/admin/media?error=missing-blob-token")
   }
 
   const file = formData.get("file")
 
   if (!(file instanceof File) || !file.size) {
-    redirect("/admin?error=missing-file#media")
+    redirect("/admin/media?error=missing-file")
   }
 
   const pathname = buildUploadPath(file.name)
@@ -426,7 +414,7 @@ export async function uploadMediaAction(formData: FormData) {
   })
 
   revalidateCmsPaths()
-  redirectTo("media")
+  redirect(`/admin/media?uploadedUrl=${encodeURIComponent(blob.url)}`)
 }
 
 export async function deleteMediaAssetAction(formData: FormData) {
@@ -452,6 +440,7 @@ export async function deleteMediaAssetAction(formData: FormData) {
     })
   }
 
+  revalidateAdminDashboard()
   redirectTo("media")
 }
 
@@ -468,6 +457,7 @@ export async function toggleSubmissionReadAction(formData: FormData) {
     })
   }
 
+  revalidateAdminDashboard()
   redirectTo("submissions")
 }
 
@@ -477,10 +467,11 @@ export async function deleteSubmissionAction(formData: FormData) {
   const id = getString(formData, "id")
 
   if (id) {
-    await prisma.contactSubmission.delete({
+    await prisma.contactSubmission.deleteMany({
       where: { id },
     })
   }
 
+  revalidateAdminDashboard()
   redirectTo("submissions")
 }

@@ -1,6 +1,5 @@
 import { unstable_noStore as noStore } from "next/cache"
 
-import { ensureCmsSeeded } from "@/lib/crm-defaults"
 import { prisma } from "@/lib/prisma"
 import { NAV_LINKS } from "@/lib/constants"
 import type {
@@ -93,7 +92,6 @@ function mapService(service: {
 
 async function prepareRead() {
   noStore()
-  await ensureCmsSeeded()
 }
 
 export async function getSiteSettings(): Promise<SiteSettings> {
@@ -278,8 +276,6 @@ export async function submitContactForm(payload: {
   email: string
   message: string
 }) {
-  await ensureCmsSeeded()
-
   return prisma.contactSubmission.create({
     data: {
       name: payload.name.trim(),

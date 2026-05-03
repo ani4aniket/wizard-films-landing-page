@@ -2,32 +2,6 @@ import { prisma } from "@/lib/prisma"
 import { NAV_LINKS, SITE_NAME } from "@/lib/constants"
 import { slugify } from "@/lib/youtube"
 
-const LEGACY_SITE_DESCRIPTION =
-  "A cinematic portfolio for film editing, color, sound, and story-led production."
-
-const LEGACY_FOOTER_BLURB =
-  "Wizard Films builds cinematic edits, color, sound, and production systems around story first work."
-
-const LEGACY_HOMEPAGE = {
-  headline: "Frames built with atmosphere and intent.",
-  tagline:
-    "A film studio CRM-backed portfolio for edits, color, sound, and production work.",
-  intro:
-    "Use the admin dashboard to swap hero media, rewrite the homepage, and publish featured work without touching code.",
-}
-
-const LEGACY_ABOUT = {
-  title: "A studio built around restraint, rhythm, and story.",
-  story:
-    "Wizard Films shapes edits, color, and sound with a cinematic eye. The copy here is seeded locally so the site renders immediately after Prisma is connected to Neon.",
-}
-
-const LEGACY_CONTACT = {
-  title: "Start a project",
-  intro:
-    "Share the brief, timeline, and mood you have in mind. New submissions land in the admin dashboard.",
-}
-
 const SAMPLE_HOMEPAGE = {
   headline: "VISUALS THAT MOVE WITH THE SONG.",
   tagline:
@@ -400,8 +374,7 @@ const PROJECT_SEED_ROWS = [
     title: "ASLA",
     youtubeUrl: "https://www.youtube.com/watch?v=e0mhZ4-qx7M",
     role: "Director",
-    description:
-      "Director on ASLA—official video direction for Wizard Films.",
+    description: "Director on ASLA—official video direction for Wizard Films.",
     featured: false,
   },
   {
@@ -421,13 +394,6 @@ const PROJECT_SEED_ROWS = [
     featured: false,
   },
 ] as const
-
-const LEGACY_PROJECT_SLUGS = [
-  "night-runner-launch",
-  "city-of-echoes",
-  "afterglow-sessions",
-  "dust-trail-anthem",
-]
 
 const SAMPLE_PROJECTS = PROJECT_SEED_ROWS.map((project, index) => ({
   slug: slugify(project.title),
@@ -508,382 +474,92 @@ const SAMPLE_SUBMISSIONS = [
   },
 ]
 
-let seedPromise: Promise<void> | null = null
-
-function isBlank(value: string | null | undefined) {
-  return !value || !value.trim()
-}
-
 export async function replaceCmsWithSampleData() {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
 
   await prisma.$transaction(
     async (tx) => {
-    await tx.contactSubmission.deleteMany()
-    await tx.project.deleteMany()
-    await tx.service.deleteMany()
-    await tx.socialLink.deleteMany()
-    await tx.navLink.deleteMany()
+      await tx.contactSubmission.deleteMany()
+      await tx.project.deleteMany()
+      await tx.service.deleteMany()
+      await tx.socialLink.deleteMany()
+      await tx.navLink.deleteMany()
 
-    await tx.siteSettings.upsert({
-      where: { id: "site-settings" },
-      update: {
-        siteName: SITE_NAME,
-        siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
-        siteUrl,
-        footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
-        contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
-        ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
-        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
-        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
-        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
-        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
-        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
-        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
-        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
-        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
-        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
-        servicesPageHeroDescription:
-          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
-        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
-        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
-        projectRelatedDescription:
-          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
-        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
-        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
-        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
-      },
-      create: {
-        id: "site-settings",
-        siteName: SITE_NAME,
-        siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
-        siteUrl,
-        footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
-        contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
-        ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
-        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
-        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
-        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
-        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
-        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
-        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
-        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
-        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
-        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
-        servicesPageHeroDescription:
-          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
-        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
-        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
-        projectRelatedDescription:
-          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
-        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
-        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
-        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
-      },
-    })
-
-    await tx.homepageContent.upsert({
-      where: { id: "homepage" },
-      update: {
-        headline: SAMPLE_HOMEPAGE.headline,
-        tagline: SAMPLE_HOMEPAGE.tagline,
-        intro: SAMPLE_HOMEPAGE.intro,
-        heroVideoUrl: "",
-        heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
-        primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
-        primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
-        secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
-        secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
-        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
-        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
-        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
-        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
-        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
-        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
-        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
-        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
-        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
-        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
-        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
-        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
-        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
-      },
-      create: {
-        id: "homepage",
-        headline: SAMPLE_HOMEPAGE.headline,
-        tagline: SAMPLE_HOMEPAGE.tagline,
-        intro: SAMPLE_HOMEPAGE.intro,
-        heroVideoUrl: "",
-        heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
-        primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
-        primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
-        secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
-        secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
-        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
-        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
-        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
-        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
-        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
-        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
-        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
-        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
-        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
-        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
-        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
-        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
-        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
-      },
-    })
-
-    await tx.aboutContent.upsert({
-      where: { id: "about" },
-      update: {
-        title: SAMPLE_ABOUT.title,
-        story: SAMPLE_ABOUT.story,
-        craftNotes: SAMPLE_ABOUT.craftNotes,
-        portraitUrl: SAMPLE_ABOUT.portraitUrl,
-        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
-        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
-      },
-      create: {
-        id: "about",
-        title: SAMPLE_ABOUT.title,
-        story: SAMPLE_ABOUT.story,
-        craftNotes: SAMPLE_ABOUT.craftNotes,
-        portraitUrl: SAMPLE_ABOUT.portraitUrl,
-        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
-        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
-      },
-    })
-
-    await tx.contactContent.upsert({
-      where: { id: "contact" },
-      update: {
-        title: SAMPLE_CONTACT.title,
-        intro: SAMPLE_CONTACT.intro,
-        email: SAMPLE_CONTACT.email,
-        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
-        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
-      },
-      create: {
-        id: "contact",
-        title: SAMPLE_CONTACT.title,
-        intro: SAMPLE_CONTACT.intro,
-        email: SAMPLE_CONTACT.email,
-        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
-        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
-      },
-    })
-
-    await tx.socialLink.createMany({
-      data: [...SAMPLE_SITE_LINKS, ...SAMPLE_CONTACT_LINKS],
-    })
-    await tx.navLink.createMany({ data: SAMPLE_NAV_LINKS })
-    await tx.service.createMany({ data: SAMPLE_SERVICES })
-    await tx.project.createMany({ data: SAMPLE_PROJECTS })
-    await tx.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
-    },
-    { maxWait: 10_000, timeout: 120_000 }
-  )
-}
-
-export async function ensureCmsSeeded() {
-  if (seedPromise) {
-    return seedPromise
-  }
-
-  seedPromise = (async () => {
-    const siteSettings = await prisma.siteSettings.upsert({
-      where: { id: "site-settings" },
-      update: {},
-      create: {
-        id: "site-settings",
-        siteName: SITE_NAME,
-        siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
-        siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
-        footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
-        contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
-        ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
-        navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
-        navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
-        searchArchivePlaceholder: SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
-        footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
-        workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
-        workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
-        workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
-        servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
-        servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
-        servicesPageHeroDescription:
-          SAMPLE_SITE_SETTINGS.servicesPageHeroDescription,
-        projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
-        projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
-        projectRelatedDescription:
-          SAMPLE_SITE_SETTINGS.projectRelatedDescription,
-        projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
-        homeFeaturedWorkCtaLabel: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
-        homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
-      },
-    })
-
-    if (
-      siteSettings.siteDescription === LEGACY_SITE_DESCRIPTION ||
-      siteSettings.footerBlurb === LEGACY_FOOTER_BLURB ||
-      isBlank(siteSettings.contactEmail) ||
-      isBlank(siteSettings.ogImage)
-    ) {
-      await prisma.siteSettings.update({
+      await tx.siteSettings.upsert({
         where: { id: "site-settings" },
-        data: {
-          siteDescription:
-            siteSettings.siteDescription === LEGACY_SITE_DESCRIPTION
-              ? SAMPLE_SITE_SETTINGS.siteDescription
-              : siteSettings.siteDescription,
-          footerBlurb:
-            siteSettings.footerBlurb === LEGACY_FOOTER_BLURB
-              ? SAMPLE_SITE_SETTINGS.footerBlurb
-              : siteSettings.footerBlurb,
-          contactEmail: isBlank(siteSettings.contactEmail)
-            ? SAMPLE_SITE_SETTINGS.contactEmail
-            : siteSettings.contactEmail,
-          ogImage: isBlank(siteSettings.ogImage)
-            ? SAMPLE_HOMEPAGE.heroPosterUrl
-            : siteSettings.ogImage,
+        update: {
+          siteName: SITE_NAME,
+          siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
+          siteUrl,
+          footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
+          contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
+          ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+          navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
+          navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
+          searchArchivePlaceholder:
+            SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
+          footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
+          workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
+          workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
+          workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
+          servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
+          servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
+          servicesPageHeroDescription:
+            SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
+          projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
+          projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
+          projectRelatedDescription:
+            SAMPLE_SITE_SETTINGS.projectRelatedDescription,
+          projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
+          homeFeaturedWorkCtaLabel:
+            SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
+          homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
+        },
+        create: {
+          id: "site-settings",
+          siteName: SITE_NAME,
+          siteDescription: SAMPLE_SITE_SETTINGS.siteDescription,
+          siteUrl,
+          footerBlurb: SAMPLE_SITE_SETTINGS.footerBlurb,
+          contactEmail: SAMPLE_SITE_SETTINGS.contactEmail,
+          ogImage: SAMPLE_HOMEPAGE.heroPosterUrl,
+          navCtaLabel: SAMPLE_SITE_SETTINGS.navCtaLabel,
+          navCtaHref: SAMPLE_SITE_SETTINGS.navCtaHref,
+          searchArchivePlaceholder:
+            SAMPLE_SITE_SETTINGS.searchArchivePlaceholder,
+          footerLeadLine: SAMPLE_SITE_SETTINGS.footerLeadLine,
+          workPageEyebrow: SAMPLE_SITE_SETTINGS.workPageEyebrow || null,
+          workPageHeroTitle: SAMPLE_SITE_SETTINGS.workPageHeroTitle,
+          workPageHeroDescription: SAMPLE_SITE_SETTINGS.workPageHeroDescription,
+          servicesPageEyebrow: SAMPLE_SITE_SETTINGS.servicesPageEyebrow,
+          servicesPageHeroTitle: SAMPLE_SITE_SETTINGS.servicesPageHeroTitle,
+          servicesPageHeroDescription:
+            SAMPLE_SITE_SETTINGS.servicesPageHeroDescription || null,
+          projectRelatedEyebrow: SAMPLE_SITE_SETTINGS.projectRelatedEyebrow,
+          projectRelatedTitle: SAMPLE_SITE_SETTINGS.projectRelatedTitle,
+          projectRelatedDescription:
+            SAMPLE_SITE_SETTINGS.projectRelatedDescription,
+          projectPlaybackNote: SAMPLE_SITE_SETTINGS.projectPlaybackNote,
+          homeFeaturedWorkCtaLabel:
+            SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel,
+          homeFeaturedWorkCtaHref: SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref,
         },
       })
-    }
 
-    const siteAfterLegacy = await prisma.siteSettings.findUniqueOrThrow({
-      where: { id: "site-settings" },
-    })
-    const siteUiFill: Record<string, string> = {}
-    if (isBlank(siteAfterLegacy.navCtaLabel)) {
-      siteUiFill.navCtaLabel = SAMPLE_SITE_SETTINGS.navCtaLabel
-    }
-    if (isBlank(siteAfterLegacy.navCtaHref)) {
-      siteUiFill.navCtaHref = SAMPLE_SITE_SETTINGS.navCtaHref
-    }
-    if (isBlank(siteAfterLegacy.searchArchivePlaceholder)) {
-      siteUiFill.searchArchivePlaceholder =
-        SAMPLE_SITE_SETTINGS.searchArchivePlaceholder
-    }
-    if (isBlank(siteAfterLegacy.footerLeadLine)) {
-      siteUiFill.footerLeadLine = SAMPLE_SITE_SETTINGS.footerLeadLine
-    }
-    if (isBlank(siteAfterLegacy.workPageHeroTitle)) {
-      siteUiFill.workPageHeroTitle = SAMPLE_SITE_SETTINGS.workPageHeroTitle
-    }
-    if (isBlank(siteAfterLegacy.workPageHeroDescription)) {
-      siteUiFill.workPageHeroDescription =
-        SAMPLE_SITE_SETTINGS.workPageHeroDescription
-    }
-    if (isBlank(siteAfterLegacy.servicesPageEyebrow)) {
-      siteUiFill.servicesPageEyebrow = SAMPLE_SITE_SETTINGS.servicesPageEyebrow
-    }
-    if (isBlank(siteAfterLegacy.servicesPageHeroTitle)) {
-      siteUiFill.servicesPageHeroTitle =
-        SAMPLE_SITE_SETTINGS.servicesPageHeroTitle
-    }
-    if (isBlank(siteAfterLegacy.servicesPageHeroDescription)) {
-      siteUiFill.servicesPageHeroDescription =
-        SAMPLE_SITE_SETTINGS.servicesPageHeroDescription
-    }
-    if (isBlank(siteAfterLegacy.projectRelatedEyebrow)) {
-      siteUiFill.projectRelatedEyebrow =
-        SAMPLE_SITE_SETTINGS.projectRelatedEyebrow
-    }
-    if (isBlank(siteAfterLegacy.projectRelatedTitle)) {
-      siteUiFill.projectRelatedTitle = SAMPLE_SITE_SETTINGS.projectRelatedTitle
-    }
-    if (isBlank(siteAfterLegacy.projectRelatedDescription)) {
-      siteUiFill.projectRelatedDescription =
-        SAMPLE_SITE_SETTINGS.projectRelatedDescription
-    }
-    if (isBlank(siteAfterLegacy.projectPlaybackNote)) {
-      siteUiFill.projectPlaybackNote = SAMPLE_SITE_SETTINGS.projectPlaybackNote
-    }
-    if (isBlank(siteAfterLegacy.homeFeaturedWorkCtaLabel)) {
-      siteUiFill.homeFeaturedWorkCtaLabel =
-        SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaLabel
-    }
-    if (isBlank(siteAfterLegacy.homeFeaturedWorkCtaHref)) {
-      siteUiFill.homeFeaturedWorkCtaHref =
-        SAMPLE_SITE_SETTINGS.homeFeaturedWorkCtaHref
-    }
-    if (Object.keys(siteUiFill).length > 0) {
-      await prisma.siteSettings.update({
-        where: { id: "site-settings" },
-        data: siteUiFill,
-      })
-    }
-
-    const homepage = await prisma.homepageContent.upsert({
-      where: { id: "homepage" },
-      update: {},
-      create: {
-        id: "homepage",
-        headline: SAMPLE_HOMEPAGE.headline,
-        tagline: SAMPLE_HOMEPAGE.tagline,
-        intro: SAMPLE_HOMEPAGE.intro,
-        heroVideoUrl: "",
-        heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
-        primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
-        primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
-        secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
-        secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
-        heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
-        heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
-        heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
-        featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
-        featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
-        featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
-        servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
-        servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
-        servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
-        approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
-        approachTitle: SAMPLE_HOMEPAGE.approachTitle,
-        approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
-        approachBullets: SAMPLE_HOMEPAGE.approachBullets,
-      },
-    })
-
-    if (
-      homepage.headline === LEGACY_HOMEPAGE.headline ||
-      homepage.tagline === LEGACY_HOMEPAGE.tagline ||
-      homepage.intro === LEGACY_HOMEPAGE.intro ||
-      isBlank(homepage.heroPosterUrl)
-    ) {
-      await prisma.homepageContent.update({
+      await tx.homepageContent.upsert({
         where: { id: "homepage" },
-        data: {
-          headline:
-            homepage.headline === LEGACY_HOMEPAGE.headline
-              ? SAMPLE_HOMEPAGE.headline
-              : homepage.headline,
-          tagline:
-            homepage.tagline === LEGACY_HOMEPAGE.tagline
-              ? SAMPLE_HOMEPAGE.tagline
-              : homepage.tagline,
-          intro:
-            homepage.intro === LEGACY_HOMEPAGE.intro
-              ? SAMPLE_HOMEPAGE.intro
-              : homepage.intro,
-          heroPosterUrl: isBlank(homepage.heroPosterUrl)
-            ? SAMPLE_HOMEPAGE.heroPosterUrl
-            : homepage.heroPosterUrl,
-          primaryCtaLabel:
-            homepage.primaryCtaLabel || SAMPLE_HOMEPAGE.primaryCtaLabel,
-          primaryCtaHref:
-            homepage.primaryCtaHref || SAMPLE_HOMEPAGE.primaryCtaHref,
-          secondaryCtaLabel:
-            homepage.secondaryCtaLabel || SAMPLE_HOMEPAGE.secondaryCtaLabel,
-          secondaryCtaHref:
-            homepage.secondaryCtaHref || SAMPLE_HOMEPAGE.secondaryCtaHref,
-          heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+        update: {
+          headline: SAMPLE_HOMEPAGE.headline,
+          tagline: SAMPLE_HOMEPAGE.tagline,
+          intro: SAMPLE_HOMEPAGE.intro,
+          heroVideoUrl: "",
+          heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
+          primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
+          primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
+          secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
+          secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
           heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+          heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
           heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
           featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
           featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
@@ -894,257 +570,87 @@ export async function ensureCmsSeeded() {
           approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
           approachTitle: SAMPLE_HOMEPAGE.approachTitle,
           approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
+          approachBullets: SAMPLE_HOMEPAGE.approachBullets,
+        },
+        create: {
+          id: "homepage",
+          headline: SAMPLE_HOMEPAGE.headline,
+          tagline: SAMPLE_HOMEPAGE.tagline,
+          intro: SAMPLE_HOMEPAGE.intro,
+          heroVideoUrl: "",
+          heroPosterUrl: SAMPLE_HOMEPAGE.heroPosterUrl,
+          primaryCtaLabel: SAMPLE_HOMEPAGE.primaryCtaLabel,
+          primaryCtaHref: SAMPLE_HOMEPAGE.primaryCtaHref,
+          secondaryCtaLabel: SAMPLE_HOMEPAGE.secondaryCtaLabel,
+          secondaryCtaHref: SAMPLE_HOMEPAGE.secondaryCtaHref,
+          heroEyebrow: SAMPLE_HOMEPAGE.heroEyebrow || null,
+          heroAsideEyebrow: SAMPLE_HOMEPAGE.heroAsideEyebrow,
+          heroAsideFocus: SAMPLE_HOMEPAGE.heroAsideFocus || null,
+          featuredEyebrow: SAMPLE_HOMEPAGE.featuredEyebrow,
+          featuredTitle: SAMPLE_HOMEPAGE.featuredTitle,
+          featuredDescription: SAMPLE_HOMEPAGE.featuredDescription,
+          servicesEyebrow: SAMPLE_HOMEPAGE.servicesEyebrow,
+          servicesTitle: SAMPLE_HOMEPAGE.servicesTitle,
+          servicesDescription: SAMPLE_HOMEPAGE.servicesDescription || null,
+          approachEyebrow: SAMPLE_HOMEPAGE.approachEyebrow,
+          approachTitle: SAMPLE_HOMEPAGE.approachTitle,
+          approachDescription: SAMPLE_HOMEPAGE.approachDescription || null,
+          approachBullets: SAMPLE_HOMEPAGE.approachBullets,
         },
       })
-    }
 
-    const homepageAfterLegacy = await prisma.homepageContent.findUniqueOrThrow({
-      where: { id: "homepage" },
-    })
-    const homeSectionFill: Record<string, string> = {}
-    if (isBlank(homepageAfterLegacy.heroAsideEyebrow)) {
-      homeSectionFill.heroAsideEyebrow = SAMPLE_HOMEPAGE.heroAsideEyebrow
-    }
-    if (isBlank(homepageAfterLegacy.featuredEyebrow)) {
-      homeSectionFill.featuredEyebrow = SAMPLE_HOMEPAGE.featuredEyebrow
-    }
-    if (isBlank(homepageAfterLegacy.featuredTitle)) {
-      homeSectionFill.featuredTitle = SAMPLE_HOMEPAGE.featuredTitle
-    }
-    if (isBlank(homepageAfterLegacy.featuredDescription)) {
-      homeSectionFill.featuredDescription = SAMPLE_HOMEPAGE.featuredDescription
-    }
-    if (isBlank(homepageAfterLegacy.servicesEyebrow)) {
-      homeSectionFill.servicesEyebrow = SAMPLE_HOMEPAGE.servicesEyebrow
-    }
-    if (isBlank(homepageAfterLegacy.servicesTitle)) {
-      homeSectionFill.servicesTitle = SAMPLE_HOMEPAGE.servicesTitle
-    }
-    if (isBlank(homepageAfterLegacy.approachEyebrow)) {
-      homeSectionFill.approachEyebrow = SAMPLE_HOMEPAGE.approachEyebrow
-    }
-    if (isBlank(homepageAfterLegacy.approachTitle)) {
-      homeSectionFill.approachTitle = SAMPLE_HOMEPAGE.approachTitle
-    }
-    if (isBlank(homepageAfterLegacy.servicesDescription)) {
-      homeSectionFill.servicesDescription = SAMPLE_HOMEPAGE.servicesDescription
-    }
-    if (isBlank(homepageAfterLegacy.approachDescription)) {
-      homeSectionFill.approachDescription = SAMPLE_HOMEPAGE.approachDescription
-    }
-    if (isBlank(homepageAfterLegacy.heroAsideEyebrow)) {
-      homeSectionFill.heroAsideEyebrow = SAMPLE_HOMEPAGE.heroAsideEyebrow
-    }
-    if (Object.keys(homeSectionFill).length > 0) {
-      await prisma.homepageContent.update({
-        where: { id: "homepage" },
-        data: homeSectionFill,
-      })
-    }
-
-    const about = await prisma.aboutContent.upsert({
-      where: { id: "about" },
-      update: {},
-      create: {
-        id: "about",
-        title: SAMPLE_ABOUT.title,
-        story: SAMPLE_ABOUT.story,
-        craftNotes: SAMPLE_ABOUT.craftNotes,
-        portraitUrl: SAMPLE_ABOUT.portraitUrl,
-        pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
-        pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
-      },
-    })
-
-    if (
-      about.title === LEGACY_ABOUT.title ||
-      about.story === LEGACY_ABOUT.story ||
-      !about.craftNotes.length ||
-      isBlank(about.portraitUrl)
-    ) {
-      await prisma.aboutContent.update({
+      await tx.aboutContent.upsert({
         where: { id: "about" },
-        data: {
-          title:
-            about.title === LEGACY_ABOUT.title
-              ? SAMPLE_ABOUT.title
-              : about.title,
-          story:
-            about.story === LEGACY_ABOUT.story
-              ? SAMPLE_ABOUT.story
-              : about.story,
-          craftNotes: about.craftNotes.length
-            ? about.craftNotes
-            : SAMPLE_ABOUT.craftNotes,
-          portraitUrl: isBlank(about.portraitUrl)
-            ? SAMPLE_ABOUT.portraitUrl
-            : about.portraitUrl,
-          pageHeroEyebrow: isBlank(about.pageHeroEyebrow)
-            ? SAMPLE_ABOUT.pageHeroEyebrow
-            : about.pageHeroEyebrow,
-          pageHeroTitle: isBlank(about.pageHeroTitle)
-            ? SAMPLE_ABOUT.pageHeroTitle || null
-            : about.pageHeroTitle,
-          pageHeroDescription: isBlank(about.pageHeroDescription)
-            ? SAMPLE_ABOUT.pageHeroDescription || null
-            : about.pageHeroDescription,
+        update: {
+          title: SAMPLE_ABOUT.title,
+          story: SAMPLE_ABOUT.story,
+          craftNotes: SAMPLE_ABOUT.craftNotes,
+          portraitUrl: SAMPLE_ABOUT.portraitUrl,
+          pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
+          pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
+          pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
+        },
+        create: {
+          id: "about",
+          title: SAMPLE_ABOUT.title,
+          story: SAMPLE_ABOUT.story,
+          craftNotes: SAMPLE_ABOUT.craftNotes,
+          portraitUrl: SAMPLE_ABOUT.portraitUrl,
+          pageHeroEyebrow: SAMPLE_ABOUT.pageHeroEyebrow,
+          pageHeroTitle: SAMPLE_ABOUT.pageHeroTitle || null,
+          pageHeroDescription: SAMPLE_ABOUT.pageHeroDescription || null,
         },
       })
-    }
 
-    const aboutAfterLegacy = await prisma.aboutContent.findUniqueOrThrow({
-      where: { id: "about" },
-    })
-    const aboutHeroFill: Record<string, string> = {}
-    if (isBlank(aboutAfterLegacy.pageHeroEyebrow)) {
-      aboutHeroFill.pageHeroEyebrow = SAMPLE_ABOUT.pageHeroEyebrow
-    }
-    if (isBlank(aboutAfterLegacy.pageHeroTitle)) {
-      const fallback = SAMPLE_ABOUT.pageHeroTitle?.trim()
-      if (fallback) {
-        aboutHeroFill.pageHeroTitle = fallback
-      }
-    }
-    if (isBlank(aboutAfterLegacy.pageHeroDescription)) {
-      const fallback = SAMPLE_ABOUT.pageHeroDescription?.trim()
-      if (fallback) {
-        aboutHeroFill.pageHeroDescription = fallback
-      }
-    }
-    if (Object.keys(aboutHeroFill).length > 0) {
-      await prisma.aboutContent.update({
-        where: { id: "about" },
-        data: aboutHeroFill,
-      })
-    }
-
-    const contact = await prisma.contactContent.upsert({
-      where: { id: "contact" },
-      update: {},
-      create: {
-        id: "contact",
-        title: SAMPLE_CONTACT.title,
-        intro: SAMPLE_CONTACT.intro,
-        email: SAMPLE_CONTACT.email,
-        pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
-        pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
-        pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
-      },
-    })
-
-    if (
-      contact.title === LEGACY_CONTACT.title ||
-      contact.intro === LEGACY_CONTACT.intro ||
-      isBlank(contact.email)
-    ) {
-      await prisma.contactContent.update({
+      await tx.contactContent.upsert({
         where: { id: "contact" },
-        data: {
-          title:
-            contact.title === LEGACY_CONTACT.title
-              ? SAMPLE_CONTACT.title
-              : contact.title,
-          intro:
-            contact.intro === LEGACY_CONTACT.intro
-              ? SAMPLE_CONTACT.intro
-              : contact.intro,
-          email: isBlank(contact.email) ? SAMPLE_CONTACT.email : contact.email,
-          pageHeroEyebrow: isBlank(contact.pageHeroEyebrow)
-            ? SAMPLE_CONTACT.pageHeroEyebrow
-            : contact.pageHeroEyebrow,
-          pageHeroTitle: isBlank(contact.pageHeroTitle)
-            ? SAMPLE_CONTACT.pageHeroTitle
-            : contact.pageHeroTitle,
-          pageHeroDescription: isBlank(contact.pageHeroDescription)
-            ? SAMPLE_CONTACT.pageHeroDescription
-            : contact.pageHeroDescription,
+        update: {
+          title: SAMPLE_CONTACT.title,
+          intro: SAMPLE_CONTACT.intro,
+          email: SAMPLE_CONTACT.email,
+          pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
+          pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
+          pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
+        },
+        create: {
+          id: "contact",
+          title: SAMPLE_CONTACT.title,
+          intro: SAMPLE_CONTACT.intro,
+          email: SAMPLE_CONTACT.email,
+          pageHeroEyebrow: SAMPLE_CONTACT.pageHeroEyebrow,
+          pageHeroTitle: SAMPLE_CONTACT.pageHeroTitle,
+          pageHeroDescription: SAMPLE_CONTACT.pageHeroDescription,
         },
       })
-    }
 
-    const contactAfterLegacy = await prisma.contactContent.findUniqueOrThrow({
-      where: { id: "contact" },
-    })
-    const contactHeroFill: Record<string, string> = {}
-    if (isBlank(contactAfterLegacy.pageHeroEyebrow)) {
-      contactHeroFill.pageHeroEyebrow = SAMPLE_CONTACT.pageHeroEyebrow
-    }
-    if (isBlank(contactAfterLegacy.pageHeroTitle)) {
-      contactHeroFill.pageHeroTitle = SAMPLE_CONTACT.pageHeroTitle
-    }
-    if (isBlank(contactAfterLegacy.pageHeroDescription)) {
-      contactHeroFill.pageHeroDescription = SAMPLE_CONTACT.pageHeroDescription
-    }
-    if (Object.keys(contactHeroFill).length > 0) {
-      await prisma.contactContent.update({
-        where: { id: "contact" },
-        data: contactHeroFill,
+      await tx.socialLink.createMany({
+        data: [...SAMPLE_SITE_LINKS, ...SAMPLE_CONTACT_LINKS],
       })
-    }
-
-    const [
-      siteLinkCount,
-      contactLinkCount,
-      navLinkCount,
-      projectCount,
-      serviceCount,
-      submissionCount,
-    ] = await Promise.all([
-      prisma.socialLink.count({ where: { section: "SITE" } }),
-      prisma.socialLink.count({ where: { section: "CONTACT" } }),
-      prisma.navLink.count(),
-      prisma.project.count(),
-      prisma.service.count(),
-      prisma.contactSubmission.count(),
-    ])
-
-    if (siteLinkCount === 0) {
-      await prisma.socialLink.createMany({ data: SAMPLE_SITE_LINKS })
-    }
-
-    if (contactLinkCount === 0) {
-      await prisma.socialLink.createMany({ data: SAMPLE_CONTACT_LINKS })
-    }
-
-    if (navLinkCount === 0) {
-      await prisma.navLink.createMany({ data: SAMPLE_NAV_LINKS })
-    }
-
-    if (projectCount > 0) {
-      await prisma.project.deleteMany({
-        where: { slug: { in: LEGACY_PROJECT_SLUGS } },
-      })
-    }
-
-    const seededProjects = await prisma.project.findMany({
-      where: { slug: { in: SAMPLE_PROJECTS.map((project) => project.slug) } },
-      select: { slug: true },
-    })
-    const seededProjectSlugs = new Set(
-      seededProjects.map((project) => project.slug)
-    )
-    const missingProjects = SAMPLE_PROJECTS.filter(
-      (project) => !seededProjectSlugs.has(project.slug)
-    )
-
-    if (missingProjects.length > 0) {
-      await prisma.project.createMany({ data: missingProjects })
-    }
-
-    if (serviceCount === 0) {
-      await prisma.service.createMany({ data: SAMPLE_SERVICES })
-    }
-
-    if (submissionCount === 0) {
-      await prisma.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
-    }
-  })()
-
-  try {
-    await seedPromise
-  } catch (error) {
-    seedPromise = null
-    throw error
-  }
+      await tx.navLink.createMany({ data: SAMPLE_NAV_LINKS })
+      await tx.service.createMany({ data: SAMPLE_SERVICES })
+      await tx.project.createMany({ data: SAMPLE_PROJECTS })
+      await tx.contactSubmission.createMany({ data: SAMPLE_SUBMISSIONS })
+    },
+    { maxWait: 10_000, timeout: 120_000 }
+  )
 }

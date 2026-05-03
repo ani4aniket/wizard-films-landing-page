@@ -1,16 +1,14 @@
 "use client"
 
-import {
-  type ReactNode,
-  useCallback,
-  useLayoutEffect,
-  useState,
-} from "react"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { type ReactNode, useLayoutEffect } from "react"
 
+import type { AdminTabId } from "@/lib/admin-tabs"
 import { cn } from "@/lib/utils"
 
 export type AdminTabPanel = {
-  id: string
+  id: AdminTabId
   /** Short label on the tab trigger */
   label: string
   /** Optional longer heading inside the panel (defaults to label) */
@@ -19,28 +17,27 @@ export type AdminTabPanel = {
   content: ReactNode
 }
 
-export function AdminTabLayout({ panels }: { panels: AdminTabPanel[] }) {
-  const firstId = panels[0]?.id ?? ""
-  const [activeId, setActiveId] = useState(firstId)
+export function AdminTabLayout({
+  panels,
+  activeSection,
+}: {
+  panels: AdminTabPanel[]
+  activeSection: AdminTabId
+}) {
+  const pathname = usePathname()
 
   useLayoutEffect(() => {
-    const syncFromHash = () => {
-      const hash = window.location.hash.slice(1)
-      if (hash && panels.some((p) => p.id === hash)) {
-        setActiveId(hash)
-      }
-    }
-    syncFromHash()
-    window.addEventListener("hashchange", syncFromHash)
-    return () => window.removeEventListener("hashchange", syncFromHash)
-  }, [panels])
+    const hash = window.location.hash.slice(1)
+    if (!hash) return
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        document.getElementById(hash)?.scrollIntoView({ block: "start" })
+      })
+    })
+  }, [pathname, activeSection])
 
-  const selectTab = useCallback((id: string) => {
-    setActiveId(id)
-    window.history.replaceState(null, "", `#${id}`)
-  }, [])
-
-  const activePanel = panels.find((p) => p.id === activeId) ?? panels[0]
+  const activePanel =
+    panels.find((p) => p.id === activeSection) ?? panels[0]
 
   if (!activePanel) {
     return null
@@ -54,17 +51,17 @@ export function AdminTabLayout({ panels }: { panels: AdminTabPanel[] }) {
         className="flex flex-wrap gap-2"
       >
         {panels.map((panel) => {
-          const selected = activeId === panel.id
+          const selected = activeSection === panel.id
           return (
-            <button
+            <Link
               key={panel.id}
+              href={`/admin/${panel.id}`}
               role="tab"
-              type="button"
               aria-selected={selected}
               id={`admin-tab-${panel.id}`}
               aria-controls={`admin-panel-${panel.id}`}
               tabIndex={selected ? 0 : -1}
-              onClick={() => selectTab(panel.id)}
+              scroll={false}
               className={cn(
                 "pill-feedback rounded-full border px-4 py-2.5 text-sm transition",
                 selected
@@ -73,7 +70,7 @@ export function AdminTabLayout({ panels }: { panels: AdminTabPanel[] }) {
               )}
             >
               {panel.label}
-            </button>
+            </Link>
           )
         })}
       </div>

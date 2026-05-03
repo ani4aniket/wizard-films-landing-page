@@ -58,34 +58,34 @@ export function Navbar({
           isScrolled && "border-border"
         )}
       >
-        <div className="mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 py-4 md:px-10">
-          <div className="flex min-w-0 items-center gap-4">
+        <div className="relative mx-auto flex max-w-[1440px] items-center justify-between gap-4 px-6 py-4 md:px-10">
+          <div className="flex min-w-0 shrink-0 items-center gap-4">
             <Link
               href="/"
               className="shrink-0 text-base font-medium tracking-[0.18em] text-foreground uppercase"
             >
               {siteName}
             </Link>
-            <div className="hidden items-center gap-8 lg:flex">
-              {navLinks.map((item) => {
-                const isActive = pathname === item.href
+          </div>
+          <div className="absolute left-1/2 top-1/2 z-10 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-8 lg:flex">
+            {navLinks.map((item) => {
+              const isActive = pathname === item.href
 
-                return (
-                  <Link
-                    key={`${item.href}-${item.label}`}
-                    href={item.href}
-                    className={cn(
-                      "border-b-2 pb-1 text-base font-medium text-foreground transition-colors",
-                      isActive
-                        ? "border-foreground"
-                        : "border-transparent hover:border-border hover:text-muted-foreground"
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                )
-              })}
-            </div>
+              return (
+                <Link
+                  key={`${item.href}-${item.label}`}
+                  href={item.href}
+                  className={cn(
+                    "border-b-2 pb-1 text-base font-medium text-foreground transition-colors",
+                    isActive
+                      ? "border-foreground"
+                      : "border-transparent hover:border-border hover:text-muted-foreground"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </div>
           <div className="hidden items-center gap-3 md:flex">
             <form
