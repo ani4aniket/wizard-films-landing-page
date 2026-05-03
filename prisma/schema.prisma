@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SocialLinkSection {
+  SITE
+  CONTACT
+}
+
+model SiteSettings {
+  id              String   @id
+  siteName        String
+  siteDescription String
+  siteUrl         String?
+  footerBlurb     String?
+  contactEmail    String?
+  ogImage         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model HomepageContent {
+  id                String   @id
+  headline          String
+  tagline           String
+  intro             String?
+  heroVideoUrl      String?
+  heroPosterUrl     String?
+  primaryCtaLabel   String
+  primaryCtaHref    String
+  secondaryCtaLabel String
+  secondaryCtaHref  String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  slug         String   @unique
+  title        String
+  description  String
+  category     String
+  youtubeUrl   String
+  thumbnailUrl String?
+  credits      String?
+  role         String?
+  featured     Boolean  @default(false)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Service {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  title       String
+  description String
+  icon        String?
+  demoClipUrl String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AboutContent {
+  id          String   @id
+  title       String
+  story       String
+  craftNotes  String[]
+  portraitUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model ContactContent {
+  id        String   @id
+  title     String
+  intro     String
+  email     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SocialLink {
+  id        String            @id @default(cuid())
+  section   SocialLinkSection
+  platform  String
+  label     String
+  url       String
+  sortOrder Int               @default(0)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model MediaAsset {
+  id          String   @id @default(cuid())
+  filename    String
+  pathname    String   @unique
+  url         String   @unique
+  contentType String?
+  size        Int?
+  altText     String?
+  createdAt   DateTime @default(now())
+}
