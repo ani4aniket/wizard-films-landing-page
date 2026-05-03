@@ -11,7 +11,7 @@ import { getContactContent } from "@/lib/crm"
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Book Akashpxxt for music videos, direction, editing, and shoot-based projects.",
+    "Book Wizard Films for music videos, direction, editing, and shoot-based projects.",
 }
 
 export default async function ContactPage() {

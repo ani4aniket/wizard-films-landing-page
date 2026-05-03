@@ -8,7 +8,7 @@ import { getProjects } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "Music videos and visual projects by Akashpxxt.",
+  description: "Music videos and visual projects by Wizard Films.",
 }
 
 export default async function WorkPage() {

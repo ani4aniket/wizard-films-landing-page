@@ -38,7 +38,7 @@ export function Footer({ settings }: { settings: SiteSettings }) {
           </p>
           <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
             {settings.footerBlurb ||
-              "Akashpxxt crafts cinematic visuals through music video direction, shoot execution, editing, and sound-aware pacing."}
+              "Wizard Films crafts cinematic visuals through music video direction, shoot execution, editing, and sound-aware pacing."}
           </p>
         </div>
         <div>

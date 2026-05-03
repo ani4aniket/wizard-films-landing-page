@@ -1,4 +1,4 @@
-export const SITE_NAME = "Akashpxxt"
+export const SITE_NAME = "Wizard Films"
 
 export const NAV_LINKS = [
   { href: "/", label: "Home" },

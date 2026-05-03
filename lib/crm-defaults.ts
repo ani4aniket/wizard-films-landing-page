@@ -31,9 +31,9 @@ const LEGACY_CONTACT = {
 const SAMPLE_HOMEPAGE = {
   headline: "VISUALS THAT MOVE WITH THE SONG.",
   tagline:
-    "Akashpxxt — director and visual creative for music videos, editing, shoot execution, and sound- and music-driven storytelling.",
+    "Wizard Films — director and visual creative for music videos, editing, shoot execution, and sound- and music-driven storytelling.",
   intro:
-    "Akashpxxt builds cinematic visuals that follow the rhythm and emotion of each track. He is credited as director on projects including Sikhi Vs Maut and Lahore, working on Punjabi music releases with production teams and label partners. His approach pairs strong direction, polished edits, and on-set visual coordination so the final film lands with impact.",
+    "Wizard Films builds cinematic visuals that follow the rhythm and emotion of each track. He is credited as director on projects including Sikhi Vs Maut and Lahore, working on Punjabi music releases with production teams and label partners. His approach pairs strong direction, polished edits, and on-set visual coordination so the final film lands with impact.",
   heroPosterUrl: "https://img.youtube.com/vi/RmTLqCPnUcs/hqdefault.jpg",
   primaryCtaLabel: "View Work",
   primaryCtaHref: "/work",
@@ -42,9 +42,9 @@ const SAMPLE_HOMEPAGE = {
 }
 
 const SAMPLE_ABOUT = {
-  title: "Akashpxxt",
+  title: "Wizard Films",
   story:
-    "Akashpxxt is a director and visual creative working in music videos, video editing, shoot execution, and sound- and music-led storytelling. His work focuses on cinematic visuals that move with the rhythm and emotion of each song. He has been credited as director on projects such as Sikhi Vs Maut and Lahore, collaborating with production teams and labels on Punjabi music releases. His style combines strong direction, refined editing, and on-set visual coordination to deliver memorable final videos. Akashpxxt creates music videos and visual content with a focus on direction, editing, and production detail—turning songs into cinematic pieces that connect with the audience.",
+    "Wizard Films is a director and visual creative working in music videos, video editing, shoot execution, and sound- and music-led storytelling. His work focuses on cinematic visuals that move with the rhythm and emotion of each song. He has been credited as director on projects such as Sikhi Vs Maut and Lahore, collaborating with production teams and labels on Punjabi music releases. His style combines strong direction, refined editing, and on-set visual coordination to deliver memorable final videos. Wizard Films creates music videos and visual content with a focus on direction, editing, and production detail—turning songs into cinematic pieces that connect with the audience.",
   craftNotes: [
     "Music video direction",
     "Video editing",
@@ -64,9 +64,9 @@ const SAMPLE_CONTACT = {
 
 const SAMPLE_SITE_SETTINGS = {
   siteDescription:
-    "Wizard Films presents Akashpxxt — music video direction, editing, shoot execution, and sound-led storytelling for Punjabi and label-driven releases.",
+    "Wizard Films presents Wizard Films — music video direction, editing, shoot execution, and sound-led storytelling for Punjabi and label-driven releases.",
   footerBlurb:
-    "Wizard Films · Akashpxxt: music video direction, editing, shoot execution, and artist-focused visual storytelling.",
+    "Wizard Films · Wizard Films: music video direction, editing, shoot execution, and artist-focused visual storytelling.",
   contactEmail: "hello@wizardfilms.studio",
 }
 
@@ -446,7 +446,7 @@ const SAMPLE_SUBMISSIONS = [
     name: "Simran R.",
     email: "artist.mgmt@example.com",
     message:
-      "Looking for Akashpxxt to direct next video—night exterior performance, one narrative thread, Wizard Films-style polish.",
+      "Looking for Wizard Films to direct next video—night exterior performance, one narrative thread, Wizard Films-style polish.",
     isRead: true,
   },
   {
