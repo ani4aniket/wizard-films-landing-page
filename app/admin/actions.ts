@@ -470,3 +470,17 @@ export async function toggleSubmissionReadAction(formData: FormData) {
 
   redirectTo("submissions")
 }
+
+export async function deleteSubmissionAction(formData: FormData) {
+  await requireAdminSession()
+
+  const id = getString(formData, "id")
+
+  if (id) {
+    await prisma.contactSubmission.delete({
+      where: { id },
+    })
+  }
+
+  redirectTo("submissions")
+}

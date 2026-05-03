@@ -7,6 +7,7 @@ import type { ReactNode } from "react"
 import {
   deleteMediaAssetAction,
   deleteNavLinkAction,
+  deleteSubmissionAction,
   deleteProjectAction,
   deleteServiceAction,
   deleteSocialLinkAction,
@@ -594,7 +595,12 @@ export default async function AdminPage({
                     className="grid gap-4 border border-dashed border-border bg-secondary/50 p-4 md:grid-cols-[1fr_1fr_120px_auto]"
                   >
                     <Field label="Label" name="label" required />
-                    <Field label="Href" name="href" required placeholder="/work" />
+                    <Field
+                      label="Href"
+                      name="href"
+                      required
+                      placeholder="/work"
+                    />
                     <Field
                       label="Order"
                       name="sortOrder"
@@ -778,11 +784,11 @@ export default async function AdminPage({
                       name="heroAsideEyebrow"
                       defaultValue={homepage.heroAsideEyebrow}
                     />
-                  <Field
-                    label="Aside Focus Line (blank = first About craft notes)"
-                    name="heroAsideFocus"
-                    defaultValue={homepage.heroAsideFocus}
-                  />
+                    <Field
+                      label="Aside Focus Line (blank = first About craft notes)"
+                      name="heroAsideFocus"
+                      defaultValue={homepage.heroAsideFocus}
+                    />
                   </div>
                   <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
                     Featured Section
@@ -1357,30 +1363,45 @@ export default async function AdminPage({
                               {submission.message}
                             </p>
                           </div>
-                          <div className="space-y-3">
+                          <div className="space-y-3 md:shrink-0">
                             <p className="text-xs text-muted-foreground">
                               {submission.createdAt.toLocaleString()}
                             </p>
-                            <form action={toggleSubmissionReadAction}>
-                              <input
-                                type="hidden"
-                                name="id"
-                                value={submission.id}
-                              />
-                              <input
-                                type="hidden"
-                                name="nextValue"
-                                value={submission.isRead ? "false" : "true"}
-                              />
-                              <button
-                                type="submit"
-                                className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
-                              >
-                                {submission.isRead
-                                  ? "Mark Unread"
-                                  : "Mark Read"}
-                              </button>
-                            </form>
+                            <div className="flex flex-wrap gap-2">
+                              <form action={toggleSubmissionReadAction}>
+                                <input
+                                  type="hidden"
+                                  name="id"
+                                  value={submission.id}
+                                />
+                                <input
+                                  type="hidden"
+                                  name="nextValue"
+                                  value={submission.isRead ? "false" : "true"}
+                                />
+                                <button
+                                  type="submit"
+                                  className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:bg-secondary hover:text-foreground"
+                                >
+                                  {submission.isRead
+                                    ? "Mark Unread"
+                                    : "Mark Read"}
+                                </button>
+                              </form>
+                              <form action={deleteSubmissionAction}>
+                                <input
+                                  type="hidden"
+                                  name="id"
+                                  value={submission.id}
+                                />
+                                <button
+                                  type="submit"
+                                  className="pill-feedback rounded-full border border-border px-4 py-2 text-sm text-muted-foreground transition hover:border-destructive hover:text-destructive"
+                                >
+                                  Delete
+                                </button>
+                              </form>
+                            </div>
                           </div>
                         </div>
                       </article>
