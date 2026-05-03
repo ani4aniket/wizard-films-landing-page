@@ -41,7 +41,7 @@ export function ContactForm() {
         return
       }
 
-      setStatus("Message sent. Wizard Films will get back to you soon.")
+      setStatus("Message sent. You will hear back soon.")
       setForm(EMPTY_FORM)
     })
   }

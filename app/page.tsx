@@ -63,7 +63,7 @@ export default async function Page() {
                 <Reveal className="space-y-8">
                   <div className="space-y-5">
                     <p className="text-xs tracking-[0.28em] text-white/78 uppercase">
-                      Editorial Portfolio
+                      Music Video Portfolio
                     </p>
                     <h1 className="editorial-display max-w-5xl text-white">
                       {homepage.headline}
@@ -106,8 +106,8 @@ export default async function Page() {
                     Current Focus
                   </p>
                   <p className="mt-4 text-3xl leading-tight font-medium text-white">
-                    Campaign cuts, social edit systems, and fast-turn post
-                    packages.
+                    Direction, rhythm-led edits, and shoot execution for songs
+                    that need cinematic visuals.
                   </p>
                   <Link
                     href="#featured"
@@ -127,7 +127,7 @@ export default async function Page() {
         <div className="mx-auto max-w-[1440px] px-6 pt-32 pb-16 md:px-10">
           <CmsErrorState
             title="Homepage content could not be loaded."
-            message="Connect the custom CRM endpoints in .env to populate the showreel, copy, and homepage sections."
+            message="Homepage content could not be fetched from CRM."
           />
         </div>
       )}
@@ -135,13 +135,13 @@ export default async function Page() {
       <Section
         id="featured"
         eyebrow="Selected Work"
-        title="Catalog structure. Cinematic content."
-        description="The archive is pulled from the CRM and presented like a flat editorial product grid: square imagery, restrained metadata, and one clear path into each case study."
+        title="Featured projects."
+        description="Highlighted videos from CRM with project roles, descriptions, and direct playback."
       >
         {projectsResult.status === "rejected" ? (
           <CmsErrorState
             title="Projects are unavailable."
-            message="The work page is ready, but the CRM project endpoint did not respond."
+            message="Projects could not be fetched from CRM."
           />
         ) : featuredProjects.length ? (
           <div className="grid gap-x-6 gap-y-10 md:grid-cols-2 xl:grid-cols-3">
@@ -154,20 +154,20 @@ export default async function Page() {
         ) : (
           <EmptyState
             title="No featured projects yet."
-            message="Once the CRM starts returning projects, selected work will appear here automatically."
+            message="Mark projects as featured in CRM to show them here."
           />
         )}
       </Section>
 
       <Section
         eyebrow="Services"
-        title="What the studio ships."
-        description="These service blocks are CRM-managed too, so you can swap positioning, descriptions, and demo media without touching the frontend."
+        title="Services"
+        description="Direction, editing, shoot execution, and music-led visual services managed from CRM."
       >
         {servicesResult.status === "rejected" ? (
           <CmsErrorState
             title="Services are unavailable."
-            message="The site is waiting on the services endpoint from the custom CRM."
+            message="Services could not be fetched from CRM."
           />
         ) : services.length ? (
           <ServiceGrid services={services.slice(0, 4)} compact />
@@ -180,15 +180,15 @@ export default async function Page() {
       </Section>
 
       <Section
-        eyebrow="Process"
-        title="One system, repeated cleanly."
-        description="Homepage hero, archive cards, service rows, and detail pages all now share the same restrained visual language so the content carries the atmosphere, not the chrome."
+        eyebrow="Approach"
+        title="How each release is shaped."
+        description="A clear workflow from concept to delivery with direction, edit precision, and music-aware visual pacing."
       >
         <div className="grid gap-4 md:grid-cols-3">
           {[
-            "Full-bleed campaign presentation for the hero tier.",
-            "Soft-cloud media staging for every case-study thumbnail.",
-            "Pill CTAs and neutral typography across the public site and CRM.",
+            "Direction that supports artist identity and song emotion.",
+            "Editing built around rhythm, energy shifts, and narrative flow.",
+            "Shoot execution and post finishing aligned for final impact.",
           ].map((item) => (
             <div
               key={item}

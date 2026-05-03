@@ -9,7 +9,7 @@ import { getServices } from "@/lib/crm"
 export const metadata: Metadata = {
   title: "Services",
   description:
-    "Editing, color grading, audio production, and shoot production by Wizard Films.",
+    "Music video direction, editing, shoot execution, and sound-led visual storytelling services.",
 }
 
 export default async function ServicesPage() {
@@ -21,14 +21,14 @@ export default async function ServicesPage() {
     <main>
       <PageHero
         eyebrow="Services"
-        title="Studio capabilities, expressed with restraint."
-        description="Each service card is CRM-managed and now sits inside the same black, white, and soft-gray editorial system as the portfolio."
+        title="What I do across music video production."
+        description="Services are CRM-managed and can be updated anytime from admin."
       />
       <Section className="pt-2">
         {servicesResult.error ? (
           <CmsErrorState
             title="Services could not be loaded."
-            message="Connect the services endpoint to show the full Wizard Films capabilities."
+            message="Services could not be fetched from CRM."
           />
         ) : servicesResult.services.length ? (
           <ServiceGrid services={servicesResult.services} />

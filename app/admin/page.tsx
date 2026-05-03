@@ -26,12 +26,13 @@ import {
   isAdminPasswordConfigured,
 } from "@/lib/admin-auth"
 import { AdminTabLayout } from "@/components/admin/admin-tab-layout"
+import { SITE_NAME } from "@/lib/constants"
 import { ensureCmsSeeded } from "@/lib/crm-defaults"
 import { prisma } from "@/lib/prisma"
 
 export const metadata: Metadata = {
   title: "Admin",
-  description: "Manage Wizard Films content, media, and submissions.",
+  description: "Manage site content, media, and submissions.",
 }
 
 function Field({
@@ -130,7 +131,7 @@ function LoginScreen({ error }: { error?: string }) {
     <main className="mx-auto flex min-h-screen w-full max-w-md items-center px-6 py-16">
       <div className="w-full border border-border bg-background p-8">
         <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-          Wizard Films CRM
+          {SITE_NAME} CRM
         </p>
         <h1 className="mt-4 text-4xl font-medium text-foreground">
           Admin sign in
@@ -242,7 +243,7 @@ export default async function AdminPage({
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-xs tracking-[0.24em] text-muted-foreground uppercase">
-            Wizard Films CRM
+            {SITE_NAME} CRM
           </p>
           <h1 className="mt-4 text-5xl font-medium text-foreground">
             Content admin

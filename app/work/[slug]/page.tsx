@@ -115,8 +115,8 @@ export default async function ProjectPage({
       {relatedProjects.length ? (
         <Section
           eyebrow="More Work"
-          title="More from the archive."
-          description="A few more CRM-driven case studies in the same editorial layout."
+          title="More videos."
+          description="More projects from CRM with credits, roles, and embedded playback."
         >
           <div className="grid gap-x-6 gap-y-10 lg:grid-cols-3">
             {relatedProjects.map((entry, index) => (

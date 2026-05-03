@@ -8,8 +8,7 @@ import { getProjects } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "Work",
-  description:
-    "Video projects from Wizard Films, streamed directly inside the portfolio.",
+  description: "Music videos and visual projects by Akashpxxt.",
 }
 
 export default async function WorkPage() {
@@ -20,22 +19,22 @@ export default async function WorkPage() {
   return (
     <main>
       <PageHero
-        eyebrow="Portfolio"
-        title="Work arranged like a clean editorial catalog."
-        description="Browse projects through flat cards, square imagery, and quiet metadata sourced directly from the CRM."
+        eyebrow="Work"
+        title="Music videos and visual stories."
+        description="Browse projects synced from CRM, including direction credits, roles, and playback."
       />
       <Section className="pt-2">
         {projectsResult.error ? (
           <CmsErrorState
             title="Project feed unavailable."
-            message="The work archive could not be fetched from the custom CRM."
+            message="Project data could not be fetched from CRM."
           />
         ) : projectsResult.projects.length ? (
           <ProjectGallery projects={projectsResult.projects} />
         ) : (
           <EmptyState
             title="No portfolio projects yet."
-            message="Publish projects in the CRM to fill the work archive."
+            message="Add projects in CRM to publish the work archive."
           />
         )}
       </Section>

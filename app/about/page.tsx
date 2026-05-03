@@ -9,7 +9,7 @@ import { getAboutContent } from "@/lib/crm"
 
 export const metadata: Metadata = {
   title: "About",
-  description: "The story and craft philosophy behind Wizard Films.",
+  description: "About Akashpxxt: direction, editing, shoot execution, and music-led visuals.",
 }
 
 export default async function AboutPage() {
@@ -21,20 +21,20 @@ export default async function AboutPage() {
     <main>
       <PageHero
         eyebrow="About"
-        title="A studio built around rhythm, clarity, and story."
-        description="The about page stays CRM-managed, but now reads with the same flat editorial structure as the rest of the site."
+        title="Direction, edit, and shoot craft."
+        description="This page is CRM-driven and reflects the current bio, focus, and creative approach."
       />
       <Section className="pt-2">
         {aboutResult.error || !aboutResult.about ? (
           <CmsErrorState
             title="About content unavailable."
-            message="The about section could not be fetched from the custom CRM."
+            message="About content could not be fetched from CRM."
           />
         ) : (
           <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             {aboutResult.about.portraitUrl ? (
               <Reveal>
-                <div className="surface-soft relative aspect-[4/5] overflow-hidden border border-border">
+                <div className="surface-soft relative aspect-4/5 overflow-hidden border border-border">
                   <Image
                     src={aboutResult.about.portraitUrl}
                     alt={aboutResult.about.title}

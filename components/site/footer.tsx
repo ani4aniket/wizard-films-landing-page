@@ -33,12 +33,12 @@ export function Footer({ settings }: { settings: SiteSettings }) {
             {settings.siteName}
           </p>
           <p className="mt-4 max-w-xl text-3xl leading-tight text-foreground md:text-4xl">
-            Story-led edits, campaign films, and post systems built with
-            restraint.
+            Music videos shaped through direction, editing, and rhythm-led
+            storytelling.
           </p>
           <p className="mt-4 max-w-xl text-base leading-7 text-muted-foreground">
             {settings.footerBlurb ||
-              "Wizard Films builds cinematic edits, color, sound, and production systems around story-first work."}
+              "Akashpxxt crafts cinematic visuals through music video direction, shoot execution, editing, and sound-aware pacing."}
           </p>
         </div>
         <div>

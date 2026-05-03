@@ -11,7 +11,7 @@ import { getContactContent } from "@/lib/crm"
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Start a film, edit, or post-production conversation with Wizard Films.",
+    "Book Akashpxxt for music videos, direction, editing, and shoot-based projects.",
 }
 
 export default async function ContactPage() {
@@ -23,14 +23,14 @@ export default async function ContactPage() {
     <main>
       <PageHero
         eyebrow="Contact"
-        title="Start the next project with a clean brief."
-        description="Use the built-in form, route people toward social channels, and manage the entire contact surface from the CRM."
+        title="Start your next release."
+        description="Share your track, references, and timeline. Contact details and links are managed from CRM."
       />
       <Section className="pt-2">
         {contactResult.error || !contactResult.contact ? (
           <CmsErrorState
             title="Contact information unavailable."
-            message="The contact page is ready, but the CRM contact endpoint is not responding."
+            message="Contact information could not be fetched from CRM."
           />
         ) : (
           <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">

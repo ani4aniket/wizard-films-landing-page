@@ -30,7 +30,7 @@ export default async function RootLayout({
       : {
           siteName: SITE_NAME,
           siteDescription:
-            "A cinematic portfolio for film editing, color, sound, and story-led production.",
+            "Music video direction, editing, and shoot execution with sound-led visual storytelling.",
           socialLinks: [],
           contactEmail: "",
           footerBlurb: "",
