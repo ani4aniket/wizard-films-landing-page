@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 
 import { Footer } from "@/components/site/footer"
 import { Navbar } from "@/components/site/navbar"
+import { WhatsAppButton } from "@/components/whatsapp-button"
 import {
   getContactContent,
   getNavigationLinks,
@@ -66,6 +67,7 @@ export default async function SiteLayout({
       />
       {children}
       <Footer settings={mergedSettings} navLinks={navLinks} />
+      <WhatsAppButton />
     </>
   )
 }
