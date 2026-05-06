@@ -13,6 +13,7 @@ import {
   TwitchIcon,
   VimeoIcon,
   YoutubeIcon,
+  WhatsappIcon,
 } from "@hugeicons/core-free-icons"
 import type { IconSvgElement } from "@hugeicons/react"
 
@@ -49,6 +50,7 @@ function iconFromPlatformHint(platform: string): IconSvgElement | null {
   if (p.includes("vimeo")) return VimeoIcon
   if (p.includes("spotify")) return SpotifyIcon
   if (p.includes("threads")) return Share02Icon
+  if (p.includes("whatsapp")) return WhatsappIcon
   return null
 }
 
@@ -91,7 +93,11 @@ function iconFromHost(host: string): IconSvgElement | null {
 
   if (h === "vimeo.com" || h.endsWith(".vimeo.com")) return VimeoIcon
 
-  if (h === "spotify.com" || h.endsWith(".spotify.com") || h === "open.spotify.com") {
+  if (
+    h === "spotify.com" ||
+    h.endsWith(".spotify.com") ||
+    h === "open.spotify.com"
+  ) {
     return SpotifyIcon
   }
 

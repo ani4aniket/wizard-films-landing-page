@@ -17,6 +17,7 @@ import {
   saveHomepageAction,
   saveNavLinkAction,
   saveProjectAction,
+  saveProjectOrderAction,
   saveServiceAction,
   saveSiteSettingsAction,
   saveSocialLinkAction,
@@ -37,6 +38,7 @@ import {
 import { CopyMediaUrlButton } from "@/components/admin/copy-media-url-button"
 import { MediaUploadForm } from "@/components/admin/media-upload-form"
 import { UploadSuccessBanner } from "@/components/admin/upload-success-banner"
+import { ProjectOrderEditor } from "@/components/admin/project-order-editor"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -864,6 +866,20 @@ export async function AdminDashboard({
                   <strong>Featured on homepage</strong> controls whether it
                   appears in the highlighted strip on the front page.
                 </AdminTip>
+
+                <section className="space-y-3">
+                  <p className="text-sm font-medium text-foreground">
+                    Reorder work (drag and save)
+                  </p>
+                  <ProjectOrderEditor
+                    projects={projects.map((project) => ({
+                      id: project.id,
+                      title: project.title,
+                      category: project.category,
+                    }))}
+                    action={saveProjectOrderAction}
+                  />
+                </section>
                 {projects.map((project) => (
                   <form
                     key={project.id}
@@ -929,14 +945,7 @@ export async function AdminDashboard({
                       defaultValue={project.credits}
                     />
                     <div className="flex flex-wrap items-center gap-5">
-                      <Field
-                        label="List order"
-                        name="sortOrder"
-                        type="number"
-                        defaultValue={project.sortOrder}
-                        hint="Lower numbers appear first in lists."
-                      />
-                      <div className="mt-6 flex items-center gap-3">
+                      <div className="mt-1 flex items-center gap-3">
                         <Checkbox
                           id={`featured-${project.id}`}
                           name="featured"
@@ -1010,13 +1019,7 @@ export async function AdminDashboard({
                   />
                   <Area label="Credits" name="credits" rows={3} />
                   <div className="flex flex-wrap items-center gap-5">
-                    <Field
-                      label="Sort Order"
-                      name="sortOrder"
-                      type="number"
-                      defaultValue={0}
-                    />
-                    <div className="mt-6 flex items-center gap-3">
+                    <div className="mt-1 flex items-center gap-3">
                       <Checkbox id="featured-new-project" name="featured" />
                       <Label
                         htmlFor="featured-new-project"

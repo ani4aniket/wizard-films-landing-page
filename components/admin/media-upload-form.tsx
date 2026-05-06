@@ -284,15 +284,15 @@ export function MediaUploadForm() {
               htmlFor={`${inputId}-alt`}
               className="flex w-full flex-col items-start justify-start text-left text-xs tracking-[0.24em] text-muted-foreground uppercase"
             >
-              Short description (optional)
+              Media Title (optional)
             </Label>
             <Input
               id={`${inputId}-alt`}
               name="altText"
               value={altText}
               onChange={(ev) => setAltText(ev.target.value)}
-              placeholder="Helps visitors who use screen readers"
-              className="h-12 w-full rounded-none border border-transparent bg-background px-4 text-sm text-foreground transition outline-none focus-visible:border-primary focus-visible:ring-0"
+              placeholder="Enter media title"
+              className="h-12 w-full rounded-none border border-border bg-background px-4 text-sm text-foreground transition outline-none focus-visible:border-primary focus-visible:ring-0"
             />
           </div>
 
@@ -300,14 +300,12 @@ export function MediaUploadForm() {
             <div className="flex items-center gap-3">
               <Checkbox
                 checked={skipCrop}
-                onCheckedChange={(checked) =>
-                  setSkipCrop(checked === true)
-                }
+                onCheckedChange={(checked) => setSkipCrop(checked === true)}
                 id={`${inputId}-skip-crop`}
               />
               <Label
                 htmlFor={`${inputId}-skip-crop`}
-                className="cursor-pointer text-sm font-normal normal-case tracking-normal text-foreground"
+                className="cursor-pointer text-sm font-normal tracking-normal text-foreground normal-case"
               >
                 Upload original (skip crop)
               </Label>

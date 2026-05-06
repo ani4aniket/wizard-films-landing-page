@@ -325,6 +325,7 @@ export async function deleteSocialLinkAction(formData: FormData) {
 export async function saveProjectAction(formData: FormData) {
   await requireAdminSession()
   const id = getString(formData, "id")
+  const hasSortOrder = formData.has("sortOrder")
   const data = {
     slug: slugFromTitle(formData, "slug", "title"),
     title: getString(formData, "title"),
@@ -335,20 +336,57 @@ export async function saveProjectAction(formData: FormData) {
     credits: getOptionalString(formData, "credits"),
     role: getOptionalString(formData, "role"),
     featured: getBoolean(formData, "featured"),
-    sortOrder: getNumber(formData, "sortOrder"),
   }
 
   if (id) {
     await prisma.project.update({
       where: { id },
-      data,
+      data: {
+        ...data,
+        ...(hasSortOrder ? { sortOrder: getNumber(formData, "sortOrder") } : {}),
+      },
     })
   } else {
-    await prisma.project.create({ data })
+    const maxSortOrderProject = await prisma.project.findFirst({
+      orderBy: { sortOrder: "desc" },
+      select: { sortOrder: true },
+    })
+
+    await prisma.project.create({
+      data: {
+        ...data,
+        sortOrder: hasSortOrder
+          ? getNumber(formData, "sortOrder")
+          : (maxSortOrderProject?.sortOrder ?? -1) + 1,
+      },
+    })
   }
 
   revalidateCmsPaths()
   redirectTo("projects", "saved")
+}
+
+export async function saveProjectOrderAction(formData: FormData) {
+  await requireAdminSession()
+
+  const orderedIds = getString(formData, "orderedIds")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean)
+
+  if (orderedIds.length) {
+    await prisma.$transaction(
+      orderedIds.map((id, index) =>
+        prisma.project.update({
+          where: { id },
+          data: { sortOrder: index },
+        })
+      )
+    )
+  }
+
+  revalidateCmsPaths()
+  redirectTo("project-order", "saved")
 }
 
 export async function deleteProjectAction(formData: FormData) {

@@ -33,6 +33,7 @@ export function adminPathAfterAction(section: string): string {
     "nav-links": { tab: "site-settings", hash: "nav-links" },
     "site-links": { tab: "site-settings", hash: "site-links" },
     "contact-links": { tab: "contact", hash: "contact-links" },
+    "project-order": { tab: "projects", hash: "project-order" },
   }
 
   const mapped = nested[section]
